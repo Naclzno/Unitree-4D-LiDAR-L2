@@ -1,0 +1,120 @@
+[0.010s] Invoking command in '/home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/build/unitree_lidar_ros2': CMAKE_PREFIX_PATH=/opt/ros/humble _=/usr/bin/env /usr/bin/cmake /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/src/unitree_lidar_ros2 -DCMAKE_INSTALL_PREFIX=/home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2
+[0.311s] -- The C compiler identification is GNU 11.4.0
+[0.515s] -- The CXX compiler identification is GNU 11.4.0
+[0.534s] -- Detecting C compiler ABI info
+[0.641s] -- Detecting C compiler ABI info - done
+[0.653s] -- Check for working C compiler: /usr/bin/cc - skipped
+[0.653s] -- Detecting C compile features
+[0.655s] -- Detecting C compile features - done
+[0.660s] -- Detecting CXX compiler ABI info
+[0.803s] -- Detecting CXX compiler ABI info - done
+[0.817s] -- Check for working CXX compiler: /usr/bin/c++ - skipped
+[0.817s] -- Detecting CXX compile features
+[0.817s] -- Detecting CXX compile features - done
+[0.827s] -- Found ament_cmake: 1.3.14 (/opt/ros/humble/share/ament_cmake/cmake)
+[1.070s] -- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter 
+[1.235s] -- Found rclcpp: 16.0.19 (/opt/ros/humble/share/rclcpp/cmake)
+[1.313s] -- Found rosidl_generator_c: 3.1.8 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+[1.321s] -- Found rosidl_adapter: 3.1.8 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[1.336s] -- Found rosidl_generator_cpp: 3.1.8 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+[1.365s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[1.396s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[1.484s] -- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+[1.489s] -- Found rmw_fastrtps_cpp: 6.2.10 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+[1.638s] -- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.2")  
+[1.680s] -- Found FastRTPS: /opt/ros/humble/include  
+[1.739s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[1.757s] -- Looking for pthread.h
+[1.883s] -- Looking for pthread.h - found
+[1.884s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+[1.998s] -- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+[1.998s] -- Found Threads: TRUE  
+[2.106s] -- Found geometry_msgs: 4.9.1 (/opt/ros/humble/share/geometry_msgs/cmake)
+[2.135s] -- Found pcl_conversions: 2.4.5 (/opt/ros/humble/share/pcl_conversions/cmake)
+[2.252s] -- Checking for module 'eigen3'
+[2.278s] --   Found eigen3, version 3.4.0
+[2.333s] -- Found Eigen: /usr/include/eigen3 (Required is at least version "3.1") 
+[2.333s] -- Eigen found (include: /usr/include/eigen3, version: 3.4.0)
+[2.402s] -- Checking for module 'flann'
+[2.424s] --   Found flann, version 1.9.1
+[2.490s] -- Found FLANN: /usr/lib/x86_64-linux-gnu/libflann_cpp.so  
+[2.491s] -- FLANN found (include: /usr/include, lib: /usr/lib/x86_64-linux-gnu/libflann_cpp.so)
+[4.135s] -- Checking for module 'libusb-1.0'
+[4.164s] --   Found libusb-1.0, version 1.0.25
+[4.224s] -- Found libusb: /usr/lib/x86_64-linux-gnu/libusb-1.0.so  
+[4.227s] -- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+[4.320s] -- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/x86_64-linux-gnu/libOpenNI2.so;libusb::libusb)
+[4.574s] -- Eigen found (include: /usr/include/eigen3, version: 3.4.0)
+[4.585s] -- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+[4.594s] -- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/x86_64-linux-gnu/libOpenNI2.so;libusb::libusb)
+[4.837s] -- Found Qhull version 8.0.2
+[5.091s] -- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+[5.342s] -- Found PCL_COMMON: /usr/lib/x86_64-linux-gnu/libpcl_common.so  
+[5.350s] -- Found PCL_KDTREE: /usr/lib/x86_64-linux-gnu/libpcl_kdtree.so  
+[5.354s] -- Found PCL_OCTREE: /usr/lib/x86_64-linux-gnu/libpcl_octree.so  
+[5.358s] -- Found PCL_SEARCH: /usr/lib/x86_64-linux-gnu/libpcl_search.so  
+[5.360s] -- Found PCL_SAMPLE_CONSENSUS: /usr/lib/x86_64-linux-gnu/libpcl_sample_consensus.so  
+[5.362s] -- Found PCL_FILTERS: /usr/lib/x86_64-linux-gnu/libpcl_filters.so  
+[5.363s] -- Found PCL_2D: /usr/include/pcl-1.12  
+[5.364s] -- Found PCL_GEOMETRY: /usr/include/pcl-1.12  
+[5.366s] -- Found PCL_IO: /usr/lib/x86_64-linux-gnu/libpcl_io.so  
+[5.369s] -- Found PCL_FEATURES: /usr/lib/x86_64-linux-gnu/libpcl_features.so  
+[5.371s] -- Found PCL_ML: /usr/lib/x86_64-linux-gnu/libpcl_ml.so  
+[5.374s] -- Found PCL_SEGMENTATION: /usr/lib/x86_64-linux-gnu/libpcl_segmentation.so  
+[5.377s] -- Found PCL_VISUALIZATION: /usr/lib/x86_64-linux-gnu/libpcl_visualization.so  
+[5.380s] -- Found PCL_SURFACE: /usr/lib/x86_64-linux-gnu/libpcl_surface.so  
+[5.382s] -- Found PCL_REGISTRATION: /usr/lib/x86_64-linux-gnu/libpcl_registration.so  
+[5.388s] -- Found PCL_KEYPOINTS: /usr/lib/x86_64-linux-gnu/libpcl_keypoints.so  
+[5.391s] -- Found PCL_TRACKING: /usr/lib/x86_64-linux-gnu/libpcl_tracking.so  
+[5.393s] -- Found PCL_RECOGNITION: /usr/lib/x86_64-linux-gnu/libpcl_recognition.so  
+[5.396s] -- Found PCL_STEREO: /usr/lib/x86_64-linux-gnu/libpcl_stereo.so  
+[5.398s] -- Found PCL_APPS: /usr/lib/x86_64-linux-gnu/libpcl_apps.so  
+[5.399s] -- Found PCL_IN_HAND_SCANNER: /usr/include/pcl-1.12  
+[5.400s] -- Found PCL_MODELER: /usr/include/pcl-1.12  
+[5.404s] -- Found PCL_POINT_CLOUD_EDITOR: /usr/include/pcl-1.12  
+[5.407s] -- Found PCL_OUTOFCORE: /usr/lib/x86_64-linux-gnu/libpcl_outofcore.so  
+[5.409s] -- Found PCL_PEOPLE: /usr/lib/x86_64-linux-gnu/libpcl_people.so  
+[5.414s] [33mCMake Warning (dev) at CMakeLists.txt:23 (find_package):
+[5.414s]   Policy CMP0074 is not set: find_package uses <PackageName>_ROOT variables.
+[5.414s]   Run "cmake --help-policy CMP0074" for policy details.  Use the cmake_policy
+[5.414s]   command to set the policy and suppress this warning.
+[5.415s] 
+[5.415s]   CMake variable PCL_ROOT is set to:
+[5.415s] 
+[5.415s]     /usr
+[5.415s] 
+[5.415s]   For compatibility, CMake is ignoring the variable.
+[5.415s] This warning is for project developers.  Use -Wno-dev to suppress it.
+[5.415s] [0m
+[5.427s] -- Found tf2_ros: 0.25.20 (/opt/ros/humble/share/tf2_ros/cmake)
+[5.731s] -- Configuring done
+[5.855s] -- Generating done
+[5.871s] -- Build files have been written to: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/build/unitree_lidar_ros2
+[5.913s] Invoked command in '/home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/build/unitree_lidar_ros2' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble _=/usr/bin/env /usr/bin/cmake /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/src/unitree_lidar_ros2 -DCMAKE_INSTALL_PREFIX=/home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2
+[5.914s] Invoking command in '/home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/build/unitree_lidar_ros2': CMAKE_PREFIX_PATH=/opt/ros/humble _=/usr/bin/env /usr/bin/cmake --build /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/build/unitree_lidar_ros2 -- -j12 -l12
+[5.994s] [ 50%] [32mBuilding CXX object CMakeFiles/unitree_lidar_ros2_node.dir/src/unitree_lidar_ros2_node.cpp.o[0m
+[28.628s] [100%] [32m[1mLinking CXX executable unitree_lidar_ros2_node[0m
+[29.938s] [100%] Built target unitree_lidar_ros2_node
+[29.955s] Invoked command in '/home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/build/unitree_lidar_ros2' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble _=/usr/bin/env /usr/bin/cmake --build /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/build/unitree_lidar_ros2 -- -j12 -l12
+[29.968s] Invoking command in '/home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/build/unitree_lidar_ros2': CMAKE_PREFIX_PATH=/opt/ros/humble _=/usr/bin/env /usr/bin/cmake --install /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/build/unitree_lidar_ros2
+[29.976s] -- Install configuration: ""
+[29.976s] -- Installing: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/lib/unitree_lidar_ros2/unitree_lidar_ros2_node
+[29.978s] -- Set runtime path of "/home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/lib/unitree_lidar_ros2/unitree_lidar_ros2_node" to ""
+[29.979s] -- Installing: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/unitree_lidar_ros2/view.rviz
+[29.980s] -- Installing: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/unitree_lidar_ros2/launch.py
+[29.981s] -- Installing: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/ament_index/resource_index/package_run_dependencies/unitree_lidar_ros2
+[29.981s] -- Installing: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/ament_index/resource_index/parent_prefix_path/unitree_lidar_ros2
+[29.981s] -- Installing: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/unitree_lidar_ros2/environment/ament_prefix_path.sh
+[29.981s] -- Installing: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/unitree_lidar_ros2/environment/ament_prefix_path.dsv
+[29.981s] -- Installing: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/unitree_lidar_ros2/environment/path.sh
+[29.982s] -- Installing: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/unitree_lidar_ros2/environment/path.dsv
+[29.982s] -- Installing: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/unitree_lidar_ros2/local_setup.bash
+[29.982s] -- Installing: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/unitree_lidar_ros2/local_setup.sh
+[29.982s] -- Installing: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/unitree_lidar_ros2/local_setup.zsh
+[29.982s] -- Installing: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/unitree_lidar_ros2/local_setup.dsv
+[29.982s] -- Installing: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/unitree_lidar_ros2/package.dsv
+[29.982s] -- Installing: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/ament_index/resource_index/packages/unitree_lidar_ros2
+[29.983s] -- Installing: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/unitree_lidar_ros2/cmake/unitree_lidar_ros2Config.cmake
+[29.983s] -- Installing: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/unitree_lidar_ros2/cmake/unitree_lidar_ros2Config-version.cmake
+[29.983s] -- Installing: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/unitree_lidar_ros2/package.xml
+[29.990s] Invoked command in '/home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/build/unitree_lidar_ros2' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble _=/usr/bin/env /usr/bin/cmake --install /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/build/unitree_lidar_ros2
