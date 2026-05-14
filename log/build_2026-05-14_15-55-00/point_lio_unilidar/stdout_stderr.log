@@ -1,0 +1,197 @@
+-- The C compiler identification is GNU 11.4.0
+-- The CXX compiler identification is GNU 11.4.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+Current CPU architecture: x86_64
+Processor number: 12
+core for MP: 4
+-- Found ament_cmake: 1.3.14 (/opt/ros/humble/share/ament_cmake/cmake)
+-- Found Python3: /usr/bin/python3 (found version "3.10.12") found components: Interpreter 
+-- Found rclcpp: 16.0.19 (/opt/ros/humble/share/rclcpp/cmake)
+-- Found rosidl_generator_c: 3.1.8 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+-- Found rosidl_adapter: 3.1.8 (/opt/ros/humble/share/rosidl_adapter/cmake)
+-- Found rosidl_generator_cpp: 3.1.8 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+-- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+-- Found rmw_fastrtps_cpp: 6.2.10 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+-- Found OpenSSL: /usr/lib/x86_64-linux-gnu/libcrypto.so (found version "3.0.2")  
+-- Found FastRTPS: /opt/ros/humble/include  
+-- Using RMW implementation 'rmw_fastrtps_cpp' as default
+-- Looking for pthread.h
+-- Looking for pthread.h - found
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE  
+-- Found sensor_msgs: 4.9.1 (/opt/ros/humble/share/sensor_msgs/cmake)
+-- Found nav_msgs: 4.9.1 (/opt/ros/humble/share/nav_msgs/cmake)
+-- Found visualization_msgs: 4.9.1 (/opt/ros/humble/share/visualization_msgs/cmake)
+-- Found tf2: 0.25.20 (/opt/ros/humble/share/tf2/cmake)
+-- Found tf2_ros: 0.25.20 (/opt/ros/humble/share/tf2_ros/cmake)
+-- Found pcl_conversions: 2.4.5 (/opt/ros/humble/share/pcl_conversions/cmake)
+-- Checking for module 'eigen3'
+--   Found eigen3, version 3.4.0
+-- Found Eigen: /usr/include/eigen3 (Required is at least version "3.1") 
+-- Eigen found (include: /usr/include/eigen3, version: 3.4.0)
+-- Checking for module 'flann'
+--   Found flann, version 1.9.1
+-- Found FLANN: /usr/lib/x86_64-linux-gnu/libflann_cpp.so  
+-- FLANN found (include: /usr/include, lib: /usr/lib/x86_64-linux-gnu/libflann_cpp.so)
+-- Checking for module 'libusb-1.0'
+--   Found libusb-1.0, version 1.0.25
+-- Found libusb: /usr/lib/x86_64-linux-gnu/libusb-1.0.so  
+-- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+-- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/x86_64-linux-gnu/libOpenNI2.so;libusb::libusb)
+-- Eigen found (include: /usr/include/eigen3, version: 3.4.0)
+-- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+-- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/x86_64-linux-gnu/libOpenNI2.so;libusb::libusb)
+-- Found Qhull version 8.0.2
+-- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+-- Found PCL_COMMON: /usr/lib/x86_64-linux-gnu/libpcl_common.so  
+-- Found PCL_KDTREE: /usr/lib/x86_64-linux-gnu/libpcl_kdtree.so  
+-- Found PCL_OCTREE: /usr/lib/x86_64-linux-gnu/libpcl_octree.so  
+-- Found PCL_SEARCH: /usr/lib/x86_64-linux-gnu/libpcl_search.so  
+-- Found PCL_SAMPLE_CONSENSUS: /usr/lib/x86_64-linux-gnu/libpcl_sample_consensus.so  
+-- Found PCL_FILTERS: /usr/lib/x86_64-linux-gnu/libpcl_filters.so  
+-- Found PCL_2D: /usr/include/pcl-1.12  
+-- Found PCL_GEOMETRY: /usr/include/pcl-1.12  
+-- Found PCL_IO: /usr/lib/x86_64-linux-gnu/libpcl_io.so  
+-- Found PCL_FEATURES: /usr/lib/x86_64-linux-gnu/libpcl_features.so  
+-- Found PCL_ML: /usr/lib/x86_64-linux-gnu/libpcl_ml.so  
+-- Found PCL_SEGMENTATION: /usr/lib/x86_64-linux-gnu/libpcl_segmentation.so  
+-- Found PCL_VISUALIZATION: /usr/lib/x86_64-linux-gnu/libpcl_visualization.so  
+-- Found PCL_SURFACE: /usr/lib/x86_64-linux-gnu/libpcl_surface.so  
+-- Found PCL_REGISTRATION: /usr/lib/x86_64-linux-gnu/libpcl_registration.so  
+-- Found PCL_KEYPOINTS: /usr/lib/x86_64-linux-gnu/libpcl_keypoints.so  
+-- Found PCL_TRACKING: /usr/lib/x86_64-linux-gnu/libpcl_tracking.so  
+-- Found PCL_RECOGNITION: /usr/lib/x86_64-linux-gnu/libpcl_recognition.so  
+-- Found PCL_STEREO: /usr/lib/x86_64-linux-gnu/libpcl_stereo.so  
+-- Found PCL_APPS: /usr/lib/x86_64-linux-gnu/libpcl_apps.so  
+-- Found PCL_IN_HAND_SCANNER: /usr/include/pcl-1.12  
+-- Found PCL_MODELER: /usr/include/pcl-1.12  
+-- Found PCL_POINT_CLOUD_EDITOR: /usr/include/pcl-1.12  
+-- Found PCL_OUTOFCORE: /usr/lib/x86_64-linux-gnu/libpcl_outofcore.so  
+-- Found PCL_PEOPLE: /usr/lib/x86_64-linux-gnu/libpcl_people.so  
+CMake Warning (dev) at CMakeLists.txt:43 (find_package):
+  Policy CMP0074 is not set: find_package uses <PackageName>_ROOT variables.
+  Run "cmake --help-policy CMP0074" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+  CMake variable PCL_ROOT is set to:
+
+    /usr
+
+  For compatibility, CMake is ignoring the variable.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/ubuntu/unilidar_sdk2/build/point_lio_unilidar
+[ 16%] Building CXX object CMakeFiles/pointlio_mapping.dir/src/laserMapping.cpp.o
+In file included from /usr/include/boost/smart_ptr/detail/sp_thread_sleep.hpp:22,
+                 from /usr/include/boost/smart_ptr/detail/yield_k.hpp:23,
+                 from /usr/include/boost/smart_ptr/detail/spinlock_gcc_atomic.hpp:14,
+                 from /usr/include/boost/smart_ptr/detail/spinlock.hpp:42,
+                 from /usr/include/boost/smart_ptr/detail/spinlock_pool.hpp:25,
+                 from /usr/include/boost/smart_ptr/shared_ptr.hpp:29,
+                 from /usr/include/boost/shared_ptr.hpp:17,
+                 from /usr/include/boost/date_time/microsec_time_clock.hpp:18,
+                 from /usr/include/boost/interprocess/detail/posix_time_types_wrk.hpp:31,
+                 from /usr/include/boost/interprocess/detail/os_thread_functions.hpp:36,
+                 from /usr/include/boost/interprocess/sync/file_lock.hpp:26,
+                 from /usr/include/pcl-1.12/pcl/io/pcd_io.h:46,
+                 from /opt/ros/humble/include/pcl_conversions/pcl_conversions/pcl_conversions.h:73,
+                 from /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/laserMapping.cpp:11:
+/usr/include/boost/bind.hpp:36:1: note: ‘#pragma message: The practice of declaring the Bind placeholders (_1, _2, ...) in the global namespace is deprecated. Please use <boost/bind/bind.hpp> + using namespace boost::placeholders, or define BOOST_BIND_GLOBAL_PLACEHOLDERS to retain the current behavior.’
+   36 | BOOST_PRAGMA_MESSAGE(
+      | ^~~~~~~~~~~~~~~~~~~~
+/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/laserMapping.cpp: In function ‘void standard_pcl_cbk(const ConstSharedPtr&)’:
+/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/laserMapping.cpp:263:27: error: ‘const _stamp_type’ {aka ‘const struct builtin_interfaces::msg::Time_<std::allocator<void> >’} has no member named ‘seconds’
+  263 |     if (msg->header.stamp.seconds() < last_timestamp_lidar)
+      |                           ^~~~~~~
+/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/laserMapping.cpp:272:46: error: ‘const _stamp_type’ {aka ‘const struct builtin_interfaces::msg::Time_<std::allocator<void> >’} has no member named ‘seconds’
+  272 |     last_timestamp_lidar = msg->header.stamp.seconds();
+      |                                              ^~~~~~~
+/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/laserMapping.cpp:277:41: error: ‘const _stamp_type’ {aka ‘const struct builtin_interfaces::msg::Time_<std::allocator<void> >’} has no member named ‘seconds’
+  277 |     double time_div = msg->header.stamp.seconds();
+      |                                         ^~~~~~~
+/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/laserMapping.cpp:293:77: error: ‘const _stamp_type’ {aka ‘const struct builtin_interfaces::msg::Time_<std::allocator<void> >’} has no member named ‘seconds’
+  293 |             if (ptr->points[i].curvature / double(1000) + msg->header.stamp.seconds() - time_div > cut_frame_time_interval)
+      |                                                                             ^~~~~~~
+/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/laserMapping.cpp:348:52: error: ‘const _stamp_type’ {aka ‘const struct builtin_interfaces::msg::Time_<std::allocator<void> >’} has no member named ‘seconds’
+  348 |         time_buffer.emplace_back(msg->header.stamp.seconds());
+      |                                                    ^~~~~~~
+/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/laserMapping.cpp: In function ‘void imu_cbk(const ConstSharedPtr&)’:
+/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/laserMapping.cpp:456:58: error: ‘const _stamp_type’ {aka ‘const struct builtin_interfaces::msg::Time_<std::allocator<void> >’} has no member named ‘seconds’
+  456 |     msg->header.stamp = timeFromSec(msg_in->header.stamp.seconds() - time_lag_imu_to_lidar);
+      |                                                          ^~~~~~~
+/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/laserMapping.cpp:458:42: error: ‘using _stamp_type = struct builtin_interfaces::msg::Time_<std::allocator<void> >’ {aka ‘struct builtin_interfaces::msg::Time_<std::allocator<void> >’} has no member named ‘seconds’
+  458 |     double timestamp = msg->header.stamp.seconds();
+      |                                          ^~~~~~~
+/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/laserMapping.cpp: In function ‘bool sync_packages(MeasureGroup&)’:
+/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/laserMapping.cpp:559:59: error: ‘const _stamp_type’ {aka ‘const struct builtin_interfaces::msg::Time_<std::allocator<void> >’} has no member named ‘seconds’
+  559 |         double imu_time = imu_deque.front()->header.stamp.seconds();
+      |                                                           ^~~~~~~
+/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/laserMapping.cpp:563:56: error: ‘const _stamp_type’ {aka ‘const struct builtin_interfaces::msg::Time_<std::allocator<void> >’} has no member named ‘seconds’
+  563 |             imu_time = imu_deque.front()->header.stamp.seconds();
+      |                                                        ^~~~~~~
+/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/laserMapping.cpp:575:59: error: ‘const _stamp_type’ {aka ‘const struct builtin_interfaces::msg::Time_<std::allocator<void> >’} has no member named ‘seconds’
+  575 |         double imu_time = imu_deque.front()->header.stamp.seconds();
+      |                                                           ^~~~~~~
+/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/laserMapping.cpp:581:56: error: ‘const _stamp_type’ {aka ‘const struct builtin_interfaces::msg::Time_<std::allocator<void> >’} has no member named ‘seconds’
+  581 |             imu_time = imu_deque.front()->header.stamp.seconds();
+      |                                                        ^~~~~~~
+/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/laserMapping.cpp: In function ‘int main(int, char**)’:
+/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/laserMapping.cpp:971:72: error: ‘using _stamp_type = struct builtin_interfaces::msg::Time_<std::allocator<void> >’ {aka ‘struct builtin_interfaces::msg::Time_<std::allocator<void> >’} has no member named ‘seconds’
+  971 |                 while (Measures.lidar_beg_time > imu_next.header.stamp.seconds())
+      |                                                                        ^~~~~~~
+/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/laserMapping.cpp:1131:69: error: ‘using _stamp_type = struct builtin_interfaces::msg::Time_<std::allocator<void> >’ {aka ‘struct builtin_interfaces::msg::Time_<std::allocator<void> >’} has no member named ‘seconds’
+ 1131 |                         while (time_current > imu_next.header.stamp.seconds())
+      |                                                                     ^~~~~~~
+/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/laserMapping.cpp:1149:75: error: ‘using _stamp_type = struct builtin_interfaces::msg::Time_<std::allocator<void> >’ {aka ‘struct builtin_interfaces::msg::Time_<std::allocator<void> >’} has no member named ‘seconds’
+ 1149 |                     bool imu_comes = time_current > imu_next.header.stamp.seconds();
+      |                                                                           ^~~~~~~
+/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/laserMapping.cpp:1160:59: error: ‘using _stamp_type = struct builtin_interfaces::msg::Time_<std::allocator<void> >’ {aka ‘struct builtin_interfaces::msg::Time_<std::allocator<void> >’} has no member named ‘seconds’
+ 1160 |                         double dt = imu_last.header.stamp.seconds() - time_predict_last_const;
+      |                                                           ^~~~~~~
+/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/laserMapping.cpp:1162:73: error: ‘using _stamp_type = struct builtin_interfaces::msg::Time_<std::allocator<void> >’ {aka ‘struct builtin_interfaces::msg::Time_<std::allocator<void> >’} has no member named ‘seconds’
+ 1162 |                         time_predict_last_const = imu_last.header.stamp.seconds();
+      |                                                                         ^~~~~~~
+/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/laserMapping.cpp:1163:74: error: ‘using _stamp_type = struct builtin_interfaces::msg::Time_<std::allocator<void> >’ {aka ‘struct builtin_interfaces::msg::Time_<std::allocator<void> >’} has no member named ‘seconds’
+ 1163 |                         imu_comes = time_current > imu_next.header.stamp.seconds();
+      |                                                                          ^~~~~~~
+/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/laserMapping.cpp:1166:67: error: ‘using _stamp_type = struct builtin_interfaces::msg::Time_<std::allocator<void> >’ {aka ‘struct builtin_interfaces::msg::Time_<std::allocator<void> >’} has no member named ‘seconds’
+ 1166 |                             double dt_cov = imu_last.header.stamp.seconds() - time_update_last;
+      |                                                                   ^~~~~~~
+/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/laserMapping.cpp:1170:74: error: ‘using _stamp_type = struct builtin_interfaces::msg::Time_<std::allocator<void> >’ {aka ‘struct builtin_interfaces::msg::Time_<std::allocator<void> >’} has no member named ‘seconds’
+ 1170 |                                 time_update_last = imu_last.header.stamp.seconds();
+      |                                                                          ^~~~~~~
+/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/laserMapping.cpp:1268:65: error: ‘using _stamp_type = struct builtin_interfaces::msg::Time_<std::allocator<void> >’ {aka ‘struct builtin_interfaces::msg::Time_<std::allocator<void> >’} has no member named ‘seconds’
+ 1268 |                     while (time_current > imu_next.header.stamp.seconds())
+      |                                                                 ^~~~~~~
+/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/laserMapping.cpp:1293:61: error: ‘using _stamp_type = struct builtin_interfaces::msg::Time_<std::allocator<void> >’ {aka ‘struct builtin_interfaces::msg::Time_<std::allocator<void> >’} has no member named ‘seconds’
+ 1293 |                 while (time_current > imu_next.header.stamp.seconds())
+      |                                                             ^~~~~~~
+/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/laserMapping.cpp:1302:55: error: ‘using _stamp_type = struct builtin_interfaces::msg::Time_<std::allocator<void> >’ {aka ‘struct builtin_interfaces::msg::Time_<std::allocator<void> >’} has no member named ‘seconds’
+ 1302 |                     double dt = imu_last.header.stamp.seconds() - t_last;
+      |                                                       ^~~~~~~
+/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/laserMapping.cpp:1304:59: error: ‘using _stamp_type = struct builtin_interfaces::msg::Time_<std::allocator<void> >’ {aka ‘struct builtin_interfaces::msg::Time_<std::allocator<void> >’} has no member named ‘seconds’
+ 1304 |                     double dt_cov = imu_last.header.stamp.seconds() - time_update_last;
+      |                                                           ^~~~~~~
+/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/laserMapping.cpp:1308:66: error: ‘using _stamp_type = struct builtin_interfaces::msg::Time_<std::allocator<void> >’ {aka ‘struct builtin_interfaces::msg::Time_<std::allocator<void> >’} has no member named ‘seconds’
+ 1308 |                         time_update_last = imu_last.header.stamp.seconds();
+      |                                                                  ^~~~~~~
+/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/laserMapping.cpp:1311:52: error: ‘using _stamp_type = struct builtin_interfaces::msg::Time_<std::allocator<void> >’ {aka ‘struct builtin_interfaces::msg::Time_<std::allocator<void> >’} has no member named ‘seconds’
+ 1311 |                     t_last = imu_last.header.stamp.seconds();
+      |                                                    ^~~~~~~
+gmake[2]: *** [CMakeFiles/pointlio_mapping.dir/build.make:76: CMakeFiles/pointlio_mapping.dir/src/laserMapping.cpp.o] Error 1
+gmake[1]: *** [CMakeFiles/Makefile2:137: CMakeFiles/pointlio_mapping.dir/all] Error 2
+gmake: *** [Makefile:146: all] Error 2

@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>point_lio_unilidar</name>
+  <version>0.0.0</version>
+  <description>Point-LIO adapted for Unitree LiDAR, ported to ROS 2.</description>
+
+  <maintainer email="lukelbmeng@gmail.com">Lingbo Meng</maintainer>
+  <license>BSD</license>
+  <author email="lukelbmeng@gmail.com">Lingbo Meng</author>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <depend>rclcpp</depend>
+  <depend>sensor_msgs</depend>
+  <depend>nav_msgs</depend>
+  <depend>geometry_msgs</depend>
+  <depend>visualization_msgs</depend>
+  <depend>tf2</depend>
+  <depend>tf2_ros</depend>
+  <depend>pcl_conversions</depend>
+
+  <exec_depend>rviz2</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
