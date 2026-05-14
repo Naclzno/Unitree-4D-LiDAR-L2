@@ -2,9 +2,33 @@ import os
 import subprocess
 
 from launch import LaunchDescription
+from launch.actions import DeclareLaunchArgument
+from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
+from launch_ros.parameter_descriptions import ParameterValue
 
 def generate_launch_description():
+    save_cloud_txt_arg = DeclareLaunchArgument(
+        'save_cloud_txt',
+        default_value='false',
+        description='Save parsed point cloud data to a txt file.'
+    )
+    cloud_txt_path_arg = DeclareLaunchArgument(
+        'cloud_txt_path',
+        default_value='/tmp/unitree_lidar_cloud.txt',
+        description='Output txt file path for parsed point cloud data.'
+    )
+    cloud_txt_append_arg = DeclareLaunchArgument(
+        'cloud_txt_append',
+        default_value='true',
+        description='Append to the txt file instead of overwriting it.'
+    )
+    cloud_txt_save_every_n_arg = DeclareLaunchArgument(
+        'cloud_txt_save_every_n',
+        default_value='1',
+        description='Save one point cloud frame every N parsed frames.'
+    )
+
     # Run unitree lidar
     node1 = Node(
         package='unitree_lidar_ros2',
@@ -32,6 +56,11 @@ def generate_launch_description():
                 {'cloud_topic': "unilidar/cloud"},
                 {'imu_frame': "unilidar_imu"},
                 {'imu_topic': "unilidar/imu"},
+
+                {'save_cloud_txt': ParameterValue(LaunchConfiguration('save_cloud_txt'), value_type=bool)},
+                {'cloud_txt_path': LaunchConfiguration('cloud_txt_path')},
+                {'cloud_txt_append': ParameterValue(LaunchConfiguration('cloud_txt_append'), value_type=bool)},
+                {'cloud_txt_save_every_n': ParameterValue(LaunchConfiguration('cloud_txt_save_every_n'), value_type=int)},
                 ]
     )
 
@@ -46,4 +75,11 @@ def generate_launch_description():
         arguments=['-d', rviz_config_file],
         output='log'
     )
-    return LaunchDescription([node1, rviz_node])
+    return LaunchDescription([
+        save_cloud_txt_arg,
+        cloud_txt_path_arg,
+        cloud_txt_append_arg,
+        cloud_txt_save_every_n_arg,
+        node1,
+        rviz_node,
+    ])

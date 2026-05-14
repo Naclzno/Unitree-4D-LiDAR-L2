@@ -1,0 +1,283 @@
+[0.000000] (-) TimerEvent: {}
+[0.003005] (unitree_lidar_ros2) JobQueued: {'identifier': 'unitree_lidar_ros2', 'dependencies': OrderedDict()}
+[0.003711] (unitree_lidar_ros2) JobStarted: {'identifier': 'unitree_lidar_ros2'}
+[0.017331] (unitree_lidar_ros2) JobProgress: {'identifier': 'unitree_lidar_ros2', 'progress': 'cmake'}
+[0.018650] (unitree_lidar_ros2) JobProgress: {'identifier': 'unitree_lidar_ros2', 'progress': 'build'}
+[0.020657] (unitree_lidar_ros2) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/build/unitree_lidar_ros2', '--', '-j12', '-l12'], 'cwd': '/home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/build/unitree_lidar_ros2', 'env': OrderedDict([('SHELL', '/bin/bash'), ('ROS_VERSION', '2'), ('SESSION_MANAGER', 'local/ubuntu-System-Product-Name:@/tmp/.ICE-unix/6790,unix/ubuntu-System-Product-Name:/tmp/.ICE-unix/6790'), ('QT_ACCESSIBILITY', '1'), ('COLORTERM', ''), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('SSH_AGENT_LAUNCHER', 'gnome-keyring'), ('NVM_INC', '/home/ubuntu/.nvm/versions/node/v18.20.8/include/node'), ('XDG_MENU_PREFIX', 'gnome-'), ('no_proxy', 'localhost,127.0.0.1,192.168.0.0/16,10.0.0.0/8,172.16.0.0/12,::1'), ('TERM_PROGRAM_VERSION', '1.119.0'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('XMODIFIERS', '@im=ibus'), ('DESKTOP_SESSION', 'ubuntu'), ('GH_PAGER', 'cat'), ('GTK_MODULES', 'gail:atk-bridge'), ('DBUS_STARTER_BUS_TYPE', 'session'), ('PWD', '/home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/build/unitree_lidar_ros2'), ('LOGNAME', 'ubuntu'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XDG_SESSION_TYPE', 'wayland'), ('CODEX_MANAGED_BY_NPM', '1'), ('SYSTEMD_EXEC_PID', '6790'), ('XAUTHORITY', '/run/user/1000/.mutter-Xwaylandauth.R8DFP3'), ('VSCODE_GIT_ASKPASS_NODE', '/usr/share/code/code'), ('IM_CONFIG_CHECK_ENV', '1'), ('HOME', '/home/ubuntu'), ('USERNAME', 'ubuntu'), ('IM_CONFIG_PHASE', '1'), ('LANG', 'C.UTF-8'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('VTE_VERSION', '6800'), ('WAYLAND_DISPLAY', 'wayland-0'), ('AMENT_PREFIX_PATH', '/opt/ros/humble'), ('GIT_ASKPASS', '/usr/share/code/resources/app/extensions/git/dist/askpass.sh'), ('GNOME_TERMINAL_SCREEN', '/org/gnome/Terminal/screen/251a8a47_da3b_4b1a_b6b8_cb92d7e1c1ae'), ('https_proxy', 'http://127.0.0.1:7897/'), ('CODELLDB_LAUNCH_CONNECT_FILE', '/home/ubuntu/.config/Code/User/workspaceStorage/6af6aca81071bc4923ca3f48cad11f8b/vadimcn.vscode-lldb/rpcaddress.txt'), ('CHROME_DESKTOP', 'code.desktop'), ('NVM_DIR', '/home/ubuntu/.nvm'), ('VSCODE_GIT_ASKPASS_EXTRA_ARGS', ''), ('GNOME_SETUP_DISPLAY', ':1'), ('VSCODE_PYTHON_AUTOACTIVATE_GUARD', '1'), ('CLAUDE_CODE_SSE_PORT', '37401'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('XDG_SESSION_CLASS', 'user'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('TERM', 'dumb'), ('CODEX_THREAD_ID', '019e2093-4ff2-7433-9d3a-554b69f9e6d8'), ('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'ubuntu'), ('GIT_PAGER', 'cat'), ('NO_PROXY', 'localhost,127.0.0.1,192.168.0.0/16,10.0.0.0/8,172.16.0.0/12,::1'), ('VSCODE_GIT_IPC_HANDLE', '/run/user/1000/vscode-git-36a4f1be12.sock'), ('GNOME_TERMINAL_SERVICE', ':1.293'), ('DISPLAY', ':0'), ('SHLVL', '3'), ('NVM_CD_FLAGS', ''), ('PAGER', 'cat'), ('HTTPS_PROXY', 'http://127.0.0.1:7897/'), ('HTTP_PROXY', 'http://127.0.0.1:7897/'), ('QT_IM_MODULE', 'ibus'), ('DBUS_STARTER_ADDRESS', 'unix:path=/run/user/1000/bus,guid=4098c35057dd84b7ccecf0686a03cf01'), ('http_proxy', 'http://127.0.0.1:7897/'), ('NO_COLOR', '1'), ('FC_FONTATIONS', '1'), ('LD_LIBRARY_PATH', '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('CODEX_CI', '1'), ('LC_CTYPE', 'C.UTF-8'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('ROS_LOCALHOST_ONLY', '0'), ('ALL_PROXY', 'socks://127.0.0.1:7897/'), ('LC_ALL', 'C.UTF-8'), ('VSCODE_GIT_ASKPASS_MAIN', '/usr/share/code/resources/app/extensions/git/dist/askpass-main.js'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('GDK_BACKEND', 'wayland'), ('CODEX_SANDBOX_NETWORK_DISABLED', '1'), ('all_proxy', 'socks://127.0.0.1:7897/'), ('PATH', '/home/ubuntu/.codex/tmp/arg0/codex-arg0wGvnWu:/home/ubuntu/.nvm/versions/node/v18.20.8/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/path:/home/ubuntu/.vscode/extensions/vadimcn.vscode-lldb-1.12.2/bin:/home/ubuntu/.nvm/versions/node/v18.20.8/bin:/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin'), ('GDMSESSION', 'ubuntu'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus,guid=4098c35057dd84b7ccecf0686a03cf01'), ('NVM_BIN', '/home/ubuntu/.nvm/versions/node/v18.20.8/bin'), ('ROS_DISTRO', 'humble'), ('OLDPWD', '/home/ubuntu/unilidar_sdk2/unitree_lidar_sdk'), ('TERM_PROGRAM', 'vscode'), ('_', '/usr/bin/env'), ('CMAKE_PREFIX_PATH', '/opt/ros/humble')]), 'shell': False}
+[0.099943] (-) TimerEvent: {}
+[0.142925] (unitree_lidar_ros2) StdoutLine: {'line': b'Consolidate compiler generated dependencies of target unitree_lidar_ros2_node\n'}
+[0.199033] (unitree_lidar_ros2) StdoutLine: {'line': b'[ 50%] Building CXX object CMakeFiles/unitree_lidar_ros2_node.dir/src/unitree_lidar_ros2_node.cpp.o\n'}
+[0.200052] (-) TimerEvent: {}
+[0.303370] (-) TimerEvent: {}
+[0.403593] (-) TimerEvent: {}
+[0.503811] (-) TimerEvent: {}
+[0.604030] (-) TimerEvent: {}
+[0.704258] (-) TimerEvent: {}
+[0.804529] (-) TimerEvent: {}
+[0.904792] (-) TimerEvent: {}
+[1.005016] (-) TimerEvent: {}
+[1.105253] (-) TimerEvent: {}
+[1.205502] (-) TimerEvent: {}
+[1.305731] (-) TimerEvent: {}
+[1.412541] (-) TimerEvent: {}
+[1.512756] (-) TimerEvent: {}
+[1.612995] (-) TimerEvent: {}
+[1.713203] (-) TimerEvent: {}
+[1.813380] (-) TimerEvent: {}
+[1.913579] (-) TimerEvent: {}
+[2.014048] (-) TimerEvent: {}
+[2.115962] (-) TimerEvent: {}
+[2.216179] (-) TimerEvent: {}
+[2.316370] (-) TimerEvent: {}
+[2.418028] (-) TimerEvent: {}
+[2.518473] (-) TimerEvent: {}
+[2.618861] (-) TimerEvent: {}
+[2.719508] (-) TimerEvent: {}
+[2.822147] (-) TimerEvent: {}
+[2.922372] (-) TimerEvent: {}
+[3.023744] (-) TimerEvent: {}
+[3.123957] (-) TimerEvent: {}
+[3.224182] (-) TimerEvent: {}
+[3.324380] (-) TimerEvent: {}
+[3.424598] (-) TimerEvent: {}
+[3.524818] (-) TimerEvent: {}
+[3.625025] (-) TimerEvent: {}
+[3.725230] (-) TimerEvent: {}
+[3.826252] (-) TimerEvent: {}
+[3.928305] (-) TimerEvent: {}
+[4.033376] (-) TimerEvent: {}
+[4.133774] (-) TimerEvent: {}
+[4.234103] (-) TimerEvent: {}
+[4.334356] (-) TimerEvent: {}
+[4.434593] (-) TimerEvent: {}
+[4.534835] (-) TimerEvent: {}
+[4.635055] (-) TimerEvent: {}
+[4.737870] (-) TimerEvent: {}
+[4.838175] (-) TimerEvent: {}
+[4.938373] (-) TimerEvent: {}
+[5.042219] (-) TimerEvent: {}
+[5.142458] (-) TimerEvent: {}
+[5.242687] (-) TimerEvent: {}
+[5.342912] (-) TimerEvent: {}
+[5.443129] (-) TimerEvent: {}
+[5.543371] (-) TimerEvent: {}
+[5.643760] (-) TimerEvent: {}
+[5.743983] (-) TimerEvent: {}
+[5.844194] (-) TimerEvent: {}
+[5.945385] (-) TimerEvent: {}
+[6.045619] (-) TimerEvent: {}
+[6.145848] (-) TimerEvent: {}
+[6.246070] (-) TimerEvent: {}
+[6.346326] (-) TimerEvent: {}
+[6.446551] (-) TimerEvent: {}
+[6.546799] (-) TimerEvent: {}
+[6.647022] (-) TimerEvent: {}
+[6.747240] (-) TimerEvent: {}
+[6.847469] (-) TimerEvent: {}
+[6.947696] (-) TimerEvent: {}
+[7.047915] (-) TimerEvent: {}
+[7.148257] (-) TimerEvent: {}
+[7.250374] (-) TimerEvent: {}
+[7.351174] (-) TimerEvent: {}
+[7.451971] (-) TimerEvent: {}
+[7.552392] (-) TimerEvent: {}
+[7.652648] (-) TimerEvent: {}
+[7.752913] (-) TimerEvent: {}
+[7.853126] (-) TimerEvent: {}
+[7.953355] (-) TimerEvent: {}
+[8.053586] (-) TimerEvent: {}
+[8.153816] (-) TimerEvent: {}
+[8.254040] (-) TimerEvent: {}
+[8.354263] (-) TimerEvent: {}
+[8.454501] (-) TimerEvent: {}
+[8.554889] (-) TimerEvent: {}
+[8.655140] (-) TimerEvent: {}
+[8.755374] (-) TimerEvent: {}
+[8.855601] (-) TimerEvent: {}
+[8.955825] (-) TimerEvent: {}
+[9.056492] (-) TimerEvent: {}
+[9.156752] (-) TimerEvent: {}
+[9.257126] (-) TimerEvent: {}
+[9.357350] (-) TimerEvent: {}
+[9.457575] (-) TimerEvent: {}
+[9.558377] (-) TimerEvent: {}
+[9.658615] (-) TimerEvent: {}
+[9.758850] (-) TimerEvent: {}
+[9.859082] (-) TimerEvent: {}
+[9.959322] (-) TimerEvent: {}
+[10.059560] (-) TimerEvent: {}
+[10.159788] (-) TimerEvent: {}
+[10.260089] (-) TimerEvent: {}
+[10.360475] (-) TimerEvent: {}
+[10.460674] (-) TimerEvent: {}
+[10.560890] (-) TimerEvent: {}
+[10.661105] (-) TimerEvent: {}
+[10.761332] (-) TimerEvent: {}
+[10.861542] (-) TimerEvent: {}
+[10.961756] (-) TimerEvent: {}
+[11.061975] (-) TimerEvent: {}
+[11.162195] (-) TimerEvent: {}
+[11.262560] (-) TimerEvent: {}
+[11.362790] (-) TimerEvent: {}
+[11.463194] (-) TimerEvent: {}
+[11.565708] (-) TimerEvent: {}
+[11.665922] (-) TimerEvent: {}
+[11.766134] (-) TimerEvent: {}
+[11.866353] (-) TimerEvent: {}
+[11.968397] (-) TimerEvent: {}
+[12.068624] (-) TimerEvent: {}
+[12.168868] (-) TimerEvent: {}
+[12.269744] (-) TimerEvent: {}
+[12.370527] (-) TimerEvent: {}
+[12.470767] (-) TimerEvent: {}
+[12.570981] (-) TimerEvent: {}
+[12.671197] (-) TimerEvent: {}
+[12.771375] (-) TimerEvent: {}
+[12.871606] (-) TimerEvent: {}
+[12.971848] (-) TimerEvent: {}
+[13.072079] (-) TimerEvent: {}
+[13.172366] (-) TimerEvent: {}
+[13.272618] (-) TimerEvent: {}
+[13.372841] (-) TimerEvent: {}
+[13.473064] (-) TimerEvent: {}
+[13.573308] (-) TimerEvent: {}
+[13.673545] (-) TimerEvent: {}
+[13.773781] (-) TimerEvent: {}
+[13.876399] (-) TimerEvent: {}
+[13.976625] (-) TimerEvent: {}
+[14.080455] (-) TimerEvent: {}
+[14.181658] (-) TimerEvent: {}
+[14.281843] (-) TimerEvent: {}
+[14.382030] (-) TimerEvent: {}
+[14.482210] (-) TimerEvent: {}
+[14.582395] (-) TimerEvent: {}
+[14.682569] (-) TimerEvent: {}
+[14.782736] (-) TimerEvent: {}
+[14.882961] (-) TimerEvent: {}
+[14.983188] (-) TimerEvent: {}
+[15.084179] (-) TimerEvent: {}
+[15.184381] (-) TimerEvent: {}
+[15.288373] (-) TimerEvent: {}
+[15.388596] (-) TimerEvent: {}
+[15.489955] (-) TimerEvent: {}
+[15.590201] (-) TimerEvent: {}
+[15.690459] (-) TimerEvent: {}
+[15.790692] (-) TimerEvent: {}
+[15.890883] (-) TimerEvent: {}
+[15.991114] (-) TimerEvent: {}
+[16.091359] (-) TimerEvent: {}
+[16.191579] (-) TimerEvent: {}
+[16.291806] (-) TimerEvent: {}
+[16.392028] (-) TimerEvent: {}
+[16.492256] (-) TimerEvent: {}
+[16.592476] (-) TimerEvent: {}
+[16.692710] (-) TimerEvent: {}
+[16.792968] (-) TimerEvent: {}
+[16.893185] (-) TimerEvent: {}
+[16.993372] (-) TimerEvent: {}
+[17.093839] (-) TimerEvent: {}
+[17.194061] (-) TimerEvent: {}
+[17.294272] (-) TimerEvent: {}
+[17.394504] (-) TimerEvent: {}
+[17.494731] (-) TimerEvent: {}
+[17.594949] (-) TimerEvent: {}
+[17.695169] (-) TimerEvent: {}
+[17.795379] (-) TimerEvent: {}
+[17.895599] (-) TimerEvent: {}
+[17.995831] (-) TimerEvent: {}
+[18.096055] (-) TimerEvent: {}
+[18.196275] (-) TimerEvent: {}
+[18.296516] (-) TimerEvent: {}
+[18.396871] (-) TimerEvent: {}
+[18.497106] (-) TimerEvent: {}
+[18.597329] (-) TimerEvent: {}
+[18.697545] (-) TimerEvent: {}
+[18.797768] (-) TimerEvent: {}
+[18.897992] (-) TimerEvent: {}
+[18.998234] (-) TimerEvent: {}
+[19.098469] (-) TimerEvent: {}
+[19.198695] (-) TimerEvent: {}
+[19.298914] (-) TimerEvent: {}
+[19.399150] (-) TimerEvent: {}
+[19.499380] (-) TimerEvent: {}
+[19.599603] (-) TimerEvent: {}
+[19.700041] (-) TimerEvent: {}
+[19.805513] (-) TimerEvent: {}
+[19.905736] (-) TimerEvent: {}
+[20.005956] (-) TimerEvent: {}
+[20.107735] (-) TimerEvent: {}
+[20.207945] (-) TimerEvent: {}
+[20.308162] (-) TimerEvent: {}
+[20.408665] (-) TimerEvent: {}
+[20.509276] (-) TimerEvent: {}
+[20.609514] (-) TimerEvent: {}
+[20.709737] (-) TimerEvent: {}
+[20.809961] (-) TimerEvent: {}
+[20.910183] (-) TimerEvent: {}
+[21.010378] (-) TimerEvent: {}
+[21.110610] (-) TimerEvent: {}
+[21.210829] (-) TimerEvent: {}
+[21.311051] (-) TimerEvent: {}
+[21.411257] (-) TimerEvent: {}
+[21.511486] (-) TimerEvent: {}
+[21.611707] (-) TimerEvent: {}
+[21.711925] (-) TimerEvent: {}
+[21.812146] (-) TimerEvent: {}
+[21.912378] (-) TimerEvent: {}
+[22.012584] (-) TimerEvent: {}
+[22.112806] (-) TimerEvent: {}
+[22.213031] (-) TimerEvent: {}
+[22.313258] (-) TimerEvent: {}
+[22.413487] (-) TimerEvent: {}
+[22.513714] (-) TimerEvent: {}
+[22.613935] (-) TimerEvent: {}
+[22.714183] (-) TimerEvent: {}
+[22.814383] (-) TimerEvent: {}
+[22.914615] (-) TimerEvent: {}
+[23.014840] (-) TimerEvent: {}
+[23.115063] (-) TimerEvent: {}
+[23.215303] (-) TimerEvent: {}
+[23.238919] (unitree_lidar_ros2) StdoutLine: {'line': b'[100%] Linking CXX executable unitree_lidar_ros2_node\n'}
+[23.315370] (-) TimerEvent: {}
+[23.415637] (-) TimerEvent: {}
+[23.515902] (-) TimerEvent: {}
+[23.616155] (-) TimerEvent: {}
+[23.717366] (-) TimerEvent: {}
+[23.819375] (-) TimerEvent: {}
+[23.919736] (-) TimerEvent: {}
+[24.019967] (-) TimerEvent: {}
+[24.120405] (-) TimerEvent: {}
+[24.220631] (-) TimerEvent: {}
+[24.321334] (-) TimerEvent: {}
+[24.422375] (-) TimerEvent: {}
+[24.522615] (-) TimerEvent: {}
+[24.622855] (-) TimerEvent: {}
+[24.723088] (-) TimerEvent: {}
+[24.757246] (unitree_lidar_ros2) StdoutLine: {'line': b'[100%] Built target unitree_lidar_ros2_node\n'}
+[24.771874] (unitree_lidar_ros2) CommandEnded: {'returncode': 0}
+[24.773332] (unitree_lidar_ros2) JobProgress: {'identifier': 'unitree_lidar_ros2', 'progress': 'install'}
+[24.787869] (unitree_lidar_ros2) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/build/unitree_lidar_ros2'], 'cwd': '/home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/build/unitree_lidar_ros2', 'env': OrderedDict([('SHELL', '/bin/bash'), ('ROS_VERSION', '2'), ('SESSION_MANAGER', 'local/ubuntu-System-Product-Name:@/tmp/.ICE-unix/6790,unix/ubuntu-System-Product-Name:/tmp/.ICE-unix/6790'), ('QT_ACCESSIBILITY', '1'), ('COLORTERM', ''), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('SSH_AGENT_LAUNCHER', 'gnome-keyring'), ('NVM_INC', '/home/ubuntu/.nvm/versions/node/v18.20.8/include/node'), ('XDG_MENU_PREFIX', 'gnome-'), ('no_proxy', 'localhost,127.0.0.1,192.168.0.0/16,10.0.0.0/8,172.16.0.0/12,::1'), ('TERM_PROGRAM_VERSION', '1.119.0'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('XMODIFIERS', '@im=ibus'), ('DESKTOP_SESSION', 'ubuntu'), ('GH_PAGER', 'cat'), ('GTK_MODULES', 'gail:atk-bridge'), ('DBUS_STARTER_BUS_TYPE', 'session'), ('PWD', '/home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/build/unitree_lidar_ros2'), ('LOGNAME', 'ubuntu'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XDG_SESSION_TYPE', 'wayland'), ('CODEX_MANAGED_BY_NPM', '1'), ('SYSTEMD_EXEC_PID', '6790'), ('XAUTHORITY', '/run/user/1000/.mutter-Xwaylandauth.R8DFP3'), ('VSCODE_GIT_ASKPASS_NODE', '/usr/share/code/code'), ('IM_CONFIG_CHECK_ENV', '1'), ('HOME', '/home/ubuntu'), ('USERNAME', 'ubuntu'), ('IM_CONFIG_PHASE', '1'), ('LANG', 'C.UTF-8'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('VTE_VERSION', '6800'), ('WAYLAND_DISPLAY', 'wayland-0'), ('AMENT_PREFIX_PATH', '/opt/ros/humble'), ('GIT_ASKPASS', '/usr/share/code/resources/app/extensions/git/dist/askpass.sh'), ('GNOME_TERMINAL_SCREEN', '/org/gnome/Terminal/screen/251a8a47_da3b_4b1a_b6b8_cb92d7e1c1ae'), ('https_proxy', 'http://127.0.0.1:7897/'), ('CODELLDB_LAUNCH_CONNECT_FILE', '/home/ubuntu/.config/Code/User/workspaceStorage/6af6aca81071bc4923ca3f48cad11f8b/vadimcn.vscode-lldb/rpcaddress.txt'), ('CHROME_DESKTOP', 'code.desktop'), ('NVM_DIR', '/home/ubuntu/.nvm'), ('VSCODE_GIT_ASKPASS_EXTRA_ARGS', ''), ('GNOME_SETUP_DISPLAY', ':1'), ('VSCODE_PYTHON_AUTOACTIVATE_GUARD', '1'), ('CLAUDE_CODE_SSE_PORT', '37401'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('XDG_SESSION_CLASS', 'user'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('TERM', 'dumb'), ('CODEX_THREAD_ID', '019e2093-4ff2-7433-9d3a-554b69f9e6d8'), ('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'ubuntu'), ('GIT_PAGER', 'cat'), ('NO_PROXY', 'localhost,127.0.0.1,192.168.0.0/16,10.0.0.0/8,172.16.0.0/12,::1'), ('VSCODE_GIT_IPC_HANDLE', '/run/user/1000/vscode-git-36a4f1be12.sock'), ('GNOME_TERMINAL_SERVICE', ':1.293'), ('DISPLAY', ':0'), ('SHLVL', '3'), ('NVM_CD_FLAGS', ''), ('PAGER', 'cat'), ('HTTPS_PROXY', 'http://127.0.0.1:7897/'), ('HTTP_PROXY', 'http://127.0.0.1:7897/'), ('QT_IM_MODULE', 'ibus'), ('DBUS_STARTER_ADDRESS', 'unix:path=/run/user/1000/bus,guid=4098c35057dd84b7ccecf0686a03cf01'), ('http_proxy', 'http://127.0.0.1:7897/'), ('NO_COLOR', '1'), ('FC_FONTATIONS', '1'), ('LD_LIBRARY_PATH', '/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('CODEX_CI', '1'), ('LC_CTYPE', 'C.UTF-8'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('ROS_LOCALHOST_ONLY', '0'), ('ALL_PROXY', 'socks://127.0.0.1:7897/'), ('LC_ALL', 'C.UTF-8'), ('VSCODE_GIT_ASKPASS_MAIN', '/usr/share/code/resources/app/extensions/git/dist/askpass-main.js'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('GDK_BACKEND', 'wayland'), ('CODEX_SANDBOX_NETWORK_DISABLED', '1'), ('all_proxy', 'socks://127.0.0.1:7897/'), ('PATH', '/home/ubuntu/.codex/tmp/arg0/codex-arg0wGvnWu:/home/ubuntu/.nvm/versions/node/v18.20.8/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/path:/home/ubuntu/.vscode/extensions/vadimcn.vscode-lldb-1.12.2/bin:/home/ubuntu/.nvm/versions/node/v18.20.8/bin:/opt/ros/humble/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin'), ('GDMSESSION', 'ubuntu'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus,guid=4098c35057dd84b7ccecf0686a03cf01'), ('NVM_BIN', '/home/ubuntu/.nvm/versions/node/v18.20.8/bin'), ('ROS_DISTRO', 'humble'), ('OLDPWD', '/home/ubuntu/unilidar_sdk2/unitree_lidar_sdk'), ('TERM_PROGRAM', 'vscode'), ('_', '/usr/bin/env'), ('CMAKE_PREFIX_PATH', '/opt/ros/humble')]), 'shell': False}
+[24.810417] (unitree_lidar_ros2) StdoutLine: {'line': b'-- Install configuration: ""\n'}
+[24.813033] (unitree_lidar_ros2) StdoutLine: {'line': b'-- Installing: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/lib/unitree_lidar_ros2/unitree_lidar_ros2_node\n'}
+[24.816486] (unitree_lidar_ros2) StdoutLine: {'line': b'-- Set runtime path of "/home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/lib/unitree_lidar_ros2/unitree_lidar_ros2_node" to ""\n'}
+[24.816678] (unitree_lidar_ros2) StdoutLine: {'line': b'-- Up-to-date: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/unitree_lidar_ros2/view.rviz\n'}
+[24.816767] (unitree_lidar_ros2) StdoutLine: {'line': b'-- Installing: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/unitree_lidar_ros2/launch.py\n'}
+[24.816840] (unitree_lidar_ros2) StdoutLine: {'line': b'-- Up-to-date: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/ament_index/resource_index/package_run_dependencies/unitree_lidar_ros2\n'}
+[24.816917] (unitree_lidar_ros2) StdoutLine: {'line': b'-- Up-to-date: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/ament_index/resource_index/parent_prefix_path/unitree_lidar_ros2\n'}
+[24.816988] (unitree_lidar_ros2) StdoutLine: {'line': b'-- Up-to-date: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/unitree_lidar_ros2/environment/ament_prefix_path.sh\n'}
+[24.817067] (unitree_lidar_ros2) StdoutLine: {'line': b'-- Up-to-date: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/unitree_lidar_ros2/environment/ament_prefix_path.dsv\n'}
+[24.818568] (unitree_lidar_ros2) StdoutLine: {'line': b'-- Up-to-date: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/unitree_lidar_ros2/environment/path.sh\n'}
+[24.818774] (unitree_lidar_ros2) StdoutLine: {'line': b'-- Up-to-date: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/unitree_lidar_ros2/environment/path.dsv\n'}
+[24.818871] (unitree_lidar_ros2) StdoutLine: {'line': b'-- Up-to-date: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/unitree_lidar_ros2/local_setup.bash\n'}
+[24.818955] (unitree_lidar_ros2) StdoutLine: {'line': b'-- Up-to-date: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/unitree_lidar_ros2/local_setup.sh\n'}
+[24.819033] (unitree_lidar_ros2) StdoutLine: {'line': b'-- Up-to-date: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/unitree_lidar_ros2/local_setup.zsh\n'}
+[24.819118] (unitree_lidar_ros2) StdoutLine: {'line': b'-- Up-to-date: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/unitree_lidar_ros2/local_setup.dsv\n'}
+[24.819194] (unitree_lidar_ros2) StdoutLine: {'line': b'-- Installing: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/unitree_lidar_ros2/package.dsv\n'}
+[24.819271] (unitree_lidar_ros2) StdoutLine: {'line': b'-- Up-to-date: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/ament_index/resource_index/packages/unitree_lidar_ros2\n'}
+[24.819369] (unitree_lidar_ros2) StdoutLine: {'line': b'-- Up-to-date: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/unitree_lidar_ros2/cmake/unitree_lidar_ros2Config.cmake\n'}
+[24.819454] (unitree_lidar_ros2) StdoutLine: {'line': b'-- Up-to-date: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/unitree_lidar_ros2/cmake/unitree_lidar_ros2Config-version.cmake\n'}
+[24.819550] (unitree_lidar_ros2) StdoutLine: {'line': b'-- Up-to-date: /home/ubuntu/unilidar_sdk2/unitree_lidar_ros2/install/unitree_lidar_ros2/share/unitree_lidar_ros2/package.xml\n'}
+[24.822615] (unitree_lidar_ros2) CommandEnded: {'returncode': 0}
+[24.823231] (-) TimerEvent: {}
+[24.869191] (unitree_lidar_ros2) JobEnded: {'identifier': 'unitree_lidar_ros2', 'rc': 0}
+[24.870347] (-) EventReactorShutdown: {}

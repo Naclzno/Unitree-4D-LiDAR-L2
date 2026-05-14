@@ -13,6 +13,9 @@
 #include <iterator>
 #include <algorithm>
 #include <chrono>
+#include <cstdint>
+#include <fstream>
+#include <iomanip>
 
 #include <pcl/io/pcd_io.h>
 #include <pcl/point_types.h>
@@ -40,7 +43,7 @@ class UnitreeLidarSDKNode : public rclcpp::Node
 public:
     explicit UnitreeLidarSDKNode(const rclcpp::NodeOptions &options = rclcpp::NodeOptions());
 
-    ~UnitreeLidarSDKNode() {};
+    ~UnitreeLidarSDKNode();
 
     void timer_callback();
 
@@ -74,9 +77,26 @@ protected:
 
     std::string imu_frame_;
     std::string imu_topic_;
+
+    bool save_cloud_txt_;
+    std::string cloud_txt_path_;
+    bool cloud_txt_append_;
+    int cloud_txt_save_every_n_;
+    uint64_t cloud_txt_frame_count_;
+    std::ofstream cloud_txt_stream_;
+
+    void savePointCloudToTxt(const PointCloudUnitree &cloud);
 };
 
 ///////////////////////////////////////////////////////////////////
+
+UnitreeLidarSDKNode::~UnitreeLidarSDKNode()
+{
+    if (cloud_txt_stream_.is_open())
+    {
+        cloud_txt_stream_.close();
+    }
+}
 
 UnitreeLidarSDKNode::UnitreeLidarSDKNode(const rclcpp::NodeOptions &options)
     : Node("unitre_lidar_sdk_node", options)
@@ -103,6 +123,11 @@ UnitreeLidarSDKNode::UnitreeLidarSDKNode(const rclcpp::NodeOptions &options)
     declare_parameter<std::string>("imu_frame", "unilidar_imu");
     declare_parameter<std::string>("imu_topic", "unilidar/imu");
 
+    declare_parameter<bool>("save_cloud_txt", false);
+    declare_parameter<std::string>("cloud_txt_path", "/tmp/unitree_lidar_cloud.txt");
+    declare_parameter<bool>("cloud_txt_append", true);
+    declare_parameter<int>("cloud_txt_save_every_n", 1);
+
     work_mode_ = get_parameter("work_mode").as_int();
     initialize_type_ = get_parameter("initialize_type").as_int();
 
@@ -124,6 +149,18 @@ UnitreeLidarSDKNode::UnitreeLidarSDKNode(const rclcpp::NodeOptions &options)
     
     imu_frame_ = get_parameter("imu_frame").as_string();
     imu_topic_ = get_parameter("imu_topic").as_string();
+
+    save_cloud_txt_ = get_parameter("save_cloud_txt").as_bool();
+    cloud_txt_path_ = get_parameter("cloud_txt_path").as_string();
+    cloud_txt_append_ = get_parameter("cloud_txt_append").as_bool();
+    cloud_txt_save_every_n_ = get_parameter("cloud_txt_save_every_n").as_int();
+    cloud_txt_frame_count_ = 0;
+
+    if (cloud_txt_save_every_n_ < 1)
+    {
+        RCLCPP_WARN(this->get_logger(), "cloud_txt_save_every_n must be >= 1, reset to 1");
+        cloud_txt_save_every_n_ = 1;
+    }
 
     // Initialize UnitreeLidarReader
     lsdk_ = createUnitreeLidarReader();
@@ -147,6 +184,25 @@ UnitreeLidarSDKNode::UnitreeLidarSDKNode(const rclcpp::NodeOptions &options)
     }
 
     lsdk_->setLidarWorkMode(work_mode_);
+
+    if (save_cloud_txt_)
+    {
+        std::ios_base::openmode open_mode = std::ios::out;
+        open_mode |= cloud_txt_append_ ? std::ios::app : std::ios::trunc;
+
+        cloud_txt_stream_.open(cloud_txt_path_, open_mode);
+        if (!cloud_txt_stream_.is_open())
+        {
+            RCLCPP_ERROR(this->get_logger(), "failed to open point cloud txt file: %s", cloud_txt_path_.c_str());
+            save_cloud_txt_ = false;
+        }
+        else
+        {
+            cloud_txt_stream_ << "# Unitree L2 point cloud txt\n";
+            cloud_txt_stream_ << "# columns: cloud_stamp cloud_id point_index x y z intensity relative_time ring\n";
+            RCLCPP_INFO(this->get_logger(), "saving point cloud txt to: %s", cloud_txt_path_.c_str());
+        }
+    }
 
     // ROS2
     broadcaster_ = std::make_shared<tf2_ros::TransformBroadcaster>(*this);
@@ -224,6 +280,8 @@ void UnitreeLidarSDKNode::timer_callback()
         PointCloudUnitree cloud;
         if (lsdk_->getPointCloud(cloud))
         {
+            savePointCloudToTxt(cloud);
+
             transformUnitreeCloudToPCL(cloud, cloudOut);
 
             rclcpp::Time timestamp(
@@ -237,5 +295,46 @@ void UnitreeLidarSDKNode::timer_callback()
 
             pub_cloud_->publish(cloud_msg);
         }
+    }
+}
+
+void UnitreeLidarSDKNode::savePointCloudToTxt(const PointCloudUnitree &cloud)
+{
+    if (!save_cloud_txt_ || !cloud_txt_stream_.is_open())
+    {
+        return;
+    }
+
+    cloud_txt_frame_count_++;
+    if ((cloud_txt_frame_count_ - 1) % static_cast<uint64_t>(cloud_txt_save_every_n_) != 0)
+    {
+        return;
+    }
+
+    cloud_txt_stream_ << "# frame " << cloud_txt_frame_count_
+                      << " stamp " << std::fixed << std::setprecision(9) << cloud.stamp
+                      << " id " << cloud.id
+                      << " points " << cloud.points.size()
+                      << " ring_num " << cloud.ringNum << '\n';
+
+    cloud_txt_stream_ << std::fixed << std::setprecision(9);
+    for (size_t i = 0; i < cloud.points.size(); ++i)
+    {
+        const PointUnitree &point = cloud.points[i];
+        cloud_txt_stream_ << cloud.stamp << ' '
+                          << cloud.id << ' '
+                          << i << ' '
+                          << point.x << ' '
+                          << point.y << ' '
+                          << point.z << ' '
+                          << point.intensity << ' '
+                          << point.time << ' '
+                          << point.ring << '\n';
+    }
+
+    if (!cloud_txt_stream_)
+    {
+        RCLCPP_ERROR(this->get_logger(), "failed while writing point cloud txt file: %s", cloud_txt_path_.c_str());
+        save_cloud_txt_ = false;
     }
 }
