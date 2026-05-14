@@ -1,0 +1,76 @@
+-- Found ament_cmake: 1.3.14 (/opt/ros/humble/share/ament_cmake/cmake)
+-- Found rclcpp: 16.0.19 (/opt/ros/humble/share/rclcpp/cmake)
+-- Found rosidl_generator_c: 3.1.8 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+-- Found rosidl_adapter: 3.1.8 (/opt/ros/humble/share/rosidl_adapter/cmake)
+-- Found rosidl_generator_cpp: 3.1.8 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+-- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+-- Found rmw_fastrtps_cpp: 6.2.10 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+-- Using RMW implementation 'rmw_fastrtps_cpp' as default
+-- Found sensor_msgs: 4.9.1 (/opt/ros/humble/share/sensor_msgs/cmake)
+-- Found nav_msgs: 4.9.1 (/opt/ros/humble/share/nav_msgs/cmake)
+-- Found visualization_msgs: 4.9.1 (/opt/ros/humble/share/visualization_msgs/cmake)
+-- Found tf2: 0.25.20 (/opt/ros/humble/share/tf2/cmake)
+-- Found tf2_ros: 0.25.20 (/opt/ros/humble/share/tf2_ros/cmake)
+-- Found pcl_conversions: 2.4.5 (/opt/ros/humble/share/pcl_conversions/cmake)
+-- Eigen found (include: /usr/include/eigen3, version: 3.4.0)
+-- FLANN found (include: /usr/include, lib: /usr/lib/x86_64-linux-gnu/libflann_cpp.so)
+-- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+-- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/x86_64-linux-gnu/libOpenNI2.so;libusb::libusb)
+-- Eigen found (include: /usr/include/eigen3, version: 3.4.0)
+-- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+-- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/x86_64-linux-gnu/libOpenNI2.so;libusb::libusb)
+-- Found Qhull version 8.0.2
+-- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/ubuntu/unilidar_sdk2/build/point_lio_unilidar
+Consolidate compiler generated dependencies of target pointlio_mapping
+[ 16%] Building CXX object CMakeFiles/pointlio_mapping.dir/src/laserMapping.cpp.o
+[ 33%] Building CXX object CMakeFiles/pointlio_mapping.dir/src/Estimator.cpp.o
+[ 50%] Building CXX object CMakeFiles/pointlio_mapping.dir/src/preprocess.cpp.o
+[ 66%] Building CXX object CMakeFiles/pointlio_mapping.dir/src/parameters.cpp.o
+[ 83%] Building CXX object CMakeFiles/pointlio_mapping.dir/include/ikd-Tree/ikd_Tree.cpp.o
+[100%] Linking CXX executable pointlio_mapping
+[100%] Built target pointlio_mapping
+-- Install configuration: "Release"
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/lib/point_lio_unilidar/pointlio_mapping
+-- Set runtime path of "/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/lib/point_lio_unilidar/pointlio_mapping" to ""
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/config
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/config/velody16.yaml
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/config/ouster64.yaml
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/config/unilidar_l1.yaml
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/config/unilidar_l2_ros2.yaml
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/config/avia.yaml
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/config/unilidar_l2.yaml
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/config/horizon.yaml
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_horizon.launch
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_unilidar_l1.launch
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch/gdb_debug_example.launch
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_unilidar_l2.launch
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_unilidar_l2.py
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_ouster64.launch
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_avia.launch
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_velody16.launch
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/rviz_cfg
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/rviz_cfg/loam_unilidar_display.rviz
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/rviz_cfg/loam_livox.rviz
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/rviz_cfg/.gitignore
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/rviz_cfg/loam_unilidar_default.rviz
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/ament_index/resource_index/package_run_dependencies/point_lio_unilidar
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/ament_index/resource_index/parent_prefix_path/point_lio_unilidar
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/environment/ament_prefix_path.sh
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/environment/ament_prefix_path.dsv
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/environment/path.sh
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/environment/path.dsv
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/local_setup.bash
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/local_setup.sh
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/local_setup.zsh
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/local_setup.dsv
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/package.dsv
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/ament_index/resource_index/packages/point_lio_unilidar
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/cmake/point_lio_unilidarConfig.cmake
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/cmake/point_lio_unilidarConfig-version.cmake
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/package.xml
