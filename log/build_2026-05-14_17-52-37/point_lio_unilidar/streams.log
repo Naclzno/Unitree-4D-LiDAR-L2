@@ -1,0 +1,119 @@
+[0.030s] Invoking command in '/home/ubuntu/unilidar_sdk2/build/point_lio_unilidar': CMAKE_PREFIX_PATH=/opt/ros/humble _=/usr/bin/env /usr/bin/cmake --build /home/ubuntu/unilidar_sdk2/build/point_lio_unilidar -- -j12 -l12
+[0.160s] Current CPU architecture: x86_64
+[0.171s] Processor number: 12
+[0.171s] core for MP: 4
+[0.171s] -- Found ament_cmake: 1.3.14 (/opt/ros/humble/share/ament_cmake/cmake)
+[0.420s] -- Found rclcpp: 16.0.19 (/opt/ros/humble/share/rclcpp/cmake)
+[0.471s] -- Found rosidl_generator_c: 3.1.8 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+[0.474s] -- Found rosidl_adapter: 3.1.8 (/opt/ros/humble/share/rosidl_adapter/cmake)
+[0.483s] -- Found rosidl_generator_cpp: 3.1.8 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+[0.501s] -- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+[0.518s] -- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+[0.572s] -- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+[0.574s] -- Found rmw_fastrtps_cpp: 6.2.10 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+[0.720s] -- Using RMW implementation 'rmw_fastrtps_cpp' as default
+[0.801s] -- Found sensor_msgs: 4.9.1 (/opt/ros/humble/share/sensor_msgs/cmake)
+[0.843s] -- Found nav_msgs: 4.9.1 (/opt/ros/humble/share/nav_msgs/cmake)
+[0.868s] -- Found visualization_msgs: 4.9.1 (/opt/ros/humble/share/visualization_msgs/cmake)
+[0.897s] -- Found tf2: 0.25.20 (/opt/ros/humble/share/tf2/cmake)
+[0.907s] -- Found tf2_ros: 0.25.20 (/opt/ros/humble/share/tf2_ros/cmake)
+[1.027s] -- Found pcl_conversions: 2.4.5 (/opt/ros/humble/share/pcl_conversions/cmake)
+[1.083s] -- Eigen found (include: /usr/include/eigen3, version: 3.4.0)
+[1.137s] -- FLANN found (include: /usr/include, lib: /usr/lib/x86_64-linux-gnu/libflann_cpp.so)
+[1.711s] -- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+[1.725s] -- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/x86_64-linux-gnu/libOpenNI2.so;libusb::libusb)
+[2.033s] -- Eigen found (include: /usr/include/eigen3, version: 3.4.0)
+[2.043s] -- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+[2.055s] -- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/x86_64-linux-gnu/libOpenNI2.so;libusb::libusb)
+[2.378s] -- Found Qhull version 8.0.2
+[2.692s] -- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+[3.025s] CMake Warning (dev) at CMakeLists.txt:43 (find_package):
+[3.025s]   Policy CMP0074 is not set: find_package uses <PackageName>_ROOT variables.
+[3.025s]   Run "cmake --help-policy CMP0074" for policy details.  Use the cmake_policy
+[3.025s]   command to set the policy and suppress this warning.
+[3.025s] 
+[3.032s]   CMake variable PCL_ROOT is set to:
+[3.032s] 
+[3.032s]     /usr
+[3.032s] 
+[3.032s]   For compatibility, CMake is ignoring the variable.
+[3.032s] This warning is for project developers.  Use -Wno-dev to suppress it.
+[3.032s] 
+[3.174s] -- Configuring done
+[3.306s] -- Generating done
+[3.328s] -- Build files have been written to: /home/ubuntu/unilidar_sdk2/build/point_lio_unilidar
+[3.430s] Consolidate compiler generated dependencies of target pointlio_mapping
+[3.627s] [ 16%] Building CXX object CMakeFiles/pointlio_mapping.dir/src/laserMapping.cpp.o
+[15.316s] In file included from /usr/include/boost/smart_ptr/detail/sp_thread_sleep.hpp:22,
+[15.316s]                  from /usr/include/boost/smart_ptr/detail/yield_k.hpp:23,
+[15.316s]                  from /usr/include/boost/smart_ptr/detail/spinlock_gcc_atomic.hpp:14,
+[15.317s]                  from /usr/include/boost/smart_ptr/detail/spinlock.hpp:42,
+[15.317s]                  from /usr/include/boost/smart_ptr/detail/spinlock_pool.hpp:25,
+[15.317s]                  from /usr/include/boost/smart_ptr/shared_ptr.hpp:29,
+[15.317s]                  from /usr/include/boost/shared_ptr.hpp:17,
+[15.317s]                  from /usr/include/boost/date_time/microsec_time_clock.hpp:18,
+[15.317s]                  from /usr/include/boost/interprocess/detail/posix_time_types_wrk.hpp:31,
+[15.317s]                  from /usr/include/boost/interprocess/detail/os_thread_functions.hpp:36,
+[15.317s]                  from /usr/include/boost/interprocess/sync/file_lock.hpp:26,
+[15.317s]                  from /usr/include/pcl-1.12/pcl/io/pcd_io.h:46,
+[15.317s]                  from /opt/ros/humble/include/pcl_conversions/pcl_conversions/pcl_conversions.h:73,
+[15.317s]                  from /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/laserMapping.cpp:11:
+[15.317s] /usr/include/boost/bind.hpp:36:1: note: ‘#pragma message: The practice of declaring the Bind placeholders (_1, _2, ...) in the global namespace is deprecated. Please use <boost/bind/bind.hpp> + using namespace boost::placeholders, or define BOOST_BIND_GLOBAL_PLACEHOLDERS to retain the current behavior.’
+[15.318s]    36 | BOOST_PRAGMA_MESSAGE(
+[15.318s]       | ^~~~~~~~~~~~~~~~~~~~
+[87.025s] [ 33%] Building CXX object CMakeFiles/pointlio_mapping.dir/src/Estimator.cpp.o
+[90.125s] In file included from /usr/include/boost/bind.hpp:30,
+[90.125s]                  from /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/include/../include/IKFoM/IKFoM_toolkit/esekfom/esekfom.hpp:42,
+[90.125s]                  from /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/Estimator.h:4,
+[90.125s]                  from /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/Estimator.cpp:2:
+[90.125s] /usr/include/boost/bind.hpp:36:1: note: ‘#pragma message: The practice of declaring the Bind placeholders (_1, _2, ...) in the global namespace is deprecated. Please use <boost/bind/bind.hpp> + using namespace boost::placeholders, or define BOOST_BIND_GLOBAL_PLACEHOLDERS to retain the current behavior.’
+[90.125s]    36 | BOOST_PRAGMA_MESSAGE(
+[90.125s]       | ^~~~~~~~~~~~~~~~~~~~
+[115.658s] [ 50%] Building CXX object CMakeFiles/pointlio_mapping.dir/src/preprocess.cpp.o
+[127.456s] [ 66%] Building CXX object CMakeFiles/pointlio_mapping.dir/src/parameters.cpp.o
+[137.645s] [ 83%] Building CXX object CMakeFiles/pointlio_mapping.dir/include/ikd-Tree/ikd_Tree.cpp.o
+[144.622s] [100%] Linking CXX executable pointlio_mapping
+[147.251s] [100%] Built target pointlio_mapping
+[147.267s] Invoked command in '/home/ubuntu/unilidar_sdk2/build/point_lio_unilidar' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble _=/usr/bin/env /usr/bin/cmake --build /home/ubuntu/unilidar_sdk2/build/point_lio_unilidar -- -j12 -l12
+[147.282s] Invoking command in '/home/ubuntu/unilidar_sdk2/build/point_lio_unilidar': CMAKE_PREFIX_PATH=/opt/ros/humble _=/usr/bin/env /usr/bin/cmake --install /home/ubuntu/unilidar_sdk2/build/point_lio_unilidar
+[147.293s] -- Install configuration: "Release"
+[147.293s] -- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/lib/point_lio_unilidar/pointlio_mapping
+[147.294s] -- Set runtime path of "/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/lib/point_lio_unilidar/pointlio_mapping" to ""
+[147.294s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/config
+[147.294s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/config/velody16.yaml
+[147.294s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/config/ouster64.yaml
+[147.294s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/config/unilidar_l1.yaml
+[147.294s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/config/unilidar_l2_ros2.yaml
+[147.294s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/config/avia.yaml
+[147.295s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/config/unilidar_l2.yaml
+[147.295s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/config/horizon.yaml
+[147.296s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch
+[147.296s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_horizon.launch
+[147.296s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_unilidar_l1.launch
+[147.296s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch/gdb_debug_example.launch
+[147.296s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_unilidar_l2.launch
+[147.296s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_unilidar_l2.py
+[147.296s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_ouster64.launch
+[147.296s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_avia.launch
+[147.296s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_velody16.launch
+[147.296s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/rviz_cfg
+[147.296s] -- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/rviz_cfg/loam_unilidar_display.rviz
+[147.297s] -- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/rviz_cfg/loam_livox.rviz
+[147.297s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/rviz_cfg/.gitignore
+[147.297s] -- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/rviz_cfg/loam_unilidar_default.rviz
+[147.297s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/ament_index/resource_index/package_run_dependencies/point_lio_unilidar
+[147.297s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/ament_index/resource_index/parent_prefix_path/point_lio_unilidar
+[147.297s] -- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/environment/ament_prefix_path.sh
+[147.297s] -- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/environment/ament_prefix_path.dsv
+[147.297s] -- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/environment/path.sh
+[147.297s] -- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/environment/path.dsv
+[147.298s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/local_setup.bash
+[147.298s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/local_setup.sh
+[147.298s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/local_setup.zsh
+[147.298s] -- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/local_setup.dsv
+[147.298s] -- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/package.dsv
+[147.298s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/ament_index/resource_index/packages/point_lio_unilidar
+[147.298s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/cmake/point_lio_unilidarConfig.cmake
+[147.298s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/cmake/point_lio_unilidarConfig-version.cmake
+[147.298s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/package.xml
+[150.059s] Invoked command in '/home/ubuntu/unilidar_sdk2/build/point_lio_unilidar' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble _=/usr/bin/env /usr/bin/cmake --install /home/ubuntu/unilidar_sdk2/build/point_lio_unilidar

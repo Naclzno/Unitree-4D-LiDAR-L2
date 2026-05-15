@@ -1,0 +1,48 @@
+Consolidate compiler generated dependencies of target pointlio_mapping
+[ 16%] Building CXX object CMakeFiles/pointlio_mapping.dir/src/laserMapping.cpp.o
+[ 33%] Building CXX object CMakeFiles/pointlio_mapping.dir/src/Estimator.cpp.o
+[ 50%] Building CXX object CMakeFiles/pointlio_mapping.dir/src/preprocess.cpp.o
+[ 66%] Building CXX object CMakeFiles/pointlio_mapping.dir/src/parameters.cpp.o
+[ 83%] Building CXX object CMakeFiles/pointlio_mapping.dir/include/ikd-Tree/ikd_Tree.cpp.o
+[100%] Linking CXX executable pointlio_mapping
+[100%] Built target pointlio_mapping
+-- Install configuration: "Release"
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/lib/point_lio_unilidar/pointlio_mapping
+-- Set runtime path of "/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/lib/point_lio_unilidar/pointlio_mapping" to ""
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/config
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/config/velody16.yaml
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/config/ouster64.yaml
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/config/unilidar_l1.yaml
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/config/unilidar_l2_ros2.yaml
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/config/avia.yaml
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/config/unilidar_l2.yaml
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/config/horizon.yaml
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_horizon.launch
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_unilidar_l1.launch
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch/gdb_debug_example.launch
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_unilidar_l2.launch
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_unilidar_l2.py
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_ouster64.launch
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_avia.launch
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_velody16.launch
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/rviz_cfg
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/rviz_cfg/loam_unilidar_display.rviz
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/rviz_cfg/loam_livox.rviz
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/rviz_cfg/.gitignore
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/rviz_cfg/loam_unilidar_default.rviz
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/ament_index/resource_index/package_run_dependencies/point_lio_unilidar
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/ament_index/resource_index/parent_prefix_path/point_lio_unilidar
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/environment/ament_prefix_path.sh
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/environment/ament_prefix_path.dsv
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/environment/path.sh
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/environment/path.dsv
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/local_setup.bash
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/local_setup.sh
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/local_setup.zsh
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/local_setup.dsv
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/package.dsv
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/ament_index/resource_index/packages/point_lio_unilidar
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/cmake/point_lio_unilidarConfig.cmake
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/cmake/point_lio_unilidarConfig-version.cmake
+-- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/package.xml

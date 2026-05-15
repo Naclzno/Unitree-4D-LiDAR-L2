@@ -1,0 +1,242 @@
+[0.500s] DEBUG:colcon:Command line arguments: ['/usr/bin/colcon', 'build', '--packages-select', 'point_lio_unilidar']
+[0.500s] DEBUG:colcon:Parsed command line arguments: Namespace(log_base=None, log_level=None, verb_name='build', build_base='build', install_base='install', merge_install=False, symlink_install=False, test_result_base=None, continue_on_error=False, executor='parallel', parallel_workers=12, event_handlers=None, ignore_user_meta=False, metas=['./colcon.meta'], base_paths=['.'], packages_ignore=None, packages_ignore_regex=None, paths=None, packages_up_to=None, packages_up_to_regex=None, packages_above=None, packages_above_and_dependencies=None, packages_above_depth=None, packages_select_by_dep=None, packages_skip_by_dep=None, packages_skip_up_to=None, packages_select_build_failed=False, packages_skip_build_finished=False, packages_select_test_failures=False, packages_skip_test_passed=False, packages_select=['point_lio_unilidar'], packages_skip=None, packages_select_regex=None, packages_skip_regex=None, packages_start=None, packages_end=None, allow_overriding=[], cmake_args=None, cmake_target=None, cmake_target_skip_unavailable=False, cmake_clean_cache=False, cmake_clean_first=False, cmake_force_configure=False, ament_cmake_args=None, catkin_cmake_args=None, catkin_skip_building_tests=False, verb_parser=<colcon_defaults.argument_parser.defaults.DefaultArgumentsDecorator object at 0x7c97aaa27460>, verb_extension=<colcon_core.verb.build.BuildVerb object at 0x7c97aaa26f50>, main=<bound method BuildVerb.main of <colcon_core.verb.build.BuildVerb object at 0x7c97aaa26f50>>)
+[0.951s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) check parameters
+[0.951s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) check parameters
+[0.951s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) check parameters
+[0.951s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) check parameters
+[0.951s] Level 1:colcon.colcon_core.package_discovery:discover_packages(colcon_meta) discover
+[0.951s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) discover
+[0.951s] INFO:colcon.colcon_core.package_discovery:Crawling recursively for packages in '/home/ubuntu/unilidar_sdk2'
+[0.951s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ignore', 'ignore_ament_install']
+[0.952s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore'
+[0.952s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ignore_ament_install'
+[0.952s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_pkg']
+[0.952s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_pkg'
+[0.952s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['colcon_meta']
+[0.952s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'colcon_meta'
+[0.952s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['ros']
+[0.952s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'ros'
+[0.979s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['cmake', 'python']
+[0.979s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'cmake'
+[0.979s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python'
+[0.979s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extensions ['python_setup_py']
+[0.979s] Level 1:colcon.colcon_core.package_identification:_identify(.) by extension 'python_setup_py'
+[0.980s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extensions ['ignore', 'ignore_ament_install']
+[0.980s] Level 1:colcon.colcon_core.package_identification:_identify(build) by extension 'ignore'
+[0.980s] Level 1:colcon.colcon_core.package_identification:_identify(build) ignored
+[0.980s] Level 1:colcon.colcon_core.package_identification:_identify(docs) by extensions ['ignore', 'ignore_ament_install']
+[0.980s] Level 1:colcon.colcon_core.package_identification:_identify(docs) by extension 'ignore'
+[0.980s] Level 1:colcon.colcon_core.package_identification:_identify(docs) by extension 'ignore_ament_install'
+[0.980s] Level 1:colcon.colcon_core.package_identification:_identify(docs) by extensions ['colcon_pkg']
+[0.980s] Level 1:colcon.colcon_core.package_identification:_identify(docs) by extension 'colcon_pkg'
+[0.980s] Level 1:colcon.colcon_core.package_identification:_identify(docs) by extensions ['colcon_meta']
+[0.980s] Level 1:colcon.colcon_core.package_identification:_identify(docs) by extension 'colcon_meta'
+[0.981s] Level 1:colcon.colcon_core.package_identification:_identify(docs) by extensions ['ros']
+[0.981s] Level 1:colcon.colcon_core.package_identification:_identify(docs) by extension 'ros'
+[0.981s] Level 1:colcon.colcon_core.package_identification:_identify(docs) by extensions ['cmake', 'python']
+[0.981s] Level 1:colcon.colcon_core.package_identification:_identify(docs) by extension 'cmake'
+[0.981s] Level 1:colcon.colcon_core.package_identification:_identify(docs) by extension 'python'
+[0.981s] Level 1:colcon.colcon_core.package_identification:_identify(docs) by extensions ['python_setup_py']
+[0.981s] Level 1:colcon.colcon_core.package_identification:_identify(docs) by extension 'python_setup_py'
+[0.981s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extensions ['ignore', 'ignore_ament_install']
+[0.981s] Level 1:colcon.colcon_core.package_identification:_identify(install) by extension 'ignore'
+[0.981s] Level 1:colcon.colcon_core.package_identification:_identify(install) ignored
+[0.981s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extensions ['ignore', 'ignore_ament_install']
+[0.982s] Level 1:colcon.colcon_core.package_identification:_identify(log) by extension 'ignore'
+[0.982s] Level 1:colcon.colcon_core.package_identification:_identify(log) ignored
+[0.982s] Level 1:colcon.colcon_core.package_identification:_identify(point_lio_unilidar-2.0.2) by extensions ['ignore', 'ignore_ament_install']
+[0.982s] Level 1:colcon.colcon_core.package_identification:_identify(point_lio_unilidar-2.0.2) by extension 'ignore'
+[0.982s] Level 1:colcon.colcon_core.package_identification:_identify(point_lio_unilidar-2.0.2) by extension 'ignore_ament_install'
+[0.982s] Level 1:colcon.colcon_core.package_identification:_identify(point_lio_unilidar-2.0.2) by extensions ['colcon_pkg']
+[0.982s] Level 1:colcon.colcon_core.package_identification:_identify(point_lio_unilidar-2.0.2) by extension 'colcon_pkg'
+[0.982s] Level 1:colcon.colcon_core.package_identification:_identify(point_lio_unilidar-2.0.2) by extensions ['colcon_meta']
+[0.982s] Level 1:colcon.colcon_core.package_identification:_identify(point_lio_unilidar-2.0.2) by extension 'colcon_meta'
+[0.982s] Level 1:colcon.colcon_core.package_identification:_identify(point_lio_unilidar-2.0.2) by extensions ['ros']
+[0.982s] Level 1:colcon.colcon_core.package_identification:_identify(point_lio_unilidar-2.0.2) by extension 'ros'
+[0.991s] DEBUG:colcon.colcon_core.package_identification:Package 'point_lio_unilidar-2.0.2' with type 'ros.ament_cmake' and name 'point_lio_unilidar'
+[0.991s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros) by extensions ['ignore', 'ignore_ament_install']
+[0.991s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros) by extension 'ignore'
+[0.991s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros) by extension 'ignore_ament_install'
+[0.992s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros) by extensions ['colcon_pkg']
+[0.992s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros) by extension 'colcon_pkg'
+[0.992s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros) by extensions ['colcon_meta']
+[0.992s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros) by extension 'colcon_meta'
+[0.992s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros) by extensions ['ros']
+[0.992s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros) by extension 'ros'
+[0.992s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros) by extensions ['cmake', 'python']
+[0.992s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros) by extension 'cmake'
+[0.992s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros) by extension 'python'
+[0.992s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros) by extensions ['python_setup_py']
+[0.992s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros) by extension 'python_setup_py'
+[0.992s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros/src) by extensions ['ignore', 'ignore_ament_install']
+[0.992s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros/src) by extension 'ignore'
+[0.993s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros/src) by extension 'ignore_ament_install'
+[0.993s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros/src) by extensions ['colcon_pkg']
+[0.993s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros/src) by extension 'colcon_pkg'
+[0.993s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros/src) by extensions ['colcon_meta']
+[0.993s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros/src) by extension 'colcon_meta'
+[0.993s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros/src) by extensions ['ros']
+[0.993s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros/src) by extension 'ros'
+[0.993s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros/src) by extensions ['cmake', 'python']
+[0.993s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros/src) by extension 'cmake'
+[0.993s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros/src) by extension 'python'
+[0.993s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros/src) by extensions ['python_setup_py']
+[0.993s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros/src) by extension 'python_setup_py'
+[0.993s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros/src/unitree_lidar_ros) by extensions ['ignore', 'ignore_ament_install']
+[0.994s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros/src/unitree_lidar_ros) by extension 'ignore'
+[0.994s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros/src/unitree_lidar_ros) by extension 'ignore_ament_install'
+[0.994s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros/src/unitree_lidar_ros) by extensions ['colcon_pkg']
+[0.994s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros/src/unitree_lidar_ros) by extension 'colcon_pkg'
+[0.994s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros/src/unitree_lidar_ros) by extensions ['colcon_meta']
+[0.994s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros/src/unitree_lidar_ros) by extension 'colcon_meta'
+[0.994s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros/src/unitree_lidar_ros) by extensions ['ros']
+[0.994s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros/src/unitree_lidar_ros) by extension 'ros'
+[0.996s] DEBUG:colcon.colcon_core.package_identification:Package 'unitree_lidar_ros/src/unitree_lidar_ros' with type 'ros.catkin' and name 'unitree_lidar_ros'
+[0.997s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2) by extensions ['ignore', 'ignore_ament_install']
+[0.997s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2) by extension 'ignore'
+[0.997s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2) by extension 'ignore_ament_install'
+[0.997s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2) by extensions ['colcon_pkg']
+[0.997s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2) by extension 'colcon_pkg'
+[0.997s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2) by extensions ['colcon_meta']
+[0.997s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2) by extension 'colcon_meta'
+[0.997s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2) by extensions ['ros']
+[0.997s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2) by extension 'ros'
+[0.997s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2) by extensions ['cmake', 'python']
+[0.997s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2) by extension 'cmake'
+[0.997s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2) by extension 'python'
+[0.997s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2) by extensions ['python_setup_py']
+[0.998s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2) by extension 'python_setup_py'
+[0.998s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2/build) by extensions ['ignore', 'ignore_ament_install']
+[0.998s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2/build) by extension 'ignore'
+[0.998s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2/build) ignored
+[0.998s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2/install) by extensions ['ignore', 'ignore_ament_install']
+[0.998s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2/install) by extension 'ignore'
+[0.998s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2/install) ignored
+[0.998s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2/log) by extensions ['ignore', 'ignore_ament_install']
+[0.998s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2/log) by extension 'ignore'
+[0.998s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2/log) ignored
+[0.999s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2/src) by extensions ['ignore', 'ignore_ament_install']
+[0.999s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2/src) by extension 'ignore'
+[0.999s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2/src) by extension 'ignore_ament_install'
+[0.999s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2/src) by extensions ['colcon_pkg']
+[0.999s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2/src) by extension 'colcon_pkg'
+[0.999s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2/src) by extensions ['colcon_meta']
+[0.999s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2/src) by extension 'colcon_meta'
+[0.999s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2/src) by extensions ['ros']
+[0.999s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2/src) by extension 'ros'
+[0.999s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2/src) by extensions ['cmake', 'python']
+[0.999s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2/src) by extension 'cmake'
+[0.999s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2/src) by extension 'python'
+[0.999s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2/src) by extensions ['python_setup_py']
+[0.999s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2/src) by extension 'python_setup_py'
+[1.000s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2/src/unitree_lidar_ros2) by extensions ['ignore', 'ignore_ament_install']
+[1.000s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2/src/unitree_lidar_ros2) by extension 'ignore'
+[1.000s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2/src/unitree_lidar_ros2) by extension 'ignore_ament_install'
+[1.000s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2/src/unitree_lidar_ros2) by extensions ['colcon_pkg']
+[1.000s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2/src/unitree_lidar_ros2) by extension 'colcon_pkg'
+[1.000s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2/src/unitree_lidar_ros2) by extensions ['colcon_meta']
+[1.000s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2/src/unitree_lidar_ros2) by extension 'colcon_meta'
+[1.000s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2/src/unitree_lidar_ros2) by extensions ['ros']
+[1.000s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_ros2/src/unitree_lidar_ros2) by extension 'ros'
+[1.002s] DEBUG:colcon.colcon_core.package_identification:Package 'unitree_lidar_ros2/src/unitree_lidar_ros2' with type 'ros.ament_cmake' and name 'unitree_lidar_ros2'
+[1.002s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_sdk) by extensions ['ignore', 'ignore_ament_install']
+[1.003s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_sdk) by extension 'ignore'
+[1.003s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_sdk) by extension 'ignore_ament_install'
+[1.003s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_sdk) by extensions ['colcon_pkg']
+[1.003s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_sdk) by extension 'colcon_pkg'
+[1.003s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_sdk) by extensions ['colcon_meta']
+[1.003s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_sdk) by extension 'colcon_meta'
+[1.003s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_sdk) by extensions ['ros']
+[1.003s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_sdk) by extension 'ros'
+[1.003s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_sdk) by extensions ['cmake', 'python']
+[1.003s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_sdk) by extension 'cmake'
+[1.012s] Level 1:colcon.colcon_core.package_identification:_identify(unitree_lidar_sdk) by extension 'python'
+[1.013s] DEBUG:colcon.colcon_core.package_identification:Package 'unitree_lidar_sdk' with type 'cmake' and name 'unitree_lidar_sdk'
+[1.013s] Level 1:colcon.colcon_core.package_discovery:discover_packages(recursive) using defaults
+[1.013s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) discover
+[1.013s] Level 1:colcon.colcon_core.package_discovery:discover_packages(ignore) using defaults
+[1.013s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) discover
+[1.013s] Level 1:colcon.colcon_core.package_discovery:discover_packages(path) using defaults
+[1.070s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'unitree_lidar_ros' in 'unitree_lidar_ros/src/unitree_lidar_ros'
+[1.070s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'unitree_lidar_ros2' in 'unitree_lidar_ros2/src/unitree_lidar_ros2'
+[1.070s] INFO:colcon.colcon_core.package_selection:Skipping not selected package 'unitree_lidar_sdk' in 'unitree_lidar_sdk'
+[1.071s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) check parameters
+[1.071s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) discover
+[1.077s] DEBUG:colcon.colcon_installed_package_information.package_discovery:Found 273 installed packages in /opt/ros/humble
+[1.081s] Level 1:colcon.colcon_core.package_discovery:discover_packages(prefix_path) using defaults
+[1.160s] Level 5:colcon.colcon_core.verb:set package 'point_lio_unilidar' build argument 'cmake_args' from command line to 'None'
+[1.161s] Level 5:colcon.colcon_core.verb:set package 'point_lio_unilidar' build argument 'cmake_target' from command line to 'None'
+[1.161s] Level 5:colcon.colcon_core.verb:set package 'point_lio_unilidar' build argument 'cmake_target_skip_unavailable' from command line to 'False'
+[1.161s] Level 5:colcon.colcon_core.verb:set package 'point_lio_unilidar' build argument 'cmake_clean_cache' from command line to 'False'
+[1.161s] Level 5:colcon.colcon_core.verb:set package 'point_lio_unilidar' build argument 'cmake_clean_first' from command line to 'False'
+[1.161s] Level 5:colcon.colcon_core.verb:set package 'point_lio_unilidar' build argument 'cmake_force_configure' from command line to 'False'
+[1.161s] Level 5:colcon.colcon_core.verb:set package 'point_lio_unilidar' build argument 'ament_cmake_args' from command line to 'None'
+[1.161s] Level 5:colcon.colcon_core.verb:set package 'point_lio_unilidar' build argument 'catkin_cmake_args' from command line to 'None'
+[1.161s] Level 5:colcon.colcon_core.verb:set package 'point_lio_unilidar' build argument 'catkin_skip_building_tests' from command line to 'False'
+[1.161s] DEBUG:colcon.colcon_core.verb:Building package 'point_lio_unilidar' with the following arguments: {'ament_cmake_args': None, 'build_base': '/home/ubuntu/unilidar_sdk2/build/point_lio_unilidar', 'catkin_cmake_args': None, 'catkin_skip_building_tests': False, 'cmake_args': None, 'cmake_clean_cache': False, 'cmake_clean_first': False, 'cmake_force_configure': False, 'cmake_target': None, 'cmake_target_skip_unavailable': False, 'install_base': '/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar', 'merge_install': False, 'path': '/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2', 'symlink_install': False, 'test_result_base': None}
+[1.161s] INFO:colcon.colcon_core.executor:Executing jobs using 'parallel' executor
+[1.163s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete
+[1.163s] INFO:colcon.colcon_ros.task.ament_cmake.build:Building ROS package in '/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2' with build type 'ament_cmake'
+[1.163s] INFO:colcon.colcon_cmake.task.cmake.build:Building CMake package in '/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2'
+[1.177s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_core.shell.bat': Not used on non-Windows systems
+[1.177s] INFO:colcon.colcon_core.shell:Skip shell extension 'powershell' for command environment: Not usable outside of PowerShell
+[1.177s] DEBUG:colcon.colcon_core.shell:Skip shell extension 'dsv' for command environment
+[1.195s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ubuntu/unilidar_sdk2/build/point_lio_unilidar': CMAKE_PREFIX_PATH=/opt/ros/humble _=/usr/bin/env /usr/bin/cmake --build /home/ubuntu/unilidar_sdk2/build/point_lio_unilidar -- -j12 -l12
+[148.431s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ubuntu/unilidar_sdk2/build/point_lio_unilidar' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble _=/usr/bin/env /usr/bin/cmake --build /home/ubuntu/unilidar_sdk2/build/point_lio_unilidar -- -j12 -l12
+[148.447s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoking command in '/home/ubuntu/unilidar_sdk2/build/point_lio_unilidar': CMAKE_PREFIX_PATH=/opt/ros/humble _=/usr/bin/env /usr/bin/cmake --install /home/ubuntu/unilidar_sdk2/build/point_lio_unilidar
+[151.221s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(point_lio_unilidar)
+[151.223s] DEBUG:colcon.colcon_core.event_handler.log_command:Invoked command in '/home/ubuntu/unilidar_sdk2/build/point_lio_unilidar' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble _=/usr/bin/env /usr/bin/cmake --install /home/ubuntu/unilidar_sdk2/build/point_lio_unilidar
+[151.236s] Level 1:colcon.colcon_core.environment:checking '/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar' for CMake module files
+[151.237s] Level 1:colcon.colcon_core.environment:checking '/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar' for CMake config files
+[151.237s] Level 1:colcon.colcon_core.shell:create_environment_hook('point_lio_unilidar', 'cmake_prefix_path')
+[151.237s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/hook/cmake_prefix_path.ps1'
+[151.240s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/hook/cmake_prefix_path.dsv'
+[151.242s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/hook/cmake_prefix_path.sh'
+[151.244s] Level 1:colcon.colcon_core.environment:checking '/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/lib'
+[151.244s] Level 1:colcon.colcon_core.environment:checking '/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/bin'
+[151.244s] Level 1:colcon.colcon_core.environment:checking '/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/lib/pkgconfig/point_lio_unilidar.pc'
+[151.244s] Level 1:colcon.colcon_core.environment:checking '/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/lib/python3.10/site-packages'
+[151.245s] Level 1:colcon.colcon_core.environment:checking '/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/bin'
+[151.245s] INFO:colcon.colcon_core.shell:Creating package script '/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/package.ps1'
+[151.249s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/package.dsv'
+[151.252s] INFO:colcon.colcon_core.shell:Creating package script '/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/package.sh'
+[151.253s] INFO:colcon.colcon_core.shell:Creating package script '/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/package.bash'
+[151.255s] INFO:colcon.colcon_core.shell:Creating package script '/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/package.zsh'
+[151.257s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/colcon-core/packages/point_lio_unilidar)
+[151.258s] Level 1:colcon.colcon_core.environment:create_environment_scripts_only(point_lio_unilidar)
+[151.259s] Level 1:colcon.colcon_core.environment:checking '/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar' for CMake module files
+[151.259s] Level 1:colcon.colcon_core.environment:checking '/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar' for CMake config files
+[151.260s] Level 1:colcon.colcon_core.shell:create_environment_hook('point_lio_unilidar', 'cmake_prefix_path')
+[151.260s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/hook/cmake_prefix_path.ps1'
+[151.261s] INFO:colcon.colcon_core.shell:Creating environment descriptor '/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/hook/cmake_prefix_path.dsv'
+[151.261s] INFO:colcon.colcon_core.shell:Creating environment hook '/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/hook/cmake_prefix_path.sh'
+[151.262s] Level 1:colcon.colcon_core.environment:checking '/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/lib'
+[151.262s] Level 1:colcon.colcon_core.environment:checking '/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/bin'
+[151.263s] Level 1:colcon.colcon_core.environment:checking '/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/lib/pkgconfig/point_lio_unilidar.pc'
+[151.263s] Level 1:colcon.colcon_core.environment:checking '/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/lib/python3.10/site-packages'
+[151.263s] Level 1:colcon.colcon_core.environment:checking '/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/bin'
+[151.264s] INFO:colcon.colcon_core.shell:Creating package script '/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/package.ps1'
+[151.265s] INFO:colcon.colcon_core.shell:Creating package descriptor '/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/package.dsv'
+[151.266s] INFO:colcon.colcon_core.shell:Creating package script '/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/package.sh'
+[151.267s] INFO:colcon.colcon_core.shell:Creating package script '/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/package.bash'
+[151.267s] INFO:colcon.colcon_core.shell:Creating package script '/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/package.zsh'
+[151.268s] Level 1:colcon.colcon_core.environment:create_file_with_runtime_dependencies(/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/colcon-core/packages/point_lio_unilidar)
+[151.268s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:closing loop
+[151.271s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:loop closed
+[151.271s] DEBUG:colcon.colcon_parallel_executor.executor.parallel:run_until_complete finished with '0'
+[151.271s] DEBUG:colcon.colcon_core.event_reactor:joining thread
+[151.281s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.terminal_notifier': Not used on non-Darwin systems
+[151.282s] INFO:colcon.colcon_core.plugin_system:Skipping extension 'colcon_notification.desktop_notification.win32': Not used on non-Windows systems
+[151.282s] INFO:colcon.colcon_notification.desktop_notification:Sending desktop notification using 'notify2'
+[151.282s] DEBUG:colcon.colcon_notification.desktop_notification.notify2:Failed to initialize notify2: org.freedesktop.DBus.Error.AccessDenied: Failed to connect to socket /run/user/1000/bus: Operation not permitted
+[151.282s] DEBUG:colcon.colcon_core.event_reactor:joined thread
+[151.282s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/ubuntu/unilidar_sdk2/install/local_setup.ps1'
+[151.284s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/ubuntu/unilidar_sdk2/install/_local_setup_util_ps1.py'
+[151.287s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/ubuntu/unilidar_sdk2/install/setup.ps1'
+[151.289s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/ubuntu/unilidar_sdk2/install/local_setup.sh'
+[151.290s] INFO:colcon.colcon_core.shell:Creating prefix util module '/home/ubuntu/unilidar_sdk2/install/_local_setup_util_sh.py'
+[151.291s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/ubuntu/unilidar_sdk2/install/setup.sh'
+[151.293s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/ubuntu/unilidar_sdk2/install/local_setup.bash'
+[151.295s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/ubuntu/unilidar_sdk2/install/setup.bash'
+[151.296s] INFO:colcon.colcon_core.shell:Creating prefix script '/home/ubuntu/unilidar_sdk2/install/local_setup.zsh'
+[151.298s] INFO:colcon.colcon_core.shell:Creating prefix chain script '/home/ubuntu/unilidar_sdk2/install/setup.zsh'
