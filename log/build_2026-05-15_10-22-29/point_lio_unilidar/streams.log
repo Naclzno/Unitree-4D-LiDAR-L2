@@ -1,0 +1,65 @@
+[0.028s] Invoking command in '/home/ubuntu/unilidar_sdk2/build/point_lio_unilidar': CMAKE_PREFIX_PATH=/opt/ros/humble _=/usr/bin/env /usr/bin/cmake --build /home/ubuntu/unilidar_sdk2/build/point_lio_unilidar -- -j12 -l12
+[0.250s] Consolidate compiler generated dependencies of target pointlio_mapping
+[0.394s] [ 16%] Building CXX object CMakeFiles/pointlio_mapping.dir/src/laserMapping.cpp.o
+[12.461s] In file included from /usr/include/boost/smart_ptr/detail/sp_thread_sleep.hpp:22,
+[12.462s]                  from /usr/include/boost/smart_ptr/detail/yield_k.hpp:23,
+[12.462s]                  from /usr/include/boost/smart_ptr/detail/spinlock_gcc_atomic.hpp:14,
+[12.462s]                  from /usr/include/boost/smart_ptr/detail/spinlock.hpp:42,
+[12.462s]                  from /usr/include/boost/smart_ptr/detail/spinlock_pool.hpp:25,
+[12.462s]                  from /usr/include/boost/smart_ptr/shared_ptr.hpp:29,
+[12.462s]                  from /usr/include/boost/shared_ptr.hpp:17,
+[12.462s]                  from /usr/include/boost/date_time/microsec_time_clock.hpp:18,
+[12.462s]                  from /usr/include/boost/interprocess/detail/posix_time_types_wrk.hpp:31,
+[12.462s]                  from /usr/include/boost/interprocess/detail/os_thread_functions.hpp:36,
+[12.462s]                  from /usr/include/boost/interprocess/sync/file_lock.hpp:26,
+[12.462s]                  from /usr/include/pcl-1.12/pcl/io/pcd_io.h:46,
+[12.462s]                  from /opt/ros/humble/include/pcl_conversions/pcl_conversions/pcl_conversions.h:73,
+[12.462s]                  from /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/src/laserMapping.cpp:11:
+[12.462s] /usr/include/boost/bind.hpp:36:1: note: ‘#pragma message: The practice of declaring the Bind placeholders (_1, _2, ...) in the global namespace is deprecated. Please use <boost/bind/bind.hpp> + using namespace boost::placeholders, or define BOOST_BIND_GLOBAL_PLACEHOLDERS to retain the current behavior.’
+[12.463s]    36 | BOOST_PRAGMA_MESSAGE(
+[12.463s]       | ^~~~~~~~~~~~~~~~~~~~
+[85.344s] [ 33%] Linking CXX executable pointlio_mapping
+[87.672s] [100%] Built target pointlio_mapping
+[87.692s] Invoked command in '/home/ubuntu/unilidar_sdk2/build/point_lio_unilidar' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble _=/usr/bin/env /usr/bin/cmake --build /home/ubuntu/unilidar_sdk2/build/point_lio_unilidar -- -j12 -l12
+[87.707s] Invoking command in '/home/ubuntu/unilidar_sdk2/build/point_lio_unilidar': CMAKE_PREFIX_PATH=/opt/ros/humble _=/usr/bin/env /usr/bin/cmake --install /home/ubuntu/unilidar_sdk2/build/point_lio_unilidar
+[87.720s] -- Install configuration: "Release"
+[87.723s] -- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/lib/point_lio_unilidar/pointlio_mapping
+[87.726s] -- Set runtime path of "/home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/lib/point_lio_unilidar/pointlio_mapping" to ""
+[87.727s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/config
+[87.727s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/config/velody16.yaml
+[87.727s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/config/ouster64.yaml
+[87.727s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/config/unilidar_l1.yaml
+[87.728s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/config/unilidar_l2_ros2.yaml
+[87.728s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/config/avia.yaml
+[87.728s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/config/unilidar_l2.yaml
+[87.729s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/config/horizon.yaml
+[87.729s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch
+[87.729s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_horizon.launch
+[87.729s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_unilidar_l1.launch
+[87.729s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch/gdb_debug_example.launch
+[87.730s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_unilidar_l2.launch
+[87.730s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_unilidar_l2.py
+[87.730s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_ouster64.launch
+[87.730s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_avia.launch
+[87.730s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_velody16.launch
+[87.730s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/rviz_cfg
+[87.730s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/rviz_cfg/loam_unilidar_display.rviz
+[87.730s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/rviz_cfg/loam_livox.rviz
+[87.730s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/rviz_cfg/.gitignore
+[87.730s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/rviz_cfg/loam_unilidar_default.rviz
+[87.730s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/ament_index/resource_index/package_run_dependencies/point_lio_unilidar
+[87.730s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/ament_index/resource_index/parent_prefix_path/point_lio_unilidar
+[87.730s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/environment/ament_prefix_path.sh
+[87.730s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/environment/ament_prefix_path.dsv
+[87.730s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/environment/path.sh
+[87.732s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/environment/path.dsv
+[87.732s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/local_setup.bash
+[87.732s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/local_setup.sh
+[87.732s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/local_setup.zsh
+[87.732s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/local_setup.dsv
+[87.732s] -- Installing: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/package.dsv
+[87.732s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/ament_index/resource_index/packages/point_lio_unilidar
+[87.735s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/cmake/point_lio_unilidarConfig.cmake
+[87.736s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/cmake/point_lio_unilidarConfig-version.cmake
+[87.736s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/install/point_lio_unilidar/share/point_lio_unilidar/package.xml
+[87.736s] Invoked command in '/home/ubuntu/unilidar_sdk2/build/point_lio_unilidar' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble _=/usr/bin/env /usr/bin/cmake --install /home/ubuntu/unilidar_sdk2/build/point_lio_unilidar

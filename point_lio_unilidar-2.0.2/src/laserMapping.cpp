@@ -663,7 +663,18 @@ void publish_init_kdtree(const rclcpp::Publisher<sensor_msgs::msg::PointCloud2>:
 
 
 PointCloudXYZI::Ptr pcl_wait_pub(new PointCloudXYZI(500000, 1));
-PointCloudXYZI::Ptr pcl_wait_save(new PointCloudXYZI());
+pcl::PointCloud<pcl::PointXYZI>::Ptr pcl_wait_save(new pcl::PointCloud<pcl::PointXYZI>());
+
+inline pcl::PointXYZI toSavePointXYZI(const PointType &point)
+{
+    pcl::PointXYZI point_save;
+    point_save.x = point.x;
+    point_save.y = point.y;
+    point_save.z = point.z;
+    point_save.intensity = point.intensity;
+    return point_save;
+}
+
 void publish_frame_world(const rclcpp::Publisher<sensor_msgs::msg::PointCloud2>::SharedPtr &pubLaserCloudFullRes)
 {
     if (scan_pub_en)
@@ -696,15 +707,16 @@ void publish_frame_world(const rclcpp::Publisher<sensor_msgs::msg::PointCloud2>:
     if (pcd_save_en)
     {
         int size = feats_down_world->points.size();
-        PointCloudXYZI::Ptr laserCloudWorld(new PointCloudXYZI(size, 1));
+        pcl::PointCloud<pcl::PointXYZI>::Ptr laserCloudWorld(new pcl::PointCloud<pcl::PointXYZI>());
+        laserCloudWorld->reserve(size);
 
         for (int i = 0; i < size; i++)
         {
-            laserCloudWorld->points[i].x = feats_down_world->points[i].x;
-            laserCloudWorld->points[i].y = feats_down_world->points[i].y;
-            laserCloudWorld->points[i].z = feats_down_world->points[i].z;
-            laserCloudWorld->points[i].intensity = feats_down_world->points[i].intensity;
+            laserCloudWorld->push_back(toSavePointXYZI(feats_down_world->points[i]));
         }
+        laserCloudWorld->width = laserCloudWorld->size();
+        laserCloudWorld->height = 1;
+        laserCloudWorld->is_dense = true;
 
         *pcl_wait_save += *laserCloudWorld;
 
