@@ -1,0 +1,44 @@
+[30.036s] Invoking command in '/home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/build/patchworkpp': CMAKE_PREFIX_PATH=/opt/ros/humble _=/usr/bin/env /usr/bin/cmake --build /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/build/patchworkpp -- -j12 -l12
+[30.124s] Consolidate compiler generated dependencies of target demo
+[30.157s] [ 16%] Building CXX object CMakeFiles/demo.dir/src/demo.cpp.o
+[78.777s] [ 33%] Linking CXX executable demo
+[79.637s] [ 33%] Built target demo
+[79.672s] Consolidate compiler generated dependencies of target video
+[79.703s] [ 66%] Built target video
+[79.734s] Consolidate compiler generated dependencies of target offline_kitti
+[79.765s] [100%] Built target offline_kitti
+[90.073s] Invoked command in '/home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/build/patchworkpp' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble _=/usr/bin/env /usr/bin/cmake --build /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/build/patchworkpp -- -j12 -l12
+[90.089s] Invoking command in '/home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/build/patchworkpp': CMAKE_PREFIX_PATH=/opt/ros/humble _=/usr/bin/env /usr/bin/cmake --install /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/build/patchworkpp
+[90.101s] -- Install configuration: "Release"
+[90.101s] -- Installing: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/lib/patchworkpp/demo
+[90.105s] -- Set runtime path of "/home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/lib/patchworkpp/demo" to ""
+[90.105s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/lib/patchworkpp/offline_kitti
+[90.105s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/lib/patchworkpp/video
+[90.105s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/include/patchworkpp
+[90.107s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/include/patchworkpp/utils.hpp
+[90.107s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/include/patchworkpp/patchworkpp.hpp
+[90.109s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/launch
+[90.109s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/launch/demo.py
+[90.109s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/launch/video.py
+[90.109s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/launch/offline_kitti.py
+[90.109s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/config
+[90.109s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/config/params.yaml
+[90.109s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/rviz
+[90.109s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/rviz/demo.rviz
+[90.110s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/rviz/patchworkpp_viz.rviz
+[90.110s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/ament_index/resource_index/package_run_dependencies/patchworkpp
+[90.110s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/ament_index/resource_index/parent_prefix_path/patchworkpp
+[90.110s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/environment/ament_prefix_path.sh
+[90.110s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/environment/ament_prefix_path.dsv
+[90.110s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/environment/path.sh
+[90.110s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/environment/path.dsv
+[90.110s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/local_setup.bash
+[90.110s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/local_setup.sh
+[90.110s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/local_setup.zsh
+[90.111s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/local_setup.dsv
+[90.111s] -- Installing: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/package.dsv
+[90.111s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/ament_index/resource_index/packages/patchworkpp
+[90.111s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/cmake/patchworkppConfig.cmake
+[90.111s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/cmake/patchworkppConfig-version.cmake
+[90.111s] -- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/package.xml
+[90.114s] Invoked command in '/home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/build/patchworkpp' returned '0': CMAKE_PREFIX_PATH=/opt/ros/humble _=/usr/bin/env /usr/bin/cmake --install /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/build/patchworkpp
