@@ -1,0 +1,83 @@
+-- Found ament_cmake: 1.3.14 (/opt/ros/humble/share/ament_cmake/cmake)
+-- Found rclcpp: 16.0.19 (/opt/ros/humble/share/rclcpp/cmake)
+-- Found rosidl_generator_c: 3.1.8 (/opt/ros/humble/share/rosidl_generator_c/cmake)
+-- Found rosidl_adapter: 3.1.8 (/opt/ros/humble/share/rosidl_adapter/cmake)
+-- Found rosidl_generator_cpp: 3.1.8 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)
+-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c
+-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp
+-- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)
+-- Found rmw_fastrtps_cpp: 6.2.10 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)
+-- Using RMW implementation 'rmw_fastrtps_cpp' as default
+-- Found sensor_msgs: 4.9.1 (/opt/ros/humble/share/sensor_msgs/cmake)
+-- Found visualization_msgs: 4.9.1 (/opt/ros/humble/share/visualization_msgs/cmake)
+-- Found pcl_conversions: 2.4.5 (/opt/ros/humble/share/pcl_conversions/cmake)
+-- Eigen found (include: /usr/include/eigen3, version: 3.4.0)
+-- FLANN found (include: /usr/include, lib: /usr/lib/x86_64-linux-gnu/libflann_cpp.so)
+-- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+-- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/x86_64-linux-gnu/libOpenNI2.so;libusb::libusb)
+-- Eigen found (include: /usr/include/eigen3, version: 3.4.0)
+-- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+-- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/x86_64-linux-gnu/libOpenNI2.so;libusb::libusb)
+-- Found Qhull version 8.0.2
+-- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)
+CMake Warning (dev) at CMakeLists.txt:18 (find_package):
+  Policy CMP0074 is not set: find_package uses <PackageName>_ROOT variables.
+  Run "cmake --help-policy CMP0074" for policy details.  Use the cmake_policy
+  command to set the policy and suppress this warning.
+
+  CMake variable PCL_ROOT is set to:
+
+    /usr
+
+  For compatibility, CMake is ignoring the variable.
+This warning is for project developers.  Use -Wno-dev to suppress it.
+
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/build/patchworkpp
+Consolidate compiler generated dependencies of target demo
+[ 16%] Building CXX object CMakeFiles/demo.dir/src/demo.cpp.o
+[ 33%] Linking CXX executable demo
+[ 33%] Built target demo
+Consolidate compiler generated dependencies of target video
+[ 50%] Building CXX object CMakeFiles/video.dir/src/video.cpp.o
+[ 66%] Linking CXX executable video
+[ 66%] Built target video
+Consolidate compiler generated dependencies of target offline_kitti
+[ 83%] Building CXX object CMakeFiles/offline_kitti.dir/src/offline_kitti.cpp.o
+[100%] Linking CXX executable offline_kitti
+[100%] Built target offline_kitti
+-- Install configuration: "Release"
+-- Installing: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/lib/patchworkpp/demo
+-- Set runtime path of "/home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/lib/patchworkpp/demo" to ""
+-- Installing: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/lib/patchworkpp/offline_kitti
+-- Set runtime path of "/home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/lib/patchworkpp/offline_kitti" to ""
+-- Installing: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/lib/patchworkpp/video
+-- Set runtime path of "/home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/lib/patchworkpp/video" to ""
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/include/patchworkpp
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/include/patchworkpp/utils.hpp
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/include/patchworkpp/patchworkpp.hpp
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/launch
+-- Installing: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/launch/demo.py
+-- Installing: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/launch/video.py
+-- Installing: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/launch/offline_kitti.py
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/config
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/config/params.yaml
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/rviz
+-- Installing: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/rviz/demo.rviz
+-- Installing: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/rviz/patchworkpp_viz.rviz
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/ament_index/resource_index/package_run_dependencies/patchworkpp
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/ament_index/resource_index/parent_prefix_path/patchworkpp
+-- Installing: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/environment/ament_prefix_path.sh
+-- Installing: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/environment/ament_prefix_path.dsv
+-- Installing: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/environment/path.sh
+-- Installing: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/environment/path.dsv
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/local_setup.bash
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/local_setup.sh
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/local_setup.zsh
+-- Installing: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/local_setup.dsv
+-- Installing: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/package.dsv
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/ament_index/resource_index/packages/patchworkpp
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/cmake/patchworkppConfig.cmake
+-- Up-to-date: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/cmake/patchworkppConfig-version.cmake
+-- Installing: /home/ubuntu/unilidar_sdk2/patchwork-plusplus-ros/install/patchworkpp/share/patchworkpp/package.xml

@@ -1,0 +1,396 @@
+[0.000000] (-) TimerEvent: {}
+[0.000145] (point_lio_unilidar) JobQueued: {'identifier': 'point_lio_unilidar', 'dependencies': OrderedDict()}
+[0.000186] (point_lio_unilidar) JobStarted: {'identifier': 'point_lio_unilidar'}
+[0.015237] (point_lio_unilidar) JobProgress: {'identifier': 'point_lio_unilidar', 'progress': 'cmake'}
+[0.017366] (point_lio_unilidar) JobProgress: {'identifier': 'point_lio_unilidar', 'progress': 'build'}
+[0.019178] (point_lio_unilidar) Command: {'cmd': ['/usr/bin/cmake', '--build', '/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/build/point_lio_unilidar', '--', '-j12', '-l12'], 'cwd': '/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/build/point_lio_unilidar', 'env': OrderedDict([('SHELL', '/bin/bash'), ('ROS_VERSION', '2'), ('SESSION_MANAGER', 'local/ubuntu-System-Product-Name:@/tmp/.ICE-unix/8199,unix/ubuntu-System-Product-Name:/tmp/.ICE-unix/8199'), ('QT_ACCESSIBILITY', '1'), ('COLORTERM', ''), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('SSH_AGENT_LAUNCHER', 'gnome-keyring'), ('NVM_INC', '/home/ubuntu/.nvm/versions/node/v18.20.8/include/node'), ('XDG_MENU_PREFIX', 'gnome-'), ('no_proxy', 'localhost,127.0.0.1,192.168.0.0/16,10.0.0.0/8,172.16.0.0/12,::1'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('GTK_IM_MODULE', 'ibus'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('XMODIFIERS', '@im=ibus'), ('DESKTOP_SESSION', 'ubuntu'), ('GH_PAGER', 'cat'), ('GTK_MODULES', 'gail:atk-bridge'), ('DBUS_STARTER_BUS_TYPE', 'session'), ('PWD', '/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/build/point_lio_unilidar'), ('LOGNAME', 'ubuntu'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XDG_SESSION_TYPE', 'x11'), ('CODEX_MANAGED_BY_NPM', '1'), ('GPG_AGENT_INFO', '/run/user/1000/gnupg/S.gpg-agent:0:1'), ('SYSTEMD_EXEC_PID', '8199'), ('XAUTHORITY', '/run/user/1000/gdm/Xauthority'), ('WINDOWPATH', '2'), ('HOME', '/home/ubuntu'), ('USERNAME', 'ubuntu'), ('LANG', 'C.UTF-8'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('VTE_VERSION', '6800'), ('AMENT_PREFIX_PATH', '/opt/ros/humble'), ('GNOME_TERMINAL_SCREEN', '/org/gnome/Terminal/screen/f9b16e1b_9f6f_434b_af66_e9c710cb5ed7'), ('https_proxy', 'http://127.0.0.1:7897/'), ('NVM_DIR', '/home/ubuntu/.nvm'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('XDG_SESSION_CLASS', 'user'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('TERM', 'dumb'), ('CODEX_THREAD_ID', '019e2093-4ff2-7433-9d3a-554b69f9e6d8'), ('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'ubuntu'), ('GIT_PAGER', 'cat'), ('NO_PROXY', 'localhost,127.0.0.1,192.168.0.0/16,10.0.0.0/8,172.16.0.0/12,::1'), ('GNOME_TERMINAL_SERVICE', ':1.159'), ('DISPLAY', ':1'), ('SHLVL', '1'), ('NVM_CD_FLAGS', ''), ('PAGER', 'cat'), ('HTTPS_PROXY', 'http://127.0.0.1:7897/'), ('HTTP_PROXY', 'http://127.0.0.1:7897/'), ('QT_IM_MODULE', 'ibus'), ('DBUS_STARTER_ADDRESS', 'unix:path=/run/user/1000/bus,guid=9141aefc2669a32429509b486a0d1de9'), ('http_proxy', 'http://127.0.0.1:7897/'), ('NO_COLOR', '1'), ('LD_LIBRARY_PATH', '/usr/local/cuda-12.2/lib64:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('CODEX_CI', '1'), ('LC_CTYPE', 'C.UTF-8'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('ROS_LOCALHOST_ONLY', '0'), ('ALL_PROXY', 'socks://127.0.0.1:7897/'), ('LC_ALL', 'C.UTF-8'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('CODEX_SANDBOX_NETWORK_DISABLED', '1'), ('all_proxy', 'socks://127.0.0.1:7897/'), ('PATH', '/home/ubuntu/.local/bin:/home/ubuntu/.codex/tmp/arg0/codex-arg0IqYuJC:/home/ubuntu/.nvm/versions/node/v18.20.8/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/path:/usr/local/cuda-12.2/bin:/home/ubuntu/.nvm/versions/node/v18.20.8/bin:/opt/ros/humble/bin:/home/ubuntu/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin'), ('GDMSESSION', 'ubuntu'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus,guid=9141aefc2669a32429509b486a0d1de9'), ('NVM_BIN', '/home/ubuntu/.nvm/versions/node/v18.20.8/bin'), ('ROS_DISTRO', 'humble'), ('_', '/usr/bin/env'), ('CMAKE_PREFIX_PATH', '/opt/ros/humble')]), 'shell': False}
+[0.073989] (point_lio_unilidar) StderrLine: {'line': b'Current CPU architecture: x86_64\n'}
+[0.084031] (point_lio_unilidar) StderrLine: {'line': b'Processor number: 12\n'}
+[0.084264] (point_lio_unilidar) StderrLine: {'line': b'core for MP: 4\n'}
+[0.084359] (point_lio_unilidar) StdoutLine: {'line': b'-- Found ament_cmake: 1.3.14 (/opt/ros/humble/share/ament_cmake/cmake)\n'}
+[0.099597] (-) TimerEvent: {}
+[0.199826] (-) TimerEvent: {}
+[0.300064] (-) TimerEvent: {}
+[0.324161] (point_lio_unilidar) StdoutLine: {'line': b'-- Found rclcpp: 16.0.19 (/opt/ros/humble/share/rclcpp/cmake)\n'}
+[0.368711] (point_lio_unilidar) StdoutLine: {'line': b'-- Found rosidl_generator_c: 3.1.8 (/opt/ros/humble/share/rosidl_generator_c/cmake)\n'}
+[0.373162] (point_lio_unilidar) StdoutLine: {'line': b'-- Found rosidl_adapter: 3.1.8 (/opt/ros/humble/share/rosidl_adapter/cmake)\n'}
+[0.383371] (point_lio_unilidar) StdoutLine: {'line': b'-- Found rosidl_generator_cpp: 3.1.8 (/opt/ros/humble/share/rosidl_generator_cpp/cmake)\n'}
+[0.402514] (point_lio_unilidar) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_c: rosidl_typesupport_fastrtps_c;rosidl_typesupport_introspection_c\n'}
+[0.402735] (-) TimerEvent: {}
+[0.421920] (point_lio_unilidar) StdoutLine: {'line': b'-- Using all available rosidl_typesupport_cpp: rosidl_typesupport_fastrtps_cpp;rosidl_typesupport_introspection_cpp\n'}
+[0.475020] (point_lio_unilidar) StdoutLine: {'line': b'-- Found rmw_implementation_cmake: 6.1.2 (/opt/ros/humble/share/rmw_implementation_cmake/cmake)\n'}
+[0.479074] (point_lio_unilidar) StdoutLine: {'line': b'-- Found rmw_fastrtps_cpp: 6.2.10 (/opt/ros/humble/share/rmw_fastrtps_cpp/cmake)\n'}
+[0.502979] (-) TimerEvent: {}
+[0.603207] (-) TimerEvent: {}
+[0.641284] (point_lio_unilidar) StdoutLine: {'line': b"-- Using RMW implementation 'rmw_fastrtps_cpp' as default\n"}
+[0.703366] (-) TimerEvent: {}
+[0.726015] (point_lio_unilidar) StdoutLine: {'line': b'-- Found sensor_msgs: 4.9.1 (/opt/ros/humble/share/sensor_msgs/cmake)\n'}
+[0.769746] (point_lio_unilidar) StdoutLine: {'line': b'-- Found nav_msgs: 4.9.1 (/opt/ros/humble/share/nav_msgs/cmake)\n'}
+[0.803474] (-) TimerEvent: {}
+[0.809852] (point_lio_unilidar) StdoutLine: {'line': b'-- Found visualization_msgs: 4.9.1 (/opt/ros/humble/share/visualization_msgs/cmake)\n'}
+[0.838325] (point_lio_unilidar) StdoutLine: {'line': b'-- Found tf2: 0.25.20 (/opt/ros/humble/share/tf2/cmake)\n'}
+[0.844843] (point_lio_unilidar) StdoutLine: {'line': b'-- Found tf2_ros: 0.25.20 (/opt/ros/humble/share/tf2_ros/cmake)\n'}
+[0.903592] (-) TimerEvent: {}
+[0.963237] (point_lio_unilidar) StdoutLine: {'line': b'-- Found pcl_conversions: 2.4.5 (/opt/ros/humble/share/pcl_conversions/cmake)\n'}
+[1.003706] (-) TimerEvent: {}
+[1.011693] (point_lio_unilidar) StdoutLine: {'line': b'-- Eigen found (include: /usr/include/eigen3, version: 3.4.0)\n'}
+[1.062428] (point_lio_unilidar) StdoutLine: {'line': b'-- FLANN found (include: /usr/include, lib: /usr/lib/x86_64-linux-gnu/libflann_cpp.so)\n'}
+[1.103816] (-) TimerEvent: {}
+[1.204091] (-) TimerEvent: {}
+[1.304365] (-) TimerEvent: {}
+[1.404582] (-) TimerEvent: {}
+[1.506417] (point_lio_unilidar) StdoutLine: {'line': b'-- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)\n'}
+[1.506639] (-) TimerEvent: {}
+[1.517932] (point_lio_unilidar) StdoutLine: {'line': b'-- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/x86_64-linux-gnu/libOpenNI2.so;libusb::libusb)\n'}
+[1.606779] (-) TimerEvent: {}
+[1.706970] (-) TimerEvent: {}
+[1.807191] (-) TimerEvent: {}
+[1.860925] (point_lio_unilidar) StdoutLine: {'line': b'-- Eigen found (include: /usr/include/eigen3, version: 3.4.0)\n'}
+[1.873184] (point_lio_unilidar) StdoutLine: {'line': b'-- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)\n'}
+[1.883054] (point_lio_unilidar) StdoutLine: {'line': b'-- OpenNI2 found (version: 2.2.0.33, include: /usr/include/openni2, lib: /usr/lib/x86_64-linux-gnu/libOpenNI2.so;libusb::libusb)\n'}
+[1.907316] (-) TimerEvent: {}
+[2.007534] (-) TimerEvent: {}
+[2.107756] (-) TimerEvent: {}
+[2.207978] (-) TimerEvent: {}
+[2.216504] (point_lio_unilidar) StdoutLine: {'line': b'-- Found Qhull version 8.0.2\n'}
+[2.308114] (-) TimerEvent: {}
+[2.408341] (-) TimerEvent: {}
+[2.508564] (-) TimerEvent: {}
+[2.530152] (point_lio_unilidar) StdoutLine: {'line': b'-- OpenNI found (version: 1.5.4.0, include: /usr/include/ni, lib: /usr/lib/libOpenNI.so;libusb::libusb)\n'}
+[2.608698] (-) TimerEvent: {}
+[2.708927] (-) TimerEvent: {}
+[2.809153] (-) TimerEvent: {}
+[2.869120] (point_lio_unilidar) StderrLine: {'line': b'CMake Warning (dev) at CMakeLists.txt:43 (find_package):\n'}
+[2.869347] (point_lio_unilidar) StderrLine: {'line': b'  Policy CMP0074 is not set: find_package uses <PackageName>_ROOT variables.\n'}
+[2.869446] (point_lio_unilidar) StderrLine: {'line': b'  Run "cmake --help-policy CMP0074" for policy details.  Use the cmake_policy\n'}
+[2.869522] (point_lio_unilidar) StderrLine: {'line': b'  command to set the policy and suppress this warning.\n'}
+[2.869595] (point_lio_unilidar) StderrLine: {'line': b'\n'}
+[2.869666] (point_lio_unilidar) StderrLine: {'line': b'  CMake variable PCL_ROOT is set to:\n'}
+[2.869740] (point_lio_unilidar) StderrLine: {'line': b'\n'}
+[2.869817] (point_lio_unilidar) StderrLine: {'line': b'    /usr\n'}
+[2.870813] (point_lio_unilidar) StderrLine: {'line': b'\n'}
+[2.870986] (point_lio_unilidar) StderrLine: {'line': b'  For compatibility, CMake is ignoring the variable.\n'}
+[2.871062] (point_lio_unilidar) StderrLine: {'line': b'This warning is for project developers.  Use -Wno-dev to suppress it.\n'}
+[2.871131] (point_lio_unilidar) StderrLine: {'line': b'\n'}
+[2.909321] (-) TimerEvent: {}
+[3.009543] (-) TimerEvent: {}
+[3.023195] (point_lio_unilidar) StdoutLine: {'line': b'-- Configuring done\n'}
+[3.102200] (point_lio_unilidar) StdoutLine: {'line': b'-- Generating done\n'}
+[3.110962] (-) TimerEvent: {}
+[3.120915] (point_lio_unilidar) StdoutLine: {'line': b'-- Build files have been written to: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/build/point_lio_unilidar\n'}
+[3.211124] (-) TimerEvent: {}
+[3.234071] (point_lio_unilidar) StdoutLine: {'line': b'Consolidate compiler generated dependencies of target pointlio_mapping\n'}
+[3.289530] (point_lio_unilidar) StdoutLine: {'line': b'[100%] Built target pointlio_mapping\n'}
+[3.311234] (-) TimerEvent: {}
+[3.411488] (-) TimerEvent: {}
+[3.511744] (-) TimerEvent: {}
+[3.611978] (-) TimerEvent: {}
+[3.712203] (-) TimerEvent: {}
+[3.812447] (-) TimerEvent: {}
+[3.912686] (-) TimerEvent: {}
+[4.012973] (-) TimerEvent: {}
+[4.113199] (-) TimerEvent: {}
+[4.213437] (-) TimerEvent: {}
+[4.313668] (-) TimerEvent: {}
+[4.413928] (-) TimerEvent: {}
+[4.514165] (-) TimerEvent: {}
+[4.614443] (-) TimerEvent: {}
+[4.715166] (-) TimerEvent: {}
+[4.815410] (-) TimerEvent: {}
+[4.915645] (-) TimerEvent: {}
+[5.015871] (-) TimerEvent: {}
+[5.116107] (-) TimerEvent: {}
+[5.216390] (-) TimerEvent: {}
+[5.316626] (-) TimerEvent: {}
+[5.416860] (-) TimerEvent: {}
+[5.517114] (-) TimerEvent: {}
+[5.617410] (-) TimerEvent: {}
+[5.717728] (-) TimerEvent: {}
+[5.817970] (-) TimerEvent: {}
+[5.918227] (-) TimerEvent: {}
+[6.018472] (-) TimerEvent: {}
+[6.118691] (-) TimerEvent: {}
+[6.218928] (-) TimerEvent: {}
+[6.319218] (-) TimerEvent: {}
+[6.419494] (-) TimerEvent: {}
+[6.519721] (-) TimerEvent: {}
+[6.619980] (-) TimerEvent: {}
+[6.720233] (-) TimerEvent: {}
+[6.820502] (-) TimerEvent: {}
+[6.920739] (-) TimerEvent: {}
+[7.021032] (-) TimerEvent: {}
+[7.121278] (-) TimerEvent: {}
+[7.221505] (-) TimerEvent: {}
+[7.321759] (-) TimerEvent: {}
+[7.421971] (-) TimerEvent: {}
+[7.522201] (-) TimerEvent: {}
+[7.622451] (-) TimerEvent: {}
+[7.722701] (-) TimerEvent: {}
+[7.822944] (-) TimerEvent: {}
+[7.923191] (-) TimerEvent: {}
+[8.023437] (-) TimerEvent: {}
+[8.123666] (-) TimerEvent: {}
+[8.223921] (-) TimerEvent: {}
+[8.324189] (-) TimerEvent: {}
+[8.424464] (-) TimerEvent: {}
+[8.524700] (-) TimerEvent: {}
+[8.624953] (-) TimerEvent: {}
+[8.725189] (-) TimerEvent: {}
+[8.825441] (-) TimerEvent: {}
+[8.925706] (-) TimerEvent: {}
+[9.026151] (-) TimerEvent: {}
+[9.126396] (-) TimerEvent: {}
+[9.226634] (-) TimerEvent: {}
+[9.326938] (-) TimerEvent: {}
+[9.427225] (-) TimerEvent: {}
+[9.527484] (-) TimerEvent: {}
+[9.627699] (-) TimerEvent: {}
+[9.727967] (-) TimerEvent: {}
+[9.828226] (-) TimerEvent: {}
+[9.929047] (-) TimerEvent: {}
+[10.029275] (-) TimerEvent: {}
+[10.133974] (-) TimerEvent: {}
+[10.236438] (-) TimerEvent: {}
+[10.336705] (-) TimerEvent: {}
+[10.436967] (-) TimerEvent: {}
+[10.537198] (-) TimerEvent: {}
+[10.637569] (-) TimerEvent: {}
+[10.737798] (-) TimerEvent: {}
+[10.838029] (-) TimerEvent: {}
+[10.938258] (-) TimerEvent: {}
+[11.039054] (-) TimerEvent: {}
+[11.140036] (-) TimerEvent: {}
+[11.240264] (-) TimerEvent: {}
+[11.340504] (-) TimerEvent: {}
+[11.440833] (-) TimerEvent: {}
+[11.541125] (-) TimerEvent: {}
+[11.641354] (-) TimerEvent: {}
+[11.741583] (-) TimerEvent: {}
+[11.841850] (-) TimerEvent: {}
+[11.942104] (-) TimerEvent: {}
+[12.042993] (-) TimerEvent: {}
+[12.143273] (-) TimerEvent: {}
+[12.243529] (-) TimerEvent: {}
+[12.343774] (-) TimerEvent: {}
+[12.443978] (-) TimerEvent: {}
+[12.544211] (-) TimerEvent: {}
+[12.644453] (-) TimerEvent: {}
+[12.744687] (-) TimerEvent: {}
+[12.845036] (-) TimerEvent: {}
+[12.945263] (-) TimerEvent: {}
+[13.045487] (-) TimerEvent: {}
+[13.145706] (-) TimerEvent: {}
+[13.245956] (-) TimerEvent: {}
+[13.346185] (-) TimerEvent: {}
+[13.446412] (-) TimerEvent: {}
+[13.546683] (-) TimerEvent: {}
+[13.646994] (-) TimerEvent: {}
+[13.747307] (-) TimerEvent: {}
+[13.847578] (-) TimerEvent: {}
+[13.947847] (-) TimerEvent: {}
+[14.048128] (-) TimerEvent: {}
+[14.148458] (-) TimerEvent: {}
+[14.248702] (-) TimerEvent: {}
+[14.348984] (-) TimerEvent: {}
+[14.449251] (-) TimerEvent: {}
+[14.549485] (-) TimerEvent: {}
+[14.649708] (-) TimerEvent: {}
+[14.749951] (-) TimerEvent: {}
+[14.850894] (-) TimerEvent: {}
+[14.951124] (-) TimerEvent: {}
+[15.051383] (-) TimerEvent: {}
+[15.151965] (-) TimerEvent: {}
+[15.252198] (-) TimerEvent: {}
+[15.352427] (-) TimerEvent: {}
+[15.453692] (-) TimerEvent: {}
+[15.553968] (-) TimerEvent: {}
+[15.654260] (-) TimerEvent: {}
+[15.754503] (-) TimerEvent: {}
+[15.855109] (-) TimerEvent: {}
+[15.955336] (-) TimerEvent: {}
+[16.055580] (-) TimerEvent: {}
+[16.155835] (-) TimerEvent: {}
+[16.256135] (-) TimerEvent: {}
+[16.356382] (-) TimerEvent: {}
+[16.456624] (-) TimerEvent: {}
+[16.556892] (-) TimerEvent: {}
+[16.657121] (-) TimerEvent: {}
+[16.757348] (-) TimerEvent: {}
+[16.857588] (-) TimerEvent: {}
+[16.957840] (-) TimerEvent: {}
+[17.058077] (-) TimerEvent: {}
+[17.158299] (-) TimerEvent: {}
+[17.258531] (-) TimerEvent: {}
+[17.358755] (-) TimerEvent: {}
+[17.458981] (-) TimerEvent: {}
+[17.559213] (-) TimerEvent: {}
+[17.659438] (-) TimerEvent: {}
+[17.759642] (-) TimerEvent: {}
+[17.859861] (-) TimerEvent: {}
+[17.960990] (-) TimerEvent: {}
+[18.061246] (-) TimerEvent: {}
+[18.161487] (-) TimerEvent: {}
+[18.261710] (-) TimerEvent: {}
+[18.361963] (-) TimerEvent: {}
+[18.462205] (-) TimerEvent: {}
+[18.562445] (-) TimerEvent: {}
+[18.662930] (-) TimerEvent: {}
+[18.763166] (-) TimerEvent: {}
+[18.863398] (-) TimerEvent: {}
+[18.963627] (-) TimerEvent: {}
+[19.063859] (-) TimerEvent: {}
+[19.164422] (-) TimerEvent: {}
+[19.266179] (-) TimerEvent: {}
+[19.366498] (-) TimerEvent: {}
+[19.466729] (-) TimerEvent: {}
+[19.566964] (-) TimerEvent: {}
+[19.667195] (-) TimerEvent: {}
+[19.767766] (-) TimerEvent: {}
+[19.867973] (-) TimerEvent: {}
+[19.968205] (-) TimerEvent: {}
+[20.068471] (-) TimerEvent: {}
+[20.168787] (-) TimerEvent: {}
+[20.269029] (-) TimerEvent: {}
+[20.369231] (-) TimerEvent: {}
+[20.469472] (-) TimerEvent: {}
+[20.569706] (-) TimerEvent: {}
+[20.669975] (-) TimerEvent: {}
+[20.770231] (-) TimerEvent: {}
+[20.870562] (-) TimerEvent: {}
+[20.970849] (-) TimerEvent: {}
+[21.071101] (-) TimerEvent: {}
+[21.171347] (-) TimerEvent: {}
+[21.271991] (-) TimerEvent: {}
+[21.372234] (-) TimerEvent: {}
+[21.472468] (-) TimerEvent: {}
+[21.572711] (-) TimerEvent: {}
+[21.672980] (-) TimerEvent: {}
+[21.773220] (-) TimerEvent: {}
+[21.873500] (-) TimerEvent: {}
+[21.973774] (-) TimerEvent: {}
+[22.073973] (-) TimerEvent: {}
+[22.174226] (-) TimerEvent: {}
+[22.274471] (-) TimerEvent: {}
+[22.374696] (-) TimerEvent: {}
+[22.474943] (-) TimerEvent: {}
+[22.575205] (-) TimerEvent: {}
+[22.675432] (-) TimerEvent: {}
+[22.775664] (-) TimerEvent: {}
+[22.875944] (-) TimerEvent: {}
+[22.977452] (-) TimerEvent: {}
+[23.077714] (-) TimerEvent: {}
+[23.177937] (-) TimerEvent: {}
+[23.278157] (-) TimerEvent: {}
+[23.380283] (-) TimerEvent: {}
+[23.480509] (-) TimerEvent: {}
+[23.580731] (-) TimerEvent: {}
+[23.683080] (-) TimerEvent: {}
+[23.783308] (-) TimerEvent: {}
+[23.883543] (-) TimerEvent: {}
+[23.983775] (-) TimerEvent: {}
+[24.087105] (-) TimerEvent: {}
+[24.187322] (-) TimerEvent: {}
+[24.287803] (-) TimerEvent: {}
+[24.388095] (-) TimerEvent: {}
+[24.488354] (-) TimerEvent: {}
+[24.588578] (-) TimerEvent: {}
+[24.688834] (-) TimerEvent: {}
+[24.789150] (-) TimerEvent: {}
+[24.889456] (-) TimerEvent: {}
+[24.989687] (-) TimerEvent: {}
+[25.089972] (-) TimerEvent: {}
+[25.190201] (-) TimerEvent: {}
+[25.290419] (-) TimerEvent: {}
+[25.390684] (-) TimerEvent: {}
+[25.490985] (-) TimerEvent: {}
+[25.591203] (-) TimerEvent: {}
+[25.691465] (-) TimerEvent: {}
+[25.791734] (-) TimerEvent: {}
+[25.891974] (-) TimerEvent: {}
+[25.992202] (-) TimerEvent: {}
+[26.092463] (-) TimerEvent: {}
+[26.192687] (-) TimerEvent: {}
+[26.292925] (-) TimerEvent: {}
+[26.393168] (-) TimerEvent: {}
+[26.493409] (-) TimerEvent: {}
+[26.593645] (-) TimerEvent: {}
+[26.693876] (-) TimerEvent: {}
+[26.794108] (-) TimerEvent: {}
+[26.894384] (-) TimerEvent: {}
+[26.994627] (-) TimerEvent: {}
+[27.094867] (-) TimerEvent: {}
+[27.195143] (-) TimerEvent: {}
+[27.295416] (-) TimerEvent: {}
+[27.395677] (-) TimerEvent: {}
+[27.495920] (-) TimerEvent: {}
+[27.596173] (-) TimerEvent: {}
+[27.696416] (-) TimerEvent: {}
+[27.796657] (-) TimerEvent: {}
+[27.896916] (-) TimerEvent: {}
+[27.997195] (-) TimerEvent: {}
+[28.097460] (-) TimerEvent: {}
+[28.197703] (-) TimerEvent: {}
+[28.297974] (-) TimerEvent: {}
+[28.398237] (-) TimerEvent: {}
+[28.498478] (-) TimerEvent: {}
+[28.598699] (-) TimerEvent: {}
+[28.698928] (-) TimerEvent: {}
+[28.799151] (-) TimerEvent: {}
+[28.899378] (-) TimerEvent: {}
+[28.999605] (-) TimerEvent: {}
+[29.099879] (-) TimerEvent: {}
+[29.200187] (-) TimerEvent: {}
+[29.300424] (-) TimerEvent: {}
+[29.400700] (-) TimerEvent: {}
+[29.500937] (-) TimerEvent: {}
+[29.601166] (-) TimerEvent: {}
+[29.701429] (-) TimerEvent: {}
+[29.801713] (-) TimerEvent: {}
+[29.902048] (-) TimerEvent: {}
+[30.002356] (-) TimerEvent: {}
+[30.027470] (point_lio_unilidar) CommandEnded: {'returncode': 0}
+[30.030197] (point_lio_unilidar) JobProgress: {'identifier': 'point_lio_unilidar', 'progress': 'install'}
+[30.049239] (point_lio_unilidar) Command: {'cmd': ['/usr/bin/cmake', '--install', '/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/build/point_lio_unilidar'], 'cwd': '/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/build/point_lio_unilidar', 'env': OrderedDict([('SHELL', '/bin/bash'), ('ROS_VERSION', '2'), ('SESSION_MANAGER', 'local/ubuntu-System-Product-Name:@/tmp/.ICE-unix/8199,unix/ubuntu-System-Product-Name:/tmp/.ICE-unix/8199'), ('QT_ACCESSIBILITY', '1'), ('COLORTERM', ''), ('XDG_CONFIG_DIRS', '/etc/xdg/xdg-ubuntu:/etc/xdg'), ('SSH_AGENT_LAUNCHER', 'gnome-keyring'), ('NVM_INC', '/home/ubuntu/.nvm/versions/node/v18.20.8/include/node'), ('XDG_MENU_PREFIX', 'gnome-'), ('no_proxy', 'localhost,127.0.0.1,192.168.0.0/16,10.0.0.0/8,172.16.0.0/12,::1'), ('GNOME_DESKTOP_SESSION_ID', 'this-is-deprecated'), ('GTK_IM_MODULE', 'ibus'), ('ROS_PYTHON_VERSION', '3'), ('GNOME_SHELL_SESSION_MODE', 'ubuntu'), ('SSH_AUTH_SOCK', '/run/user/1000/keyring/ssh'), ('XMODIFIERS', '@im=ibus'), ('DESKTOP_SESSION', 'ubuntu'), ('GH_PAGER', 'cat'), ('GTK_MODULES', 'gail:atk-bridge'), ('DBUS_STARTER_BUS_TYPE', 'session'), ('PWD', '/home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/build/point_lio_unilidar'), ('LOGNAME', 'ubuntu'), ('XDG_SESSION_DESKTOP', 'ubuntu'), ('XDG_SESSION_TYPE', 'x11'), ('CODEX_MANAGED_BY_NPM', '1'), ('GPG_AGENT_INFO', '/run/user/1000/gnupg/S.gpg-agent:0:1'), ('SYSTEMD_EXEC_PID', '8199'), ('XAUTHORITY', '/run/user/1000/gdm/Xauthority'), ('WINDOWPATH', '2'), ('HOME', '/home/ubuntu'), ('USERNAME', 'ubuntu'), ('LANG', 'C.UTF-8'), ('LS_COLORS', 'rs=0:di=01;34:ln=01;36:mh=00:pi=40;33:so=01;35:do=01;35:bd=40;33;01:cd=40;33;01:or=40;31;01:mi=00:su=37;41:sg=30;43:ca=30;41:tw=30;42:ow=34;42:st=37;44:ex=01;32:*.tar=01;31:*.tgz=01;31:*.arc=01;31:*.arj=01;31:*.taz=01;31:*.lha=01;31:*.lz4=01;31:*.lzh=01;31:*.lzma=01;31:*.tlz=01;31:*.txz=01;31:*.tzo=01;31:*.t7z=01;31:*.zip=01;31:*.z=01;31:*.dz=01;31:*.gz=01;31:*.lrz=01;31:*.lz=01;31:*.lzo=01;31:*.xz=01;31:*.zst=01;31:*.tzst=01;31:*.bz2=01;31:*.bz=01;31:*.tbz=01;31:*.tbz2=01;31:*.tz=01;31:*.deb=01;31:*.rpm=01;31:*.jar=01;31:*.war=01;31:*.ear=01;31:*.sar=01;31:*.rar=01;31:*.alz=01;31:*.ace=01;31:*.zoo=01;31:*.cpio=01;31:*.7z=01;31:*.rz=01;31:*.cab=01;31:*.wim=01;31:*.swm=01;31:*.dwm=01;31:*.esd=01;31:*.jpg=01;35:*.jpeg=01;35:*.mjpg=01;35:*.mjpeg=01;35:*.gif=01;35:*.bmp=01;35:*.pbm=01;35:*.pgm=01;35:*.ppm=01;35:*.tga=01;35:*.xbm=01;35:*.xpm=01;35:*.tif=01;35:*.tiff=01;35:*.png=01;35:*.svg=01;35:*.svgz=01;35:*.mng=01;35:*.pcx=01;35:*.mov=01;35:*.mpg=01;35:*.mpeg=01;35:*.m2v=01;35:*.mkv=01;35:*.webm=01;35:*.webp=01;35:*.ogm=01;35:*.mp4=01;35:*.m4v=01;35:*.mp4v=01;35:*.vob=01;35:*.qt=01;35:*.nuv=01;35:*.wmv=01;35:*.asf=01;35:*.rm=01;35:*.rmvb=01;35:*.flc=01;35:*.avi=01;35:*.fli=01;35:*.flv=01;35:*.gl=01;35:*.dl=01;35:*.xcf=01;35:*.xwd=01;35:*.yuv=01;35:*.cgm=01;35:*.emf=01;35:*.ogv=01;35:*.ogx=01;35:*.aac=00;36:*.au=00;36:*.flac=00;36:*.m4a=00;36:*.mid=00;36:*.midi=00;36:*.mka=00;36:*.mp3=00;36:*.mpc=00;36:*.ogg=00;36:*.ra=00;36:*.wav=00;36:*.oga=00;36:*.opus=00;36:*.spx=00;36:*.xspf=00;36:'), ('XDG_CURRENT_DESKTOP', 'ubuntu:GNOME'), ('VTE_VERSION', '6800'), ('AMENT_PREFIX_PATH', '/opt/ros/humble'), ('GNOME_TERMINAL_SCREEN', '/org/gnome/Terminal/screen/f9b16e1b_9f6f_434b_af66_e9c710cb5ed7'), ('https_proxy', 'http://127.0.0.1:7897/'), ('NVM_DIR', '/home/ubuntu/.nvm'), ('LESSCLOSE', '/usr/bin/lesspipe %s %s'), ('XDG_SESSION_CLASS', 'user'), ('PYTHONPATH', '/opt/ros/humble/lib/python3.10/site-packages:/opt/ros/humble/local/lib/python3.10/dist-packages'), ('COLCON', '1'), ('TERM', 'dumb'), ('CODEX_THREAD_ID', '019e2093-4ff2-7433-9d3a-554b69f9e6d8'), ('LESSOPEN', '| /usr/bin/lesspipe %s'), ('USER', 'ubuntu'), ('GIT_PAGER', 'cat'), ('NO_PROXY', 'localhost,127.0.0.1,192.168.0.0/16,10.0.0.0/8,172.16.0.0/12,::1'), ('GNOME_TERMINAL_SERVICE', ':1.159'), ('DISPLAY', ':1'), ('SHLVL', '1'), ('NVM_CD_FLAGS', ''), ('PAGER', 'cat'), ('HTTPS_PROXY', 'http://127.0.0.1:7897/'), ('HTTP_PROXY', 'http://127.0.0.1:7897/'), ('QT_IM_MODULE', 'ibus'), ('DBUS_STARTER_ADDRESS', 'unix:path=/run/user/1000/bus,guid=9141aefc2669a32429509b486a0d1de9'), ('http_proxy', 'http://127.0.0.1:7897/'), ('NO_COLOR', '1'), ('LD_LIBRARY_PATH', '/usr/local/cuda-12.2/lib64:/opt/ros/humble/opt/rviz_ogre_vendor/lib:/opt/ros/humble/lib/x86_64-linux-gnu:/opt/ros/humble/lib'), ('CODEX_CI', '1'), ('LC_CTYPE', 'C.UTF-8'), ('XDG_RUNTIME_DIR', '/run/user/1000'), ('ROS_LOCALHOST_ONLY', '0'), ('ALL_PROXY', 'socks://127.0.0.1:7897/'), ('LC_ALL', 'C.UTF-8'), ('XDG_DATA_DIRS', '/usr/share/ubuntu:/usr/share/gnome:/usr/local/share/:/usr/share/:/var/lib/snapd/desktop'), ('CODEX_SANDBOX_NETWORK_DISABLED', '1'), ('all_proxy', 'socks://127.0.0.1:7897/'), ('PATH', '/home/ubuntu/.local/bin:/home/ubuntu/.codex/tmp/arg0/codex-arg0IqYuJC:/home/ubuntu/.nvm/versions/node/v18.20.8/lib/node_modules/@openai/codex/node_modules/@openai/codex-linux-x64/vendor/x86_64-unknown-linux-musl/path:/usr/local/cuda-12.2/bin:/home/ubuntu/.nvm/versions/node/v18.20.8/bin:/opt/ros/humble/bin:/home/ubuntu/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin:/snap/bin'), ('GDMSESSION', 'ubuntu'), ('DBUS_SESSION_BUS_ADDRESS', 'unix:path=/run/user/1000/bus,guid=9141aefc2669a32429509b486a0d1de9'), ('NVM_BIN', '/home/ubuntu/.nvm/versions/node/v18.20.8/bin'), ('ROS_DISTRO', 'humble'), ('_', '/usr/bin/env'), ('CMAKE_PREFIX_PATH', '/opt/ros/humble')]), 'shell': False}
+[30.056951] (point_lio_unilidar) StdoutLine: {'line': b'-- Install configuration: "Release"\n'}
+[30.058965] (point_lio_unilidar) StdoutLine: {'line': b'-- Up-to-date: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/lib/point_lio_unilidar/pointlio_mapping\n'}
+[30.059584] (point_lio_unilidar) StdoutLine: {'line': b'-- Up-to-date: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/config\n'}
+[30.059916] (point_lio_unilidar) StdoutLine: {'line': b'-- Installing: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/config/velody16.yaml\n'}
+[30.060636] (point_lio_unilidar) StdoutLine: {'line': b'-- Installing: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/config/ouster64.yaml\n'}
+[30.061472] (point_lio_unilidar) StdoutLine: {'line': b'-- Installing: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/config/unilidar_l1.yaml\n'}
+[30.062254] (point_lio_unilidar) StdoutLine: {'line': b'-- Installing: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/config/unilidar_l2_ros2.yaml\n'}
+[30.063072] (point_lio_unilidar) StdoutLine: {'line': b'-- Installing: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/config/avia.yaml\n'}
+[30.063539] (point_lio_unilidar) StdoutLine: {'line': b'-- Installing: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/config/unilidar_l2.yaml\n'}
+[30.064036] (point_lio_unilidar) StdoutLine: {'line': b'-- Installing: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/config/horizon.yaml\n'}
+[30.064580] (point_lio_unilidar) StdoutLine: {'line': b'-- Up-to-date: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/launch\n'}
+[30.064715] (point_lio_unilidar) StdoutLine: {'line': b'-- Installing: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_horizon.launch\n'}
+[30.065106] (point_lio_unilidar) StdoutLine: {'line': b'-- Installing: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_unilidar_l1.launch\n'}
+[30.065496] (point_lio_unilidar) StdoutLine: {'line': b'-- Installing: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/launch/gdb_debug_example.launch\n'}
+[30.065945] (point_lio_unilidar) StdoutLine: {'line': b'-- Installing: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_unilidar_l2.launch\n'}
+[30.066310] (point_lio_unilidar) StdoutLine: {'line': b'-- Installing: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_unilidar_l2.py\n'}
+[30.067257] (point_lio_unilidar) StdoutLine: {'line': b'-- Installing: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_ouster64.launch\n'}
+[30.067664] (point_lio_unilidar) StdoutLine: {'line': b'-- Installing: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_avia.launch\n'}
+[30.068037] (point_lio_unilidar) StdoutLine: {'line': b'-- Installing: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/launch/mapping_velody16.launch\n'}
+[30.068468] (point_lio_unilidar) StdoutLine: {'line': b'-- Up-to-date: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/rviz_cfg\n'}
+[30.068638] (point_lio_unilidar) StdoutLine: {'line': b'-- Installing: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/rviz_cfg/loam_unilidar_display.rviz\n'}
+[30.069085] (point_lio_unilidar) StdoutLine: {'line': b'-- Installing: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/rviz_cfg/loam_livox.rviz\n'}
+[30.069589] (point_lio_unilidar) StdoutLine: {'line': b'-- Installing: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/rviz_cfg/.gitignore\n'}
+[30.069705] (point_lio_unilidar) StdoutLine: {'line': b'-- Installing: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/rviz_cfg/loam_unilidar_default.rviz\n'}
+[30.071994] (point_lio_unilidar) StdoutLine: {'line': b'-- Up-to-date: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/ament_index/resource_index/package_run_dependencies/point_lio_unilidar\n'}
+[30.072463] (point_lio_unilidar) StdoutLine: {'line': b'-- Up-to-date: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/ament_index/resource_index/parent_prefix_path/point_lio_unilidar\n'}
+[30.072596] (point_lio_unilidar) StdoutLine: {'line': b'-- Installing: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/environment/ament_prefix_path.sh\n'}
+[30.072660] (point_lio_unilidar) StdoutLine: {'line': b'-- Installing: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/environment/ament_prefix_path.dsv\n'}
+[30.072735] (point_lio_unilidar) StdoutLine: {'line': b'-- Installing: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/environment/path.sh\n'}
+[30.072803] (point_lio_unilidar) StdoutLine: {'line': b'-- Installing: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/environment/path.dsv\n'}
+[30.072870] (point_lio_unilidar) StdoutLine: {'line': b'-- Up-to-date: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/local_setup.bash\n'}
+[30.072959] (point_lio_unilidar) StdoutLine: {'line': b'-- Up-to-date: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/local_setup.sh\n'}
+[30.073029] (point_lio_unilidar) StdoutLine: {'line': b'-- Up-to-date: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/local_setup.zsh\n'}
+[30.073103] (point_lio_unilidar) StdoutLine: {'line': b'-- Installing: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/local_setup.dsv\n'}
+[30.073165] (point_lio_unilidar) StdoutLine: {'line': b'-- Installing: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/package.dsv\n'}
+[30.073230] (point_lio_unilidar) StdoutLine: {'line': b'-- Up-to-date: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/ament_index/resource_index/packages/point_lio_unilidar\n'}
+[30.073280] (point_lio_unilidar) StdoutLine: {'line': b'-- Up-to-date: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/cmake/point_lio_unilidarConfig.cmake\n'}
+[30.073335] (point_lio_unilidar) StdoutLine: {'line': b'-- Up-to-date: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/cmake/point_lio_unilidarConfig-version.cmake\n'}
+[30.073678] (point_lio_unilidar) StdoutLine: {'line': b'-- Installing: /home/ubuntu/unilidar_sdk2/point_lio_unilidar-2.0.2/install/point_lio_unilidar/share/point_lio_unilidar/package.xml\n'}
+[30.079678] (point_lio_unilidar) CommandEnded: {'returncode': 0}
+[30.102470] (-) TimerEvent: {}
+[30.111582] (point_lio_unilidar) JobEnded: {'identifier': 'point_lio_unilidar', 'rc': 0}
+[30.112643] (-) EventReactorShutdown: {}
