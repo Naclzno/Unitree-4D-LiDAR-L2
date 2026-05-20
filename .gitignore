@@ -1,0 +1,23 @@
+# ROS2
+build/
+install/
+log/
+**/build/
+**/install/
+**/log/
+# Bags
+*.bag
+*.db3
+*.mcap
+# Point cloud
+*.pcd
+*.ply
+# Python
+__pycache__/
+# VSCode
+.vscode/
+# Colcon
+.colcon/
+# Generated
+*.pyc
+elevation_mapping_cupy/
