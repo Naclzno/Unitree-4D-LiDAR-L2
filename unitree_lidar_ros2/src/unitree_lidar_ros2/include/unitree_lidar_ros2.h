@@ -75,6 +75,7 @@ protected:
     bool use_system_timestamp_;
     bool start_lidar_rotation_;
     bool reset_lidar_after_set_mode_;
+    bool publish_tf_;
     double range_min_;
     double range_max_;
 
@@ -110,6 +111,7 @@ UnitreeLidarSDKNode::UnitreeLidarSDKNode(const rclcpp::NodeOptions &options)
     declare_parameter<bool>("use_system_timestamp", true);
     declare_parameter<bool>("start_lidar_rotation", true);
     declare_parameter<bool>("reset_lidar_after_set_mode", true);
+    declare_parameter<bool>("publish_tf", true);
     declare_parameter<double>("range_min", 0);
     declare_parameter<double>("range_max", 50);
     declare_parameter<int>("cloud_scan_num", 18);
@@ -149,6 +151,7 @@ UnitreeLidarSDKNode::UnitreeLidarSDKNode(const rclcpp::NodeOptions &options)
     use_system_timestamp_ = get_parameter("use_system_timestamp").as_bool();
     start_lidar_rotation_ = get_parameter("start_lidar_rotation").as_bool();
     reset_lidar_after_set_mode_ = get_parameter("reset_lidar_after_set_mode").as_bool();
+    publish_tf_ = get_parameter("publish_tf").as_bool();
     range_max_ = get_parameter("range_max").as_double();
     range_min_ = get_parameter("range_min").as_double();
 
@@ -318,31 +321,34 @@ void UnitreeLidarSDKNode::timer_callback()
 
             pub_imu_->publish(imuMsg);
 
-            // publish tf from initial imu to real-time imu
-            geometry_msgs::msg::TransformStamped transformStamped;
-            transformStamped.header.stamp = this->now(); // 使用当前时间
-            transformStamped.header.frame_id = imu_frame_ + "_initial"; // 父坐标系
-            transformStamped.child_frame_id = imu_frame_; // 子坐标系
-            transformStamped.transform.translation.x = 0;
-            transformStamped.transform.translation.y = 0;
-            transformStamped.transform.translation.z = 0;
-            transformStamped.transform.rotation.x = imu.quaternion[1];
-            transformStamped.transform.rotation.y = imu.quaternion[2];
-            transformStamped.transform.rotation.z = imu.quaternion[3];
-            transformStamped.transform.rotation.w = imu.quaternion[0];
-            broadcaster_->sendTransform(transformStamped);
+            if (publish_tf_)
+            {
+                // Vendor demo TFs. For robot integration, prefer disabling these and
+                // publishing fixed sensor extrinsics from the robot bringup.
+                geometry_msgs::msg::TransformStamped transformStamped;
+                transformStamped.header.stamp = this->now();
+                transformStamped.header.frame_id = imu_frame_ + "_initial";
+                transformStamped.child_frame_id = imu_frame_;
+                transformStamped.transform.translation.x = 0;
+                transformStamped.transform.translation.y = 0;
+                transformStamped.transform.translation.z = 0;
+                transformStamped.transform.rotation.x = imu.quaternion[1];
+                transformStamped.transform.rotation.y = imu.quaternion[2];
+                transformStamped.transform.rotation.z = imu.quaternion[3];
+                transformStamped.transform.rotation.w = imu.quaternion[0];
+                broadcaster_->sendTransform(transformStamped);
 
-            // publish tf from imu to lidar
-            transformStamped.header.frame_id = imu_frame_; // 父坐标系
-            transformStamped.child_frame_id = cloud_frame_; // 子坐标系
-            transformStamped.transform.translation.x = 0.007698;
-            transformStamped.transform.translation.y = 0.014655;
-            transformStamped.transform.translation.z = -0.00667;
-            transformStamped.transform.rotation.x = 0;
-            transformStamped.transform.rotation.y = 0;
-            transformStamped.transform.rotation.z = 0;
-            transformStamped.transform.rotation.w = 1;
-            broadcaster_->sendTransform(transformStamped);
+                transformStamped.header.frame_id = imu_frame_;
+                transformStamped.child_frame_id = cloud_frame_;
+                transformStamped.transform.translation.x = 0.007698;
+                transformStamped.transform.translation.y = 0.014655;
+                transformStamped.transform.translation.z = -0.00667;
+                transformStamped.transform.rotation.x = 0;
+                transformStamped.transform.rotation.y = 0;
+                transformStamped.transform.rotation.z = 0;
+                transformStamped.transform.rotation.w = 1;
+                broadcaster_->sendTransform(transformStamped);
+            }
         }
     }
     else if (result == LIDAR_POINT_DATA_PACKET_TYPE)

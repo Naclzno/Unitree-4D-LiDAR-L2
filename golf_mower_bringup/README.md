@@ -42,17 +42,24 @@ and the Point-LIO outputs such as `/pointlio/cloud_registered` and
 Temporary TF adapter:
 
 ```text
-map -> camera_init -> aft_mapped -> base_link -> unilidar_imu_initial -> unilidar_imu -> unilidar_lidar
+map -> camera_init -> aft_mapped -> base_link
+                                      -> unilidar_imu
+                                      -> unilidar_lidar
 ```
 
 Point-LIO publishes `camera_init -> aft_mapped`. The Unitree lidar node publishes
-`unilidar_imu_initial -> unilidar_imu -> unilidar_lidar`. This launch adds
-`map -> camera_init`, `aft_mapped -> base_link`, and `base_link -> unilidar_imu_initial`
-for indoor bench testing and later Nav2 integration tests.
+raw sensor messages in `unilidar_imu` and `unilidar_lidar`. This launch disables
+the Unitree vendor demo TFs and adds `map -> camera_init`, `aft_mapped -> base_link`,
+`base_link -> unilidar_imu`, and `base_link -> unilidar_lidar` for indoor bench
+testing and later Nav2 integration tests.
 
 ## Indoor Nav2 Mock
 
-The second-stage launch keeps the Unitree L2 and Point-LIO chain, adds a small odometry-to-TF bridge, and starts the Nav2 navigation stack without AMCL or a 2D map server.
+The second-stage launch keeps the Unitree L2 and Point-LIO chain and starts the
+Nav2 navigation stack without AMCL or a 2D map server. Nav2 consumes the SLAM TF
+tree; it does not add a new TF branch by itself. The optional odometry-to-TF
+bridge is disabled by default because Point-LIO already publishes
+`camera_init -> aft_mapped`.
 
 ```bash
 cd /home/ubuntu/unilidar_sdk2
@@ -66,7 +73,51 @@ ros2 launch golf_mower_bringup indoor_nav2_mock.launch.py
 Expected TF chain:
 
 ```text
-map -> camera_init -> aft_mapped -> base_link -> unilidar_imu_initial -> unilidar_imu -> unilidar_lidar
+map -> camera_init -> aft_mapped -> base_link
+                                      -> unilidar_imu
+                                      -> unilidar_lidar
 ```
 
 This launch is for integration checking while the lidar is on the desk. It can plan and publish `/cmd_vel`, but there is no real base driver in the loop yet.
+
+## Nav2 Smoke Demo
+
+After `indoor_nav2_mock.launch.py` is active, send a small in-place yaw goal:
+
+```bash
+ros2 run golf_mower_bringup nav2_send_spin_goal.py
+```
+
+In another terminal, watch Nav2 controller output:
+
+```bash
+ros2 topic echo /cmd_vel
+```
+
+Because no real base driver is connected in this desk test, the robot pose will not
+actually change. The useful signal is that Nav2 accepts the goal and publishes
+`/cmd_vel`; the goal may later time out or fail progress checking.
+
+## TurtleBot3 Gazebo Nav2 Demo
+
+For a full Nav2 movement test, use the official TurtleBot3 Gazebo demo:
+
+```bash
+export TURTLEBOT3_MODEL=waffle
+ros2 launch nav2_bringup tb3_simulation_launch.py headless:=False
+```
+
+After Gazebo, RViz, and Nav2 are active, send a short forward navigation goal:
+
+```bash
+ros2 run golf_mower_bringup nav2_send_tb3_forward_goal.py
+```
+
+Watch the velocity command if needed:
+
+```bash
+ros2 topic echo /cmd_vel
+```
+
+Unlike the indoor desk test, this demo has a simulated robot base, odometry, laser,
+and Gazebo physics, so the TurtleBot3 should move when Nav2 publishes `/cmd_vel`.

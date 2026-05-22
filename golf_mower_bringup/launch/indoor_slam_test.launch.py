@@ -117,6 +117,7 @@ def generate_launch_description():
                 LaunchConfiguration('start_lidar_rotation'), value_type=bool)},
             {'reset_lidar_after_set_mode': ParameterValue(
                 LaunchConfiguration('reset_lidar_after_set_mode'), value_type=bool)},
+            {'publish_tf': False},
             {'range_min': 0.0},
             {'range_max': 100.0},
             {'cloud_scan_num': 18},
@@ -177,17 +178,31 @@ def generate_launch_description():
         ],
     )
 
-    base_to_lidar_initial_tf = Node(
+    base_to_lidar_tf = Node(
         package='tf2_ros',
         executable='static_transform_publisher',
-        name='base_link_to_unilidar_imu_initial_tf',
+        name='base_link_to_unilidar_lidar_tf',
         output='screen',
         condition=IfCondition(LaunchConfiguration('use_lidar_tf_adapter')),
         arguments=[
             '--x', '0', '--y', '0', '--z', '0',
             '--roll', '0', '--pitch', '0', '--yaw', '0',
             '--frame-id', 'base_link',
-            '--child-frame-id', 'unilidar_imu_initial',
+            '--child-frame-id', 'unilidar_lidar',
+        ],
+    )
+
+    base_to_imu_tf = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='base_link_to_unilidar_imu_tf',
+        output='screen',
+        condition=IfCondition(LaunchConfiguration('use_lidar_tf_adapter')),
+        arguments=[
+            '--x', '0', '--y', '0', '--z', '0',
+            '--roll', '0', '--pitch', '0', '--yaw', '0',
+            '--frame-id', 'base_link',
+            '--child-frame-id', 'unilidar_imu',
         ],
     )
 
@@ -221,6 +236,7 @@ def generate_launch_description():
         pointlio,
         map_to_pointlio_map_tf,
         pointlio_body_to_base_tf,
-        base_to_lidar_initial_tf,
+        base_to_lidar_tf,
+        base_to_imu_tf,
         rviz_node,
     ])

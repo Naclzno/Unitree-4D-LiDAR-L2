@@ -39,6 +39,11 @@ def generate_launch_description():
         default_value='true',
         description='Call resetLidar after setting work mode.'
     )
+    publish_tf_arg = DeclareLaunchArgument(
+        'publish_tf',
+        default_value='true',
+        description='Publish Unitree vendor demo TFs.'
+    )
     lidar_port_arg = DeclareLaunchArgument(
         'lidar_port',
         default_value='6101',
@@ -103,6 +108,7 @@ def generate_launch_description():
                 {'use_system_timestamp': True},
                 {'start_lidar_rotation': ParameterValue(LaunchConfiguration('start_lidar_rotation'), value_type=bool)},
                 {'reset_lidar_after_set_mode': ParameterValue(LaunchConfiguration('reset_lidar_after_set_mode'), value_type=bool)},
+                {'publish_tf': ParameterValue(LaunchConfiguration('publish_tf'), value_type=bool)},
                 {'range_min': 0.0},
                 {'range_max': 100.0},
                 {'cloud_scan_num': 18},
@@ -147,6 +153,7 @@ def generate_launch_description():
         baudrate_arg,
         start_lidar_rotation_arg,
         reset_lidar_after_set_mode_arg,
+        publish_tf_arg,
         lidar_port_arg,
         lidar_ip_arg,
         local_port_arg,

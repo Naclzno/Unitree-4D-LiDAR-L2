@@ -33,8 +33,8 @@ def generate_launch_description():
     reset_lidar_after_set_mode_arg = DeclareLaunchArgument('reset_lidar_after_set_mode', default_value='true')
     use_odom_tf_bridge_arg = DeclareLaunchArgument(
         'use_odom_tf_bridge',
-        default_value='true',
-        description='Publish camera_init -> aft_mapped TF from /pointlio/odom.'
+        default_value='false',
+        description='Publish camera_init -> aft_mapped TF from /pointlio/odom if Point-LIO TF is unavailable.'
     )
     params_file_arg = DeclareLaunchArgument(
         'params_file',

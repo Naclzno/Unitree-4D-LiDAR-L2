@@ -9,6 +9,8 @@ install(DIRECTORY launch config rviz
 
 install(PROGRAMS
   scripts/pointlio_odom_tf_bridge.py
+  scripts/nav2_send_spin_goal.py
+  scripts/nav2_send_tb3_forward_goal.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
