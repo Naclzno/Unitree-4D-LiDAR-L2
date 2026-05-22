@@ -18,6 +18,8 @@
 #include <fstream>
 #include <iomanip>
 #include <sstream>
+#include <stdexcept>
+#include <thread>
 
 #include <pcl/io/pcd_io.h>
 #include <pcl/point_types.h>
@@ -71,6 +73,8 @@ protected:
     
     int cloud_scan_num_;
     bool use_system_timestamp_;
+    bool start_lidar_rotation_;
+    bool reset_lidar_after_set_mode_;
     double range_min_;
     double range_max_;
 
@@ -104,6 +108,8 @@ UnitreeLidarSDKNode::UnitreeLidarSDKNode(const rclcpp::NodeOptions &options)
     declare_parameter<int>("initialize_type", 2);
     declare_parameter<int>("work_mode", 0);
     declare_parameter<bool>("use_system_timestamp", true);
+    declare_parameter<bool>("start_lidar_rotation", true);
+    declare_parameter<bool>("reset_lidar_after_set_mode", true);
     declare_parameter<double>("range_min", 0);
     declare_parameter<double>("range_max", 50);
     declare_parameter<int>("cloud_scan_num", 18);
@@ -141,6 +147,8 @@ UnitreeLidarSDKNode::UnitreeLidarSDKNode(const rclcpp::NodeOptions &options)
 
     cloud_scan_num_ = get_parameter("cloud_scan_num").as_int();
     use_system_timestamp_ = get_parameter("use_system_timestamp").as_bool();
+    start_lidar_rotation_ = get_parameter("start_lidar_rotation").as_bool();
+    reset_lidar_after_set_mode_ = get_parameter("reset_lidar_after_set_mode").as_bool();
     range_max_ = get_parameter("range_max").as_double();
     range_min_ = get_parameter("range_min").as_double();
 
@@ -170,13 +178,31 @@ UnitreeLidarSDKNode::UnitreeLidarSDKNode(const rclcpp::NodeOptions &options)
 
     if (initialize_type_ == 1)
     {
-        lsdk_->initializeSerial(serial_port_, baudrate_,
-                                cloud_scan_num_, use_system_timestamp_, range_min_, range_max_);
+        if (lsdk_->initializeSerial(serial_port_, baudrate_,
+                                    cloud_scan_num_, use_system_timestamp_, range_min_, range_max_))
+        {
+            RCLCPP_ERROR(this->get_logger(),
+                         "failed to initialize Unitree lidar over serial: port=%s baudrate=%d",
+                         serial_port_.c_str(), baudrate_);
+            throw std::runtime_error("Unitree lidar serial initialization failed");
+        }
+        RCLCPP_INFO(this->get_logger(),
+                    "initialized Unitree lidar over serial: port=%s baudrate=%d",
+                    serial_port_.c_str(), baudrate_);
     }
     else if (initialize_type_ == 2)
     {
-        lsdk_->initializeUDP(lidar_port_, lidar_ip_, local_port_, local_ip_,
-                             cloud_scan_num_, use_system_timestamp_, range_min_, range_max_);
+        if (lsdk_->initializeUDP(lidar_port_, lidar_ip_, local_port_, local_ip_,
+                                 cloud_scan_num_, use_system_timestamp_, range_min_, range_max_))
+        {
+            RCLCPP_ERROR(this->get_logger(),
+                         "failed to initialize Unitree lidar over UDP: lidar=%s:%d local=%s:%d",
+                         lidar_ip_.c_str(), lidar_port_, local_ip_.c_str(), local_port_);
+            throw std::runtime_error("Unitree lidar UDP initialization failed");
+        }
+        RCLCPP_INFO(this->get_logger(),
+                    "initialized Unitree lidar over UDP: lidar=%s:%d local=%s:%d",
+                    lidar_ip_.c_str(), lidar_port_, local_ip_.c_str(), local_port_);
     }
     else
     {
@@ -184,7 +210,23 @@ UnitreeLidarSDKNode::UnitreeLidarSDKNode(const rclcpp::NodeOptions &options)
         exit(0);
     }
 
+    if (start_lidar_rotation_)
+    {
+        RCLCPP_INFO(this->get_logger(), "starting lidar rotation");
+        lsdk_->startLidarRotation();
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
+
+    RCLCPP_INFO(this->get_logger(), "setting lidar work mode to: %d", work_mode_);
     lsdk_->setLidarWorkMode(work_mode_);
+    std::this_thread::sleep_for(std::chrono::seconds(1));
+
+    if (reset_lidar_after_set_mode_)
+    {
+        RCLCPP_INFO(this->get_logger(), "resetting lidar after setting work mode");
+        lsdk_->resetLidar();
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
 
     if (save_cloud_txt_)
     {

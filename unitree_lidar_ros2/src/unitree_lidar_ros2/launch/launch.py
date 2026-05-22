@@ -3,11 +3,67 @@ import subprocess
 
 from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument
+from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 
 def generate_launch_description():
+    initialize_type_arg = DeclareLaunchArgument(
+        'initialize_type',
+        default_value='2',
+        description='Lidar initialization type: 1 for serial, 2 for UDP.'
+    )
+    work_mode_arg = DeclareLaunchArgument(
+        'work_mode',
+        default_value='0',
+        description='Lidar work mode. Use 0 for UDP mode and 8 for serial mode.'
+    )
+    serial_port_arg = DeclareLaunchArgument(
+        'serial_port',
+        default_value='/dev/ttyACM0',
+        description='Serial device path used when initialize_type is 1.'
+    )
+    baudrate_arg = DeclareLaunchArgument(
+        'baudrate',
+        default_value='4000000',
+        description='Serial baudrate used when initialize_type is 1.'
+    )
+    start_lidar_rotation_arg = DeclareLaunchArgument(
+        'start_lidar_rotation',
+        default_value='true',
+        description='Call startLidarRotation after initialization.'
+    )
+    reset_lidar_after_set_mode_arg = DeclareLaunchArgument(
+        'reset_lidar_after_set_mode',
+        default_value='true',
+        description='Call resetLidar after setting work mode.'
+    )
+    lidar_port_arg = DeclareLaunchArgument(
+        'lidar_port',
+        default_value='6101',
+        description='Lidar UDP port used when initialize_type is 2.'
+    )
+    lidar_ip_arg = DeclareLaunchArgument(
+        'lidar_ip',
+        default_value='192.168.1.62',
+        description='Lidar UDP IP used when initialize_type is 2.'
+    )
+    local_port_arg = DeclareLaunchArgument(
+        'local_port',
+        default_value='6201',
+        description='Local UDP port used when initialize_type is 2.'
+    )
+    local_ip_arg = DeclareLaunchArgument(
+        'local_ip',
+        default_value='192.168.1.2',
+        description='Local UDP IP used when initialize_type is 2.'
+    )
+    use_rviz_arg = DeclareLaunchArgument(
+        'use_rviz',
+        default_value='true',
+        description='Start RViz.'
+    )
     save_cloud_txt_arg = DeclareLaunchArgument(
         'save_cloud_txt',
         default_value='false',
@@ -42,20 +98,22 @@ def generate_launch_description():
         output='screen',
         parameters= [
                 
-                {'initialize_type': 2},
-                {'work_mode': 0},
+                {'initialize_type': ParameterValue(LaunchConfiguration('initialize_type'), value_type=int)},
+                {'work_mode': ParameterValue(LaunchConfiguration('work_mode'), value_type=int)},
                 {'use_system_timestamp': True},
+                {'start_lidar_rotation': ParameterValue(LaunchConfiguration('start_lidar_rotation'), value_type=bool)},
+                {'reset_lidar_after_set_mode': ParameterValue(LaunchConfiguration('reset_lidar_after_set_mode'), value_type=bool)},
                 {'range_min': 0.0},
                 {'range_max': 100.0},
                 {'cloud_scan_num': 18},
 
-                {'serial_port': '/dev/ttyACM0'},
-                {'baudrate': 4000000},
+                {'serial_port': LaunchConfiguration('serial_port')},
+                {'baudrate': ParameterValue(LaunchConfiguration('baudrate'), value_type=int)},
 
-                {'lidar_port': 6101},
-                {'lidar_ip': '192.168.1.62'},
-                {'local_port': 6201},
-                {'local_ip': '192.168.1.2'},
+                {'lidar_port': ParameterValue(LaunchConfiguration('lidar_port'), value_type=int)},
+                {'lidar_ip': LaunchConfiguration('lidar_ip')},
+                {'local_port': ParameterValue(LaunchConfiguration('local_port'), value_type=int)},
+                {'local_ip': LaunchConfiguration('local_ip')},
                 
                 {'cloud_frame': "unilidar_lidar"},
                 {'cloud_topic': "unilidar/cloud"},
@@ -79,9 +137,21 @@ def generate_launch_description():
         executable='rviz2',
         name='rviz2',
         arguments=['-d', rviz_config_file],
-        output='log'
+        output='log',
+        condition=IfCondition(LaunchConfiguration('use_rviz')),
     )
     return LaunchDescription([
+        initialize_type_arg,
+        work_mode_arg,
+        serial_port_arg,
+        baudrate_arg,
+        start_lidar_rotation_arg,
+        reset_lidar_after_set_mode_arg,
+        lidar_port_arg,
+        lidar_ip_arg,
+        local_port_arg,
+        local_ip_arg,
+        use_rviz_arg,
         save_cloud_txt_arg,
         cloud_txt_save_mode_arg,
         cloud_txt_path_arg,

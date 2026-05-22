@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<package format="3">
+  <name>golf_mower_bringup</name>
+  <version>0.0.1</version>
+  <description>Bringup launch files for the golf mower robot project.</description>
+
+  <maintainer email="ubuntu@example.com">ubuntu</maintainer>
+  <license>TODO</license>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <exec_depend>launch</exec_depend>
+  <exec_depend>launch_ros</exec_depend>
+  <exec_depend>geometry_msgs</exec_depend>
+  <exec_depend>nav2_bringup</exec_depend>
+  <exec_depend>nav_msgs</exec_depend>
+  <exec_depend>rclpy</exec_depend>
+  <exec_depend>rviz2</exec_depend>
+  <exec_depend>tf2_ros</exec_depend>
+  <exec_depend>unitree_lidar_ros2</exec_depend>
+  <exec_depend>point_lio_unilidar</exec_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
