@@ -25,10 +25,13 @@ Unitree L2 -> /unilidar/cloud, /unilidar/imu -> Point-LIO -> /pointlio/odom, /po
 Temporary TF adapter:
 
 ```text
-map -> camera_init -> aft_mapped -> base_link
+map -> camera_init -> aft_mapped -> base_link -> unilidar_imu_initial -> unilidar_imu -> unilidar_lidar
 ```
 
-Point-LIO publishes `camera_init -> aft_mapped`; this launch adds `map -> camera_init` and `aft_mapped -> base_link` for later Nav2 integration tests.
+Point-LIO publishes `camera_init -> aft_mapped`. The Unitree lidar node publishes
+`unilidar_imu_initial -> unilidar_imu -> unilidar_lidar`. This launch adds
+`map -> camera_init`, `aft_mapped -> base_link`, and `base_link -> unilidar_imu_initial`
+for indoor bench testing and later Nav2 integration tests.
 
 ## Indoor Nav2 Mock
 
@@ -46,7 +49,7 @@ ros2 launch golf_mower_bringup indoor_nav2_mock.launch.py
 Expected TF chain:
 
 ```text
-map -> camera_init -> aft_mapped -> base_link
+map -> camera_init -> aft_mapped -> base_link -> unilidar_imu_initial -> unilidar_imu -> unilidar_lidar
 ```
 
 This launch is for integration checking while the lidar is on the desk. It can plan and publish `/cmd_vel`, but there is no real base driver in the loop yet.

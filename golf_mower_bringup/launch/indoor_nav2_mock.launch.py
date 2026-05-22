@@ -24,6 +24,7 @@ def generate_launch_description():
     use_pointlio_arg = DeclareLaunchArgument('use_pointlio', default_value='true')
     use_rviz_arg = DeclareLaunchArgument('use_rviz', default_value='true')
     use_nav2_arg = DeclareLaunchArgument('use_nav2', default_value='true')
+    use_lidar_tf_adapter_arg = DeclareLaunchArgument('use_lidar_tf_adapter', default_value='true')
     initialize_type_arg = DeclareLaunchArgument('initialize_type', default_value='2')
     work_mode_arg = DeclareLaunchArgument('work_mode', default_value='0')
     serial_port_arg = DeclareLaunchArgument('serial_port', default_value='/dev/ttyACM0')
@@ -48,6 +49,7 @@ def generate_launch_description():
             'use_pointlio': LaunchConfiguration('use_pointlio'),
             'use_rviz': LaunchConfiguration('use_rviz'),
             'use_tf_adapter': 'true',
+            'use_lidar_tf_adapter': LaunchConfiguration('use_lidar_tf_adapter'),
             'initialize_type': LaunchConfiguration('initialize_type'),
             'work_mode': LaunchConfiguration('work_mode'),
             'serial_port': LaunchConfiguration('serial_port'),
@@ -88,6 +90,7 @@ def generate_launch_description():
         use_pointlio_arg,
         use_rviz_arg,
         use_nav2_arg,
+        use_lidar_tf_adapter_arg,
         initialize_type_arg,
         work_mode_arg,
         serial_port_arg,

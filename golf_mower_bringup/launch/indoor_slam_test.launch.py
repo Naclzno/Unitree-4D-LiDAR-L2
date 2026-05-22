@@ -38,6 +38,11 @@ def generate_launch_description():
         default_value='true',
         description='Publish temporary map/base frames for indoor bench testing.'
     )
+    use_lidar_tf_adapter_arg = DeclareLaunchArgument(
+        'use_lidar_tf_adapter',
+        default_value='true',
+        description='Attach Unitree lidar frames to base_link for bench testing.'
+    )
     initialize_type_arg = DeclareLaunchArgument(
         'initialize_type',
         default_value='2',
@@ -171,6 +176,20 @@ def generate_launch_description():
         ],
     )
 
+    base_to_lidar_initial_tf = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='base_link_to_unilidar_imu_initial_tf',
+        output='screen',
+        condition=IfCondition(LaunchConfiguration('use_lidar_tf_adapter')),
+        arguments=[
+            '--x', '0', '--y', '0', '--z', '0',
+            '--roll', '0', '--pitch', '0', '--yaw', '0',
+            '--frame-id', 'base_link',
+            '--child-frame-id', 'unilidar_imu_initial',
+        ],
+    )
+
     rviz_node = Node(
         package='rviz2',
         executable='rviz2',
@@ -185,6 +204,7 @@ def generate_launch_description():
         use_pointlio_arg,
         use_rviz_arg,
         use_tf_adapter_arg,
+        use_lidar_tf_adapter_arg,
         initialize_type_arg,
         work_mode_arg,
         serial_port_arg,
@@ -200,5 +220,6 @@ def generate_launch_description():
         pointlio,
         map_to_pointlio_map_tf,
         pointlio_body_to_base_tf,
+        base_to_lidar_initial_tf,
         rviz_node,
     ])

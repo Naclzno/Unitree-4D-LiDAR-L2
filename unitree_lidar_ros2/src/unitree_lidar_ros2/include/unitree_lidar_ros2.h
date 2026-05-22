@@ -269,7 +269,22 @@ UnitreeLidarSDKNode::UnitreeLidarSDKNode(const rclcpp::NodeOptions &options)
 
 void UnitreeLidarSDKNode::timer_callback()
 {
-    int result = lsdk_->runParse();
+    int result = 0;
+    try
+    {
+        result = lsdk_->runParse();
+    }
+    catch (const std::exception &exc)
+    {
+        RCLCPP_WARN_THROTTLE(
+            this->get_logger(),
+            *this->get_clock(),
+            1000,
+            "Unitree lidar parse exception: %s",
+            exc.what());
+        return;
+    }
+
     static pcl::PointCloud<PointType>::Ptr cloudOut(new pcl::PointCloud<PointType>());
 
     // RCLCPP_INFO(this->get_logger(), "result = %d", result);
