@@ -11,12 +11,13 @@ from launch_ros.parameter_descriptions import ParameterValue
 
 
 def generate_launch_description():
+    bringup_share = get_package_share_directory('golf_mower_bringup')
     point_lio_share = get_package_share_directory('point_lio_unilidar')
 
     point_lio_launch = os.path.join(
         point_lio_share, 'launch', 'mapping_unilidar_l2.py')
     rviz_config = os.path.join(
-        point_lio_share, 'rviz_cfg', 'loam_unilidar_display.rviz')
+        bringup_share, 'rviz', 'indoor_slam.rviz')
 
     use_lidar_arg = DeclareLaunchArgument(
         'use_lidar',
@@ -28,10 +29,10 @@ def generate_launch_description():
         default_value='true',
         description='Start Point-LIO for indoor SLAM testing.'
     )
-    use_rviz_arg = DeclareLaunchArgument(
-        'use_rviz',
+    launch_rviz_arg = DeclareLaunchArgument(
+        'launch_rviz',
         default_value='true',
-        description='Start RViz with the Point-LIO display config.'
+        description='Start the bringup RViz with the Point-LIO display config.'
     )
     use_tf_adapter_arg = DeclareLaunchArgument(
         'use_tf_adapter',
@@ -196,13 +197,13 @@ def generate_launch_description():
         name='rviz2_indoor_slam',
         arguments=['-d', rviz_config],
         output='screen',
-        condition=IfCondition(LaunchConfiguration('use_rviz')),
+        condition=IfCondition(LaunchConfiguration('launch_rviz')),
     )
 
     return LaunchDescription([
         use_lidar_arg,
         use_pointlio_arg,
-        use_rviz_arg,
+        launch_rviz_arg,
         use_tf_adapter_arg,
         use_lidar_tf_adapter_arg,
         initialize_type_arg,

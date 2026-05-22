@@ -16,11 +16,28 @@ source golf_mower_bringup/install/setup.bash
 ros2 launch golf_mower_bringup indoor_slam_test.launch.py
 ```
 
+For serial Unitree L2 testing, use:
+
+```bash
+ros2 launch golf_mower_bringup indoor_slam_test.launch.py \
+  initialize_type:=1 \
+  work_mode:=8 \
+  serial_port:=/dev/ttyACM0 \
+  baudrate:=4000000 \
+  start_lidar_rotation:=true \
+  reset_lidar_after_set_mode:=false \
+  launch_rviz:=true
+```
+
 The first test chain is:
 
 ```text
 Unitree L2 -> /unilidar/cloud, /unilidar/imu -> Point-LIO -> /pointlio/odom, /pointlio/laser_map -> RViz
 ```
+
+The bringup RViz config displays both the raw Unitree cloud `/unilidar/cloud`
+and the Point-LIO outputs such as `/pointlio/cloud_registered` and
+`/pointlio/laser_map`.
 
 Temporary TF adapter:
 

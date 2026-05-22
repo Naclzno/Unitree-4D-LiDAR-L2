@@ -22,7 +22,7 @@ def generate_launch_description():
 
     use_lidar_arg = DeclareLaunchArgument('use_lidar', default_value='true')
     use_pointlio_arg = DeclareLaunchArgument('use_pointlio', default_value='true')
-    use_rviz_arg = DeclareLaunchArgument('use_rviz', default_value='true')
+    launch_rviz_arg = DeclareLaunchArgument('launch_rviz', default_value='true')
     use_nav2_arg = DeclareLaunchArgument('use_nav2', default_value='true')
     use_lidar_tf_adapter_arg = DeclareLaunchArgument('use_lidar_tf_adapter', default_value='true')
     initialize_type_arg = DeclareLaunchArgument('initialize_type', default_value='2')
@@ -47,7 +47,7 @@ def generate_launch_description():
         launch_arguments={
             'use_lidar': LaunchConfiguration('use_lidar'),
             'use_pointlio': LaunchConfiguration('use_pointlio'),
-            'use_rviz': LaunchConfiguration('use_rviz'),
+            'launch_rviz': LaunchConfiguration('launch_rviz'),
             'use_tf_adapter': 'true',
             'use_lidar_tf_adapter': LaunchConfiguration('use_lidar_tf_adapter'),
             'initialize_type': LaunchConfiguration('initialize_type'),
@@ -88,7 +88,7 @@ def generate_launch_description():
     return LaunchDescription([
         use_lidar_arg,
         use_pointlio_arg,
-        use_rviz_arg,
+        launch_rviz_arg,
         use_nav2_arg,
         use_lidar_tf_adapter_arg,
         initialize_type_arg,
