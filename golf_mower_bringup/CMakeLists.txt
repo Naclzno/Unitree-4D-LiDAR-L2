@@ -11,6 +11,8 @@ install(PROGRAMS
   scripts/pointlio_odom_tf_bridge.py
   scripts/nav2_send_spin_goal.py
   scripts/nav2_send_tb3_forward_goal.py
+  scripts/grid_map_to_occupancy_grid.py
+  scripts/grid_map_inspect.py
   DESTINATION lib/${PROJECT_NAME}
 )
 
