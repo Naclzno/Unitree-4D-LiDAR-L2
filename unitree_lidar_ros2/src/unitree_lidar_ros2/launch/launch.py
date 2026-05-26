@@ -44,6 +44,11 @@ def generate_launch_description():
         default_value='true',
         description='Publish Unitree vendor demo TFs.'
     )
+    imu_quaternion_order_arg = DeclareLaunchArgument(
+        'imu_quaternion_order',
+        default_value='wxyz',
+        description='Order of quaternion values provided by the Unitree SDK: wxyz or xyzw.'
+    )
     lidar_port_arg = DeclareLaunchArgument(
         'lidar_port',
         default_value='6101',
@@ -109,6 +114,7 @@ def generate_launch_description():
                 {'start_lidar_rotation': ParameterValue(LaunchConfiguration('start_lidar_rotation'), value_type=bool)},
                 {'reset_lidar_after_set_mode': ParameterValue(LaunchConfiguration('reset_lidar_after_set_mode'), value_type=bool)},
                 {'publish_tf': ParameterValue(LaunchConfiguration('publish_tf'), value_type=bool)},
+                {'imu_quaternion_order': LaunchConfiguration('imu_quaternion_order')},
                 {'range_min': 0.0},
                 {'range_max': 100.0},
                 {'cloud_scan_num': 18},
@@ -154,6 +160,7 @@ def generate_launch_description():
         start_lidar_rotation_arg,
         reset_lidar_after_set_mode_arg,
         publish_tf_arg,
+        imu_quaternion_order_arg,
         lidar_port_arg,
         lidar_ip_arg,
         local_port_arg,

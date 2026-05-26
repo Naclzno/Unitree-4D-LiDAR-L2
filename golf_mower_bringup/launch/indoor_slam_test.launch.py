@@ -16,6 +16,8 @@ def generate_launch_description():
 
     point_lio_launch = os.path.join(
         point_lio_share, 'launch', 'mapping_unilidar_l2.py')
+    default_pointlio_config = os.path.join(
+        point_lio_share, 'config', 'unilidar_l2_ros2_gravity_positive.yaml')
     rviz_config = os.path.join(
         bringup_share, 'rviz', 'indoor_slam.rviz')
 
@@ -43,6 +45,11 @@ def generate_launch_description():
         'use_lidar_tf_adapter',
         default_value='true',
         description='Attach Unitree lidar frames to base_link for bench testing.'
+    )
+    use_static_pointlio_pose_arg = DeclareLaunchArgument(
+        'use_static_pointlio_pose',
+        default_value='false',
+        description='Publish a static camera_init -> aft_mapped transform for desk tests without Point-LIO odometry.'
     )
     initialize_type_arg = DeclareLaunchArgument(
         'initialize_type',
@@ -73,6 +80,16 @@ def generate_launch_description():
         'reset_lidar_after_set_mode',
         default_value='true',
         description='Call resetLidar after setting work mode.'
+    )
+    pointlio_config_file_arg = DeclareLaunchArgument(
+        'pointlio_config_file',
+        default_value=default_pointlio_config,
+        description='Point-LIO config file.'
+    )
+    imu_quaternion_order_arg = DeclareLaunchArgument(
+        'imu_quaternion_order',
+        default_value='wxyz',
+        description='Order of Unitree SDK quaternion values: wxyz or xyzw.'
     )
 
     save_cloud_txt_arg = DeclareLaunchArgument(
@@ -118,6 +135,7 @@ def generate_launch_description():
             {'reset_lidar_after_set_mode': ParameterValue(
                 LaunchConfiguration('reset_lidar_after_set_mode'), value_type=bool)},
             {'publish_tf': False},
+            {'imu_quaternion_order': LaunchConfiguration('imu_quaternion_order')},
             {'range_min': 0.0},
             {'range_max': 100.0},
             {'cloud_scan_num': 18},
@@ -147,6 +165,7 @@ def generate_launch_description():
         condition=IfCondition(LaunchConfiguration('use_pointlio')),
         launch_arguments={
             'use_rviz': 'false',
+            'config_file': LaunchConfiguration('pointlio_config_file'),
         }.items(),
     )
 
@@ -176,6 +195,34 @@ def generate_launch_description():
             '--frame-id', 'aft_mapped',
             '--child-frame-id', 'base_link',
         ],
+    )
+
+    static_pointlio_pose_tf = Node(
+        package='tf2_ros',
+        executable='static_transform_publisher',
+        name='camera_init_to_aft_mapped_static_tf',
+        output='screen',
+        condition=IfCondition(LaunchConfiguration('use_static_pointlio_pose')),
+        arguments=[
+            '--x', '0', '--y', '0', '--z', '0',
+            '--roll', '0', '--pitch', '0', '--yaw', '0',
+            '--frame-id', 'camera_init',
+            '--child-frame-id', 'aft_mapped',
+        ],
+    )
+
+    static_pointlio_odom = Node(
+        package='golf_mower_bringup',
+        executable='static_pointlio_odom.py',
+        name='static_pointlio_odom',
+        output='screen',
+        condition=IfCondition(LaunchConfiguration('use_static_pointlio_pose')),
+        parameters=[{
+            'odom_topic': '/pointlio/odom',
+            'parent_frame': 'camera_init',
+            'child_frame': 'aft_mapped',
+            'publish_rate': 30.0,
+        }],
     )
 
     base_to_lidar_tf = Node(
@@ -221,12 +268,15 @@ def generate_launch_description():
         launch_rviz_arg,
         use_tf_adapter_arg,
         use_lidar_tf_adapter_arg,
+        use_static_pointlio_pose_arg,
         initialize_type_arg,
         work_mode_arg,
         serial_port_arg,
         baudrate_arg,
         start_lidar_rotation_arg,
         reset_lidar_after_set_mode_arg,
+        pointlio_config_file_arg,
+        imu_quaternion_order_arg,
         save_cloud_txt_arg,
         cloud_txt_save_mode_arg,
         cloud_txt_path_arg,
@@ -235,6 +285,8 @@ def generate_launch_description():
         lidar_node,
         pointlio,
         map_to_pointlio_map_tf,
+        static_pointlio_pose_tf,
+        static_pointlio_odom,
         pointlio_body_to_base_tf,
         base_to_lidar_tf,
         base_to_imu_tf,

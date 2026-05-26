@@ -1,0 +1,11 @@
+<class_libraries>
+  <library path="golf_mower_costmap_plugins">
+    <class
+      type="golf_mower_bringup::TraversabilityLayer"
+      base_class_type="nav2_costmap_2d::Layer">
+      <description>
+        Applies an elevation-derived traversability OccupancyGrid as a dynamic terrain cost layer.
+      </description>
+    </class>
+  </library>
+</class_libraries>

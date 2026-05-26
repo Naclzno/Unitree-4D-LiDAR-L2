@@ -9,6 +9,11 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
+  <depend>nav2_costmap_2d</depend>
+  <depend>nav_msgs</depend>
+  <depend>pluginlib</depend>
+  <depend>rclcpp</depend>
+
   <exec_depend>launch</exec_depend>
   <exec_depend>launch_ros</exec_depend>
   <exec_depend>geometry_msgs</exec_depend>
@@ -16,12 +21,12 @@
   <exec_depend>grid_map_msgs</exec_depend>
   <exec_depend>nav2_bringup</exec_depend>
   <exec_depend>nav2_msgs</exec_depend>
-  <exec_depend>nav_msgs</exec_depend>
   <exec_depend>rclpy</exec_depend>
   <exec_depend>rviz2</exec_depend>
   <exec_depend>tf2_ros</exec_depend>
   <exec_depend>unitree_lidar_ros2</exec_depend>
   <exec_depend>point_lio_unilidar</exec_depend>
+  <exec_depend>patchworkpp</exec_depend>
 
   <export>
     <build_type>ament_cmake</build_type>

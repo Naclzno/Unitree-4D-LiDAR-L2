@@ -4,12 +4,24 @@ import math
 import sys
 
 import rclpy
+from action_msgs.msg import GoalStatus
 from geometry_msgs.msg import PoseStamped
 from nav2_msgs.action import NavigateToPose
 from rclpy.action import ActionClient
 from rclpy.duration import Duration
 from rclpy.node import Node
 from tf2_ros import Buffer, TransformException, TransformListener
+
+
+STATUS_NAMES = {
+    GoalStatus.STATUS_UNKNOWN: 'UNKNOWN',
+    GoalStatus.STATUS_ACCEPTED: 'ACCEPTED',
+    GoalStatus.STATUS_EXECUTING: 'EXECUTING',
+    GoalStatus.STATUS_CANCELING: 'CANCELING',
+    GoalStatus.STATUS_SUCCEEDED: 'SUCCEEDED',
+    GoalStatus.STATUS_CANCELED: 'CANCELED',
+    GoalStatus.STATUS_ABORTED: 'ABORTED',
+}
 
 
 def yaw_from_quaternion(q):
@@ -98,12 +110,13 @@ class Nav2Tb3ForwardGoalDemo(Node):
             self.get_logger().error('Goal was rejected by Nav2.')
             return 1
 
-        self.get_logger().info('Goal accepted. TurtleBot3 should move in Gazebo.')
+        self.get_logger().info('Goal accepted. Watch /cmd_vel for output.')
         result_future = goal_handle.get_result_async()
         rclpy.spin_until_future_complete(self, result_future)
         result = result_future.result()
-        self.get_logger().info(f'Nav2 goal finished with status: {result.status}')
-        return 0 if result.status == 4 else 1
+        status_name = STATUS_NAMES.get(result.status, str(result.status))
+        self.get_logger().info(f'Nav2 goal finished with status: {status_name} ({result.status})')
+        return 0 if result.status == GoalStatus.STATUS_SUCCEEDED else 1
 
 
 def main():

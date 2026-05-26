@@ -215,3 +215,56 @@ ros2 topic hz /elevation/traversability_grid
 ros2 node list | grep -E "planner|controller|navigator|costmap"
 ros2 topic echo /cmd_vel
 ```
+
+## Outdoor Patchwork++ Stage 4
+
+This stage inserts Patchwork++ between the raw Unitree L2 cloud and the terrain
+/ obstacle consumers. Point-LIO still uses the original `/unilidar/cloud`.
+Patchwork++ splits the same cloud into `/ground_segmentation/ground` for
+elevation mapping and `/ground_segmentation/nonground` for Nav2 obstacle layers.
+The elevation traversability grid is consumed by a custom Nav2 local costmap
+plugin, `golf_mower_bringup::TraversabilityLayer`. This keeps terrain costs
+local and rolling instead of treating the rolling elevation map as a static
+global map.
+
+```bash
+source /opt/ros/humble/setup.bash
+source unitree_lidar_ros2/install/setup.bash
+source point_lio_unilidar-2.0.2/install/setup.bash
+source elevation_mapping_cupy/install/setup.bash
+source patchwork-plusplus-ros/install/setup.bash
+source golf_mower_bringup/install/setup.bash
+
+ros2 launch golf_mower_bringup outdoor_patchwork_stage4.launch.py \
+  initialize_type:=1 \
+  work_mode:=8 \
+  serial_port:=/dev/ttyACM0 \
+  baudrate:=4000000 \
+  start_lidar_rotation:=true \
+  reset_lidar_after_set_mode:=false \
+  patchwork_sensor_height:=0.0 \
+  launch_outdoor_rviz:=true
+```
+
+Useful checks:
+
+```bash
+ros2 topic hz /ground_segmentation/ground
+ros2 topic hz /ground_segmentation/nonground
+ros2 topic hz /elevation_mapping_node/elevation_map_filter
+ros2 topic hz /elevation/traversability_grid
+ros2 topic echo /local_costmap/costmap --once
+```
+
+For desktop testing, `patchwork_sensor_height:=0.0` treats the tabletop as the
+ground plane. After mounting the lidar on the mower platform, tune
+`patchwork_sensor_height` from the measured point cloud distribution.
+
+If Patchwork++ reports an empty ground cloud, inspect the Unitree cloud axis
+range before tuning:
+
+```bash
+ros2 run golf_mower_bringup pointcloud_xyz_stats.py --ros-args \
+  -p cloud_topic:=/unilidar/cloud \
+  -p print_every_n:=30
+```
