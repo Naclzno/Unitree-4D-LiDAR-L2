@@ -48,6 +48,8 @@ install(PROGRAMS
   scripts/pointcloud_ground_fallback.py
   scripts/pointcloud_xyz_stats.py
   scripts/static_pointlio_odom.py
+  scripts/pcd_to_occupancy_grid.py
+  scripts/segmented_map_builder.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

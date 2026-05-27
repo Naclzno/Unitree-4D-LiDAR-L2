@@ -91,6 +91,18 @@ def generate_launch_description():
         default_value='wxyz',
         description='Order of Unitree SDK quaternion values: wxyz or xyzw.'
     )
+    lidar_tf_x_arg = DeclareLaunchArgument('lidar_tf_x', default_value='0.0')
+    lidar_tf_y_arg = DeclareLaunchArgument('lidar_tf_y', default_value='0.0')
+    lidar_tf_z_arg = DeclareLaunchArgument('lidar_tf_z', default_value='0.0')
+    lidar_tf_roll_arg = DeclareLaunchArgument('lidar_tf_roll', default_value='0.0')
+    lidar_tf_pitch_arg = DeclareLaunchArgument('lidar_tf_pitch', default_value='0.0')
+    lidar_tf_yaw_arg = DeclareLaunchArgument('lidar_tf_yaw', default_value='0.0')
+    imu_tf_x_arg = DeclareLaunchArgument('imu_tf_x', default_value='0.0')
+    imu_tf_y_arg = DeclareLaunchArgument('imu_tf_y', default_value='0.0')
+    imu_tf_z_arg = DeclareLaunchArgument('imu_tf_z', default_value='0.0')
+    imu_tf_roll_arg = DeclareLaunchArgument('imu_tf_roll', default_value='0.0')
+    imu_tf_pitch_arg = DeclareLaunchArgument('imu_tf_pitch', default_value='0.0')
+    imu_tf_yaw_arg = DeclareLaunchArgument('imu_tf_yaw', default_value='0.0')
 
     save_cloud_txt_arg = DeclareLaunchArgument(
         'save_cloud_txt',
@@ -232,8 +244,12 @@ def generate_launch_description():
         output='screen',
         condition=IfCondition(LaunchConfiguration('use_lidar_tf_adapter')),
         arguments=[
-            '--x', '0', '--y', '0', '--z', '0',
-            '--roll', '0', '--pitch', '0', '--yaw', '0',
+            '--x', LaunchConfiguration('lidar_tf_x'),
+            '--y', LaunchConfiguration('lidar_tf_y'),
+            '--z', LaunchConfiguration('lidar_tf_z'),
+            '--roll', LaunchConfiguration('lidar_tf_roll'),
+            '--pitch', LaunchConfiguration('lidar_tf_pitch'),
+            '--yaw', LaunchConfiguration('lidar_tf_yaw'),
             '--frame-id', 'base_link',
             '--child-frame-id', 'unilidar_lidar',
         ],
@@ -246,8 +262,12 @@ def generate_launch_description():
         output='screen',
         condition=IfCondition(LaunchConfiguration('use_lidar_tf_adapter')),
         arguments=[
-            '--x', '0', '--y', '0', '--z', '0',
-            '--roll', '0', '--pitch', '0', '--yaw', '0',
+            '--x', LaunchConfiguration('imu_tf_x'),
+            '--y', LaunchConfiguration('imu_tf_y'),
+            '--z', LaunchConfiguration('imu_tf_z'),
+            '--roll', LaunchConfiguration('imu_tf_roll'),
+            '--pitch', LaunchConfiguration('imu_tf_pitch'),
+            '--yaw', LaunchConfiguration('imu_tf_yaw'),
             '--frame-id', 'base_link',
             '--child-frame-id', 'unilidar_imu',
         ],
@@ -277,6 +297,18 @@ def generate_launch_description():
         reset_lidar_after_set_mode_arg,
         pointlio_config_file_arg,
         imu_quaternion_order_arg,
+        lidar_tf_x_arg,
+        lidar_tf_y_arg,
+        lidar_tf_z_arg,
+        lidar_tf_roll_arg,
+        lidar_tf_pitch_arg,
+        lidar_tf_yaw_arg,
+        imu_tf_x_arg,
+        imu_tf_y_arg,
+        imu_tf_z_arg,
+        imu_tf_roll_arg,
+        imu_tf_pitch_arg,
+        imu_tf_yaw_arg,
         save_cloud_txt_arg,
         cloud_txt_save_mode_arg,
         cloud_txt_path_arg,

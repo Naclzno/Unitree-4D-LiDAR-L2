@@ -45,6 +45,18 @@ def generate_launch_description():
         default_value='wxyz',
         description='Order of Unitree SDK quaternion values: wxyz or xyzw.'
     )
+    lidar_tf_x_arg = DeclareLaunchArgument('lidar_tf_x', default_value='0.0')
+    lidar_tf_y_arg = DeclareLaunchArgument('lidar_tf_y', default_value='0.0')
+    lidar_tf_z_arg = DeclareLaunchArgument('lidar_tf_z', default_value='0.0')
+    lidar_tf_roll_arg = DeclareLaunchArgument('lidar_tf_roll', default_value='0.0')
+    lidar_tf_pitch_arg = DeclareLaunchArgument('lidar_tf_pitch', default_value='0.0')
+    lidar_tf_yaw_arg = DeclareLaunchArgument('lidar_tf_yaw', default_value='0.0')
+    imu_tf_x_arg = DeclareLaunchArgument('imu_tf_x', default_value='0.0')
+    imu_tf_y_arg = DeclareLaunchArgument('imu_tf_y', default_value='0.0')
+    imu_tf_z_arg = DeclareLaunchArgument('imu_tf_z', default_value='0.0')
+    imu_tf_roll_arg = DeclareLaunchArgument('imu_tf_roll', default_value='0.0')
+    imu_tf_pitch_arg = DeclareLaunchArgument('imu_tf_pitch', default_value='0.0')
+    imu_tf_yaw_arg = DeclareLaunchArgument('imu_tf_yaw', default_value='0.0')
     elevation_unitree_config_arg = DeclareLaunchArgument(
         'elevation_unitree_config',
         default_value=os.path.join(bringup_share, 'config', 'elevation_unitree_l2_stage1.yaml'),
@@ -99,6 +111,18 @@ def generate_launch_description():
             'reset_lidar_after_set_mode': LaunchConfiguration('reset_lidar_after_set_mode'),
             'pointlio_config_file': LaunchConfiguration('pointlio_config_file'),
             'imu_quaternion_order': LaunchConfiguration('imu_quaternion_order'),
+            'lidar_tf_x': LaunchConfiguration('lidar_tf_x'),
+            'lidar_tf_y': LaunchConfiguration('lidar_tf_y'),
+            'lidar_tf_z': LaunchConfiguration('lidar_tf_z'),
+            'lidar_tf_roll': LaunchConfiguration('lidar_tf_roll'),
+            'lidar_tf_pitch': LaunchConfiguration('lidar_tf_pitch'),
+            'lidar_tf_yaw': LaunchConfiguration('lidar_tf_yaw'),
+            'imu_tf_x': LaunchConfiguration('imu_tf_x'),
+            'imu_tf_y': LaunchConfiguration('imu_tf_y'),
+            'imu_tf_z': LaunchConfiguration('imu_tf_z'),
+            'imu_tf_roll': LaunchConfiguration('imu_tf_roll'),
+            'imu_tf_pitch': LaunchConfiguration('imu_tf_pitch'),
+            'imu_tf_yaw': LaunchConfiguration('imu_tf_yaw'),
             'elevation_unitree_config': LaunchConfiguration('elevation_unitree_config'),
             'outdoor_rviz_config': LaunchConfiguration('outdoor_rviz_config'),
         }.items(),
@@ -135,6 +159,18 @@ def generate_launch_description():
         reset_lidar_after_set_mode_arg,
         pointlio_config_file_arg,
         imu_quaternion_order_arg,
+        lidar_tf_x_arg,
+        lidar_tf_y_arg,
+        lidar_tf_z_arg,
+        lidar_tf_roll_arg,
+        lidar_tf_pitch_arg,
+        lidar_tf_yaw_arg,
+        imu_tf_x_arg,
+        imu_tf_y_arg,
+        imu_tf_z_arg,
+        imu_tf_roll_arg,
+        imu_tf_pitch_arg,
+        imu_tf_yaw_arg,
         elevation_unitree_config_arg,
         outdoor_rviz_config_arg,
         grid_map_topic_arg,
