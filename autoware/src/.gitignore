@@ -1,6 +1,1 @@
-# Ignore everything in this folder and all subdirectories
-*
-
-# EXCEPT: Re-include the necessary files.
-!README.md
-!.gitignore
+# Keep Autoware source repositories as regular files in the parent project.
