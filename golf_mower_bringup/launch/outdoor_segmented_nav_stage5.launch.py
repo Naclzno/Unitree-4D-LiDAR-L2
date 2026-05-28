@@ -46,8 +46,8 @@ def generate_launch_description():
         default_value=os.path.join(
             get_package_share_directory('point_lio_unilidar'),
             'config',
-            'unilidar_l2_ros2_gravity_positive.yaml'),
-        description='Point-LIO config file.'
+            'unilidar_l2_ros2_gravity_positive_no_pcd.yaml'),
+        description='Point-LIO config file. Navigation defaults to no PCD saving.'
     )
     imu_quaternion_order_arg = DeclareLaunchArgument('imu_quaternion_order', default_value='wxyz')
     use_static_pointlio_pose_arg = DeclareLaunchArgument('use_static_pointlio_pose', default_value='false')
