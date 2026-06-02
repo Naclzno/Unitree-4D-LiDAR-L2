@@ -47,18 +47,29 @@ def generate_launch_description():
     baudrate_arg = DeclareLaunchArgument('baudrate', default_value='4000000')
     start_lidar_rotation_arg = DeclareLaunchArgument('start_lidar_rotation', default_value='true')
     reset_lidar_after_set_mode_arg = DeclareLaunchArgument('reset_lidar_after_set_mode', default_value='true')
+    use_system_timestamp_arg = DeclareLaunchArgument('use_system_timestamp', default_value='false')
     pointlio_config_file_arg = DeclareLaunchArgument(
         'pointlio_config_file',
         default_value=os.path.join(
             get_package_share_directory('point_lio_unilidar'),
             'config',
-            'unilidar_l2_ros2_gravity_positive.yaml'),
+            'unilidar_l2_ros2.yaml'),
         description='Point-LIO config file.'
     )
     imu_quaternion_order_arg = DeclareLaunchArgument(
         'imu_quaternion_order',
         default_value='wxyz',
         description='Order of Unitree SDK quaternion values: wxyz or xyzw.'
+    )
+    imu_linear_acceleration_scale_arg = DeclareLaunchArgument(
+        'imu_linear_acceleration_scale',
+        default_value='0.5',
+        description='Scale Unitree SDK IMU acceleration before publishing /unilidar/imu in m/s^2.'
+    )
+    imu_angular_velocity_scale_arg = DeclareLaunchArgument(
+        'imu_angular_velocity_scale',
+        default_value='0.017453292519943295',
+        description='Scale Unitree SDK IMU angular velocity before publishing /unilidar/imu in rad/s.'
     )
 
     patchwork_cloud_topic_arg = DeclareLaunchArgument(
@@ -113,8 +124,11 @@ def generate_launch_description():
             'baudrate': LaunchConfiguration('baudrate'),
             'start_lidar_rotation': LaunchConfiguration('start_lidar_rotation'),
             'reset_lidar_after_set_mode': LaunchConfiguration('reset_lidar_after_set_mode'),
+            'use_system_timestamp': LaunchConfiguration('use_system_timestamp'),
             'pointlio_config_file': LaunchConfiguration('pointlio_config_file'),
             'imu_quaternion_order': LaunchConfiguration('imu_quaternion_order'),
+            'imu_angular_velocity_scale': LaunchConfiguration('imu_angular_velocity_scale'),
+            'imu_linear_acceleration_scale': LaunchConfiguration('imu_linear_acceleration_scale'),
             'elevation_unitree_config': elevation_patchwork_config,
             'outdoor_rviz_config': outdoor_rviz_config,
         }.items(),
@@ -187,8 +201,11 @@ def generate_launch_description():
         baudrate_arg,
         start_lidar_rotation_arg,
         reset_lidar_after_set_mode_arg,
+        use_system_timestamp_arg,
         pointlio_config_file_arg,
         imu_quaternion_order_arg,
+        imu_angular_velocity_scale_arg,
+        imu_linear_acceleration_scale_arg,
         patchwork_cloud_topic_arg,
         patchwork_sensor_height_arg,
         patchwork_min_r_arg,

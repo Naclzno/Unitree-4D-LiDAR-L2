@@ -39,6 +39,11 @@ def generate_launch_description():
         default_value='true',
         description='Call resetLidar after setting work mode.'
     )
+    use_system_timestamp_arg = DeclareLaunchArgument(
+        'use_system_timestamp',
+        default_value='true',
+        description='Use host system time for point cloud stamps. If false, use lidar hardware stamps.'
+    )
     publish_tf_arg = DeclareLaunchArgument(
         'publish_tf',
         default_value='true',
@@ -48,6 +53,16 @@ def generate_launch_description():
         'imu_quaternion_order',
         default_value='wxyz',
         description='Order of quaternion values provided by the Unitree SDK: wxyz or xyzw.'
+    )
+    imu_linear_acceleration_scale_arg = DeclareLaunchArgument(
+        'imu_linear_acceleration_scale',
+        default_value='0.5',
+        description='Scale SDK IMU acceleration to ROS m/s^2. Unitree L2 observed raw output is about 2g at rest.'
+    )
+    imu_angular_velocity_scale_arg = DeclareLaunchArgument(
+        'imu_angular_velocity_scale',
+        default_value='0.017453292519943295',
+        description='Scale SDK IMU angular velocity to ROS rad/s. Default converts deg/s to rad/s.'
     )
     lidar_port_arg = DeclareLaunchArgument(
         'lidar_port',
@@ -110,11 +125,13 @@ def generate_launch_description():
                 
                 {'initialize_type': ParameterValue(LaunchConfiguration('initialize_type'), value_type=int)},
                 {'work_mode': ParameterValue(LaunchConfiguration('work_mode'), value_type=int)},
-                {'use_system_timestamp': True},
+                {'use_system_timestamp': ParameterValue(LaunchConfiguration('use_system_timestamp'), value_type=bool)},
                 {'start_lidar_rotation': ParameterValue(LaunchConfiguration('start_lidar_rotation'), value_type=bool)},
                 {'reset_lidar_after_set_mode': ParameterValue(LaunchConfiguration('reset_lidar_after_set_mode'), value_type=bool)},
                 {'publish_tf': ParameterValue(LaunchConfiguration('publish_tf'), value_type=bool)},
                 {'imu_quaternion_order': LaunchConfiguration('imu_quaternion_order')},
+                {'imu_angular_velocity_scale': ParameterValue(LaunchConfiguration('imu_angular_velocity_scale'), value_type=float)},
+                {'imu_linear_acceleration_scale': ParameterValue(LaunchConfiguration('imu_linear_acceleration_scale'), value_type=float)},
                 {'range_min': 0.0},
                 {'range_max': 100.0},
                 {'cloud_scan_num': 18},
@@ -159,8 +176,11 @@ def generate_launch_description():
         baudrate_arg,
         start_lidar_rotation_arg,
         reset_lidar_after_set_mode_arg,
+        use_system_timestamp_arg,
         publish_tf_arg,
         imu_quaternion_order_arg,
+        imu_angular_velocity_scale_arg,
+        imu_linear_acceleration_scale_arg,
         lidar_port_arg,
         lidar_ip_arg,
         local_port_arg,

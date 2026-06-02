@@ -19,7 +19,7 @@ def generate_launch_description():
         bringup_share, 'launch', 'indoor_slam_test.launch.py')
     patchwork_params = os.path.join(patchwork_share, 'config', 'params.yaml')
     default_pointlio_config = os.path.join(
-        point_lio_share, 'config', 'unilidar_l2_ros2_gravity_positive.yaml')
+        point_lio_share, 'config', 'unilidar_l2_ros2.yaml')
 
     use_lidar_arg = DeclareLaunchArgument('use_lidar', default_value='true')
     use_pointlio_arg = DeclareLaunchArgument('use_pointlio', default_value='true')
@@ -38,6 +38,7 @@ def generate_launch_description():
     baudrate_arg = DeclareLaunchArgument('baudrate', default_value='4000000')
     start_lidar_rotation_arg = DeclareLaunchArgument('start_lidar_rotation', default_value='true')
     reset_lidar_after_set_mode_arg = DeclareLaunchArgument('reset_lidar_after_set_mode', default_value='true')
+    use_system_timestamp_arg = DeclareLaunchArgument('use_system_timestamp', default_value='false')
     pointlio_config_file_arg = DeclareLaunchArgument(
         'pointlio_config_file',
         default_value=default_pointlio_config,
@@ -47,6 +48,16 @@ def generate_launch_description():
         'imu_quaternion_order',
         default_value='wxyz',
         description='Order of Unitree SDK quaternion values: wxyz or xyzw.'
+    )
+    imu_linear_acceleration_scale_arg = DeclareLaunchArgument(
+        'imu_linear_acceleration_scale',
+        default_value='0.5',
+        description='Scale Unitree SDK IMU acceleration before publishing /unilidar/imu in m/s^2.'
+    )
+    imu_angular_velocity_scale_arg = DeclareLaunchArgument(
+        'imu_angular_velocity_scale',
+        default_value='0.017453292519943295',
+        description='Scale Unitree SDK IMU angular velocity before publishing /unilidar/imu in rad/s.'
     )
     lidar_tf_x_arg = DeclareLaunchArgument('lidar_tf_x', default_value='0.0')
     lidar_tf_y_arg = DeclareLaunchArgument('lidar_tf_y', default_value='0.0')
@@ -98,8 +109,11 @@ def generate_launch_description():
             'baudrate': LaunchConfiguration('baudrate'),
             'start_lidar_rotation': LaunchConfiguration('start_lidar_rotation'),
             'reset_lidar_after_set_mode': LaunchConfiguration('reset_lidar_after_set_mode'),
+            'use_system_timestamp': LaunchConfiguration('use_system_timestamp'),
             'pointlio_config_file': LaunchConfiguration('pointlio_config_file'),
             'imu_quaternion_order': LaunchConfiguration('imu_quaternion_order'),
+            'imu_angular_velocity_scale': LaunchConfiguration('imu_angular_velocity_scale'),
+            'imu_linear_acceleration_scale': LaunchConfiguration('imu_linear_acceleration_scale'),
             'lidar_tf_x': LaunchConfiguration('lidar_tf_x'),
             'lidar_tf_y': LaunchConfiguration('lidar_tf_y'),
             'lidar_tf_z': LaunchConfiguration('lidar_tf_z'),
@@ -163,8 +177,11 @@ def generate_launch_description():
         baudrate_arg,
         start_lidar_rotation_arg,
         reset_lidar_after_set_mode_arg,
+        use_system_timestamp_arg,
         pointlio_config_file_arg,
         imu_quaternion_order_arg,
+        imu_angular_velocity_scale_arg,
+        imu_linear_acceleration_scale_arg,
         lidar_tf_x_arg,
         lidar_tf_y_arg,
         lidar_tf_z_arg,

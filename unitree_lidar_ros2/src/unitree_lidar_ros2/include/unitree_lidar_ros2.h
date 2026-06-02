@@ -77,6 +77,8 @@ protected:
     bool reset_lidar_after_set_mode_;
     bool publish_tf_;
     std::string imu_quaternion_order_;
+    double imu_angular_velocity_scale_;
+    double imu_linear_acceleration_scale_;
     double range_min_;
     double range_max_;
 
@@ -114,6 +116,8 @@ UnitreeLidarSDKNode::UnitreeLidarSDKNode(const rclcpp::NodeOptions &options)
     declare_parameter<bool>("reset_lidar_after_set_mode", true);
     declare_parameter<bool>("publish_tf", true);
     declare_parameter<std::string>("imu_quaternion_order", "wxyz");
+    declare_parameter<double>("imu_angular_velocity_scale", 0.017453292519943295);
+    declare_parameter<double>("imu_linear_acceleration_scale", 0.5);
     declare_parameter<double>("range_min", 0);
     declare_parameter<double>("range_max", 50);
     declare_parameter<int>("cloud_scan_num", 18);
@@ -155,6 +159,8 @@ UnitreeLidarSDKNode::UnitreeLidarSDKNode(const rclcpp::NodeOptions &options)
     reset_lidar_after_set_mode_ = get_parameter("reset_lidar_after_set_mode").as_bool();
     publish_tf_ = get_parameter("publish_tf").as_bool();
     imu_quaternion_order_ = get_parameter("imu_quaternion_order").as_string();
+    imu_angular_velocity_scale_ = get_parameter("imu_angular_velocity_scale").as_double();
+    imu_linear_acceleration_scale_ = get_parameter("imu_linear_acceleration_scale").as_double();
     range_max_ = get_parameter("range_max").as_double();
     range_min_ = get_parameter("range_min").as_double();
 
@@ -324,13 +330,13 @@ void UnitreeLidarSDKNode::timer_callback()
                 imuMsg.orientation.z = imu.quaternion[3];
             }
 
-            imuMsg.angular_velocity.x = imu.angular_velocity[0];
-            imuMsg.angular_velocity.y = imu.angular_velocity[1];
-            imuMsg.angular_velocity.z = imu.angular_velocity[2];
+            imuMsg.angular_velocity.x = imu.angular_velocity[0] * imu_angular_velocity_scale_;
+            imuMsg.angular_velocity.y = imu.angular_velocity[1] * imu_angular_velocity_scale_;
+            imuMsg.angular_velocity.z = imu.angular_velocity[2] * imu_angular_velocity_scale_;
 
-            imuMsg.linear_acceleration.x = imu.linear_acceleration[0];
-            imuMsg.linear_acceleration.y = imu.linear_acceleration[1];
-            imuMsg.linear_acceleration.z = imu.linear_acceleration[2];
+            imuMsg.linear_acceleration.x = imu.linear_acceleration[0] * imu_linear_acceleration_scale_;
+            imuMsg.linear_acceleration.y = imu.linear_acceleration[1] * imu_linear_acceleration_scale_;
+            imuMsg.linear_acceleration.z = imu.linear_acceleration[2] * imu_linear_acceleration_scale_;
 
             pub_imu_->publish(imuMsg);
 

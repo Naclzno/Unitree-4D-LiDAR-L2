@@ -41,15 +41,19 @@ def generate_launch_description():
     baudrate_arg = DeclareLaunchArgument('baudrate', default_value='4000000')
     start_lidar_rotation_arg = DeclareLaunchArgument('start_lidar_rotation', default_value='true')
     reset_lidar_after_set_mode_arg = DeclareLaunchArgument('reset_lidar_after_set_mode', default_value='true')
+    use_system_timestamp_arg = DeclareLaunchArgument('use_system_timestamp', default_value='false')
     pointlio_config_file_arg = DeclareLaunchArgument(
         'pointlio_config_file',
         default_value=os.path.join(
             get_package_share_directory('point_lio_unilidar'),
             'config',
-            'unilidar_l2_ros2_gravity_positive_no_pcd.yaml'),
+            'unilidar_l2_ros2_no_pcd.yaml'),
         description='Point-LIO config file. Navigation defaults to no PCD saving.'
     )
     imu_quaternion_order_arg = DeclareLaunchArgument('imu_quaternion_order', default_value='wxyz')
+    imu_angular_velocity_scale_arg = DeclareLaunchArgument(
+        'imu_angular_velocity_scale', default_value='0.017453292519943295')
+    imu_linear_acceleration_scale_arg = DeclareLaunchArgument('imu_linear_acceleration_scale', default_value='0.5')
     use_static_pointlio_pose_arg = DeclareLaunchArgument('use_static_pointlio_pose', default_value='false')
     lidar_tf_x_arg = DeclareLaunchArgument('lidar_tf_x', default_value='0.0')
     lidar_tf_y_arg = DeclareLaunchArgument('lidar_tf_y', default_value='0.0')
@@ -63,6 +67,24 @@ def generate_launch_description():
     imu_tf_roll_arg = DeclareLaunchArgument('imu_tf_roll', default_value='0.0')
     imu_tf_pitch_arg = DeclareLaunchArgument('imu_tf_pitch', default_value='0.0')
     imu_tf_yaw_arg = DeclareLaunchArgument('imu_tf_yaw', default_value='0.0')
+    map_to_camera_init_x_arg = DeclareLaunchArgument(
+        'map_to_camera_init_x',
+        default_value='0.0',
+        description='Static map -> camera_init x offset used to align a prebuilt stage5 map with the current Point-LIO session.'
+    )
+    map_to_camera_init_y_arg = DeclareLaunchArgument(
+        'map_to_camera_init_y',
+        default_value='0.0',
+        description='Static map -> camera_init y offset used to align a prebuilt stage5 map with the current Point-LIO session.'
+    )
+    map_to_camera_init_z_arg = DeclareLaunchArgument('map_to_camera_init_z', default_value='0.0')
+    map_to_camera_init_roll_arg = DeclareLaunchArgument('map_to_camera_init_roll', default_value='0.0')
+    map_to_camera_init_pitch_arg = DeclareLaunchArgument('map_to_camera_init_pitch', default_value='0.0')
+    map_to_camera_init_yaw_arg = DeclareLaunchArgument(
+        'map_to_camera_init_yaw',
+        default_value='0.0',
+        description='Static map -> camera_init yaw offset in radians used to align a prebuilt stage5 map with the current Point-LIO session.'
+    )
 
     patchwork_cloud_topic_arg = DeclareLaunchArgument(
         'patchwork_cloud_topic',
@@ -105,8 +127,11 @@ def generate_launch_description():
             'baudrate': LaunchConfiguration('baudrate'),
             'start_lidar_rotation': LaunchConfiguration('start_lidar_rotation'),
             'reset_lidar_after_set_mode': LaunchConfiguration('reset_lidar_after_set_mode'),
+            'use_system_timestamp': LaunchConfiguration('use_system_timestamp'),
             'pointlio_config_file': LaunchConfiguration('pointlio_config_file'),
             'imu_quaternion_order': LaunchConfiguration('imu_quaternion_order'),
+            'imu_angular_velocity_scale': LaunchConfiguration('imu_angular_velocity_scale'),
+            'imu_linear_acceleration_scale': LaunchConfiguration('imu_linear_acceleration_scale'),
             'use_static_pointlio_pose': LaunchConfiguration('use_static_pointlio_pose'),
             'lidar_tf_x': LaunchConfiguration('lidar_tf_x'),
             'lidar_tf_y': LaunchConfiguration('lidar_tf_y'),
@@ -120,6 +145,12 @@ def generate_launch_description():
             'imu_tf_roll': LaunchConfiguration('imu_tf_roll'),
             'imu_tf_pitch': LaunchConfiguration('imu_tf_pitch'),
             'imu_tf_yaw': LaunchConfiguration('imu_tf_yaw'),
+            'map_to_camera_init_x': LaunchConfiguration('map_to_camera_init_x'),
+            'map_to_camera_init_y': LaunchConfiguration('map_to_camera_init_y'),
+            'map_to_camera_init_z': LaunchConfiguration('map_to_camera_init_z'),
+            'map_to_camera_init_roll': LaunchConfiguration('map_to_camera_init_roll'),
+            'map_to_camera_init_pitch': LaunchConfiguration('map_to_camera_init_pitch'),
+            'map_to_camera_init_yaw': LaunchConfiguration('map_to_camera_init_yaw'),
             'elevation_unitree_config': elevation_config,
             'outdoor_rviz_config': rviz_config,
         }.items(),
@@ -208,8 +239,11 @@ def generate_launch_description():
         baudrate_arg,
         start_lidar_rotation_arg,
         reset_lidar_after_set_mode_arg,
+        use_system_timestamp_arg,
         pointlio_config_file_arg,
         imu_quaternion_order_arg,
+        imu_angular_velocity_scale_arg,
+        imu_linear_acceleration_scale_arg,
         use_static_pointlio_pose_arg,
         lidar_tf_x_arg,
         lidar_tf_y_arg,
@@ -223,6 +257,12 @@ def generate_launch_description():
         imu_tf_roll_arg,
         imu_tf_pitch_arg,
         imu_tf_yaw_arg,
+        map_to_camera_init_x_arg,
+        map_to_camera_init_y_arg,
+        map_to_camera_init_z_arg,
+        map_to_camera_init_roll_arg,
+        map_to_camera_init_pitch_arg,
+        map_to_camera_init_yaw_arg,
         patchwork_cloud_topic_arg,
         patchwork_sensor_height_arg,
         patchwork_min_r_arg,

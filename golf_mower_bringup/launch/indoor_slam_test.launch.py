@@ -17,7 +17,7 @@ def generate_launch_description():
     point_lio_launch = os.path.join(
         point_lio_share, 'launch', 'mapping_unilidar_l2.py')
     default_pointlio_config = os.path.join(
-        point_lio_share, 'config', 'unilidar_l2_ros2_gravity_positive.yaml')
+        point_lio_share, 'config', 'unilidar_l2_ros2.yaml')
     rviz_config = os.path.join(
         bringup_share, 'rviz', 'indoor_slam.rviz')
 
@@ -51,6 +51,12 @@ def generate_launch_description():
         default_value='false',
         description='Publish a static camera_init -> aft_mapped transform for desk tests without Point-LIO odometry.'
     )
+    map_to_camera_init_x_arg = DeclareLaunchArgument('map_to_camera_init_x', default_value='0.0')
+    map_to_camera_init_y_arg = DeclareLaunchArgument('map_to_camera_init_y', default_value='0.0')
+    map_to_camera_init_z_arg = DeclareLaunchArgument('map_to_camera_init_z', default_value='0.0')
+    map_to_camera_init_roll_arg = DeclareLaunchArgument('map_to_camera_init_roll', default_value='0.0')
+    map_to_camera_init_pitch_arg = DeclareLaunchArgument('map_to_camera_init_pitch', default_value='0.0')
+    map_to_camera_init_yaw_arg = DeclareLaunchArgument('map_to_camera_init_yaw', default_value='0.0')
     initialize_type_arg = DeclareLaunchArgument(
         'initialize_type',
         default_value='2',
@@ -81,6 +87,11 @@ def generate_launch_description():
         default_value='true',
         description='Call resetLidar after setting work mode.'
     )
+    use_system_timestamp_arg = DeclareLaunchArgument(
+        'use_system_timestamp',
+        default_value='false',
+        description='Use lidar hardware timestamps for Point-LIO cloud/IMU synchronization.'
+    )
     pointlio_config_file_arg = DeclareLaunchArgument(
         'pointlio_config_file',
         default_value=default_pointlio_config,
@@ -90,6 +101,16 @@ def generate_launch_description():
         'imu_quaternion_order',
         default_value='wxyz',
         description='Order of Unitree SDK quaternion values: wxyz or xyzw.'
+    )
+    imu_linear_acceleration_scale_arg = DeclareLaunchArgument(
+        'imu_linear_acceleration_scale',
+        default_value='0.5',
+        description='Scale Unitree SDK IMU acceleration before publishing /unilidar/imu in m/s^2.'
+    )
+    imu_angular_velocity_scale_arg = DeclareLaunchArgument(
+        'imu_angular_velocity_scale',
+        default_value='0.017453292519943295',
+        description='Scale Unitree SDK IMU angular velocity before publishing /unilidar/imu in rad/s.'
     )
     lidar_tf_x_arg = DeclareLaunchArgument('lidar_tf_x', default_value='0.0')
     lidar_tf_y_arg = DeclareLaunchArgument('lidar_tf_y', default_value='0.0')
@@ -141,13 +162,18 @@ def generate_launch_description():
                 LaunchConfiguration('initialize_type'), value_type=int)},
             {'work_mode': ParameterValue(
                 LaunchConfiguration('work_mode'), value_type=int)},
-            {'use_system_timestamp': True},
+            {'use_system_timestamp': ParameterValue(
+                LaunchConfiguration('use_system_timestamp'), value_type=bool)},
             {'start_lidar_rotation': ParameterValue(
                 LaunchConfiguration('start_lidar_rotation'), value_type=bool)},
             {'reset_lidar_after_set_mode': ParameterValue(
                 LaunchConfiguration('reset_lidar_after_set_mode'), value_type=bool)},
             {'publish_tf': False},
             {'imu_quaternion_order': LaunchConfiguration('imu_quaternion_order')},
+            {'imu_angular_velocity_scale': ParameterValue(
+                LaunchConfiguration('imu_angular_velocity_scale'), value_type=float)},
+            {'imu_linear_acceleration_scale': ParameterValue(
+                LaunchConfiguration('imu_linear_acceleration_scale'), value_type=float)},
             {'range_min': 0.0},
             {'range_max': 100.0},
             {'cloud_scan_num': 18},
@@ -188,8 +214,12 @@ def generate_launch_description():
         output='screen',
         condition=IfCondition(LaunchConfiguration('use_tf_adapter')),
         arguments=[
-            '--x', '0', '--y', '0', '--z', '0',
-            '--roll', '0', '--pitch', '0', '--yaw', '0',
+            '--x', LaunchConfiguration('map_to_camera_init_x'),
+            '--y', LaunchConfiguration('map_to_camera_init_y'),
+            '--z', LaunchConfiguration('map_to_camera_init_z'),
+            '--roll', LaunchConfiguration('map_to_camera_init_roll'),
+            '--pitch', LaunchConfiguration('map_to_camera_init_pitch'),
+            '--yaw', LaunchConfiguration('map_to_camera_init_yaw'),
             '--frame-id', 'map',
             '--child-frame-id', 'camera_init',
         ],
@@ -289,14 +319,23 @@ def generate_launch_description():
         use_tf_adapter_arg,
         use_lidar_tf_adapter_arg,
         use_static_pointlio_pose_arg,
+        map_to_camera_init_x_arg,
+        map_to_camera_init_y_arg,
+        map_to_camera_init_z_arg,
+        map_to_camera_init_roll_arg,
+        map_to_camera_init_pitch_arg,
+        map_to_camera_init_yaw_arg,
         initialize_type_arg,
         work_mode_arg,
         serial_port_arg,
         baudrate_arg,
         start_lidar_rotation_arg,
         reset_lidar_after_set_mode_arg,
+        use_system_timestamp_arg,
         pointlio_config_file_arg,
         imu_quaternion_order_arg,
+        imu_angular_velocity_scale_arg,
+        imu_linear_acceleration_scale_arg,
         lidar_tf_x_arg,
         lidar_tf_y_arg,
         lidar_tf_z_arg,

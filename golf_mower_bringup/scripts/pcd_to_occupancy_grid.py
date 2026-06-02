@@ -103,6 +103,10 @@ class PcdToOccupancyGrid(Node):
             occupied_points = self._read_all_points(occupied_pcd_path)
             if not free_points and not occupied_points:
                 raise ValueError('No points found in segmented PCD maps')
+            if len(free_points) < 100:
+                self.get_logger().warn(
+                    f'Segmented free PCD has only {len(free_points)} points. '
+                    'The static map may have almost no known free space.')
         else:
             if not pcd_path:
                 raise ValueError('pcd_path parameter is empty')
