@@ -18,6 +18,11 @@ def generate_launch_description():
     use_lidar_arg = DeclareLaunchArgument('use_lidar', default_value='true')
     use_pointlio_arg = DeclareLaunchArgument('use_pointlio', default_value='true')
     use_elevation_arg = DeclareLaunchArgument('use_elevation', default_value='true')
+    use_cuda_elevation_arg = DeclareLaunchArgument(
+        'use_cuda_elevation',
+        default_value='true',
+        description='Use elevation_mapping_cupy when true; use CPU-only elevation_mapping_ros2 when false.'
+    )
     use_grid_converter_arg = DeclareLaunchArgument('use_grid_converter', default_value='true')
     launch_outdoor_rviz_arg = DeclareLaunchArgument('launch_outdoor_rviz', default_value='true')
     use_lidar_tf_adapter_arg = DeclareLaunchArgument('use_lidar_tf_adapter', default_value='true')
@@ -54,7 +59,7 @@ def generate_launch_description():
     )
     imu_linear_acceleration_scale_arg = DeclareLaunchArgument(
         'imu_linear_acceleration_scale',
-        default_value='0.5',
+        default_value='1.0',
         description='Scale Unitree SDK IMU acceleration before publishing /unilidar/imu in m/s^2.'
     )
     imu_angular_velocity_scale_arg = DeclareLaunchArgument(
@@ -117,6 +122,7 @@ def generate_launch_description():
             'use_lidar': LaunchConfiguration('use_lidar'),
             'use_pointlio': LaunchConfiguration('use_pointlio'),
             'use_elevation': LaunchConfiguration('use_elevation'),
+            'use_cuda_elevation': LaunchConfiguration('use_cuda_elevation'),
             'launch_outdoor_rviz': LaunchConfiguration('launch_outdoor_rviz'),
             'use_lidar_tf_adapter': LaunchConfiguration('use_lidar_tf_adapter'),
             'use_static_pointlio_pose': LaunchConfiguration('use_static_pointlio_pose'),
@@ -173,6 +179,7 @@ def generate_launch_description():
         use_lidar_arg,
         use_pointlio_arg,
         use_elevation_arg,
+        use_cuda_elevation_arg,
         use_grid_converter_arg,
         launch_outdoor_rviz_arg,
         use_lidar_tf_adapter_arg,

@@ -56,8 +56,8 @@ def generate_launch_description():
     )
     imu_linear_acceleration_scale_arg = DeclareLaunchArgument(
         'imu_linear_acceleration_scale',
-        default_value='0.5',
-        description='Scale SDK IMU acceleration to ROS m/s^2. Unitree L2 observed raw output is about 2g at rest.'
+        default_value='1.0',
+        description='Scale SDK IMU acceleration to ROS m/s^2.'
     )
     imu_angular_velocity_scale_arg = DeclareLaunchArgument(
         'imu_angular_velocity_scale',

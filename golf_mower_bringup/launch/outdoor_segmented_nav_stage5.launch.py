@@ -29,6 +29,11 @@ def generate_launch_description():
     use_lidar_arg = DeclareLaunchArgument('use_lidar', default_value='true')
     use_pointlio_arg = DeclareLaunchArgument('use_pointlio', default_value='true')
     use_elevation_arg = DeclareLaunchArgument('use_elevation', default_value='true')
+    use_cuda_elevation_arg = DeclareLaunchArgument(
+        'use_cuda_elevation',
+        default_value='true',
+        description='Use elevation_mapping_cupy when true; use CPU-only elevation_mapping_ros2 when false.'
+    )
     use_grid_converter_arg = DeclareLaunchArgument('use_grid_converter', default_value='true')
     use_patchwork_arg = DeclareLaunchArgument('use_patchwork', default_value='true')
     use_ground_fallback_arg = DeclareLaunchArgument('use_ground_fallback', default_value='true')
@@ -53,7 +58,7 @@ def generate_launch_description():
     imu_quaternion_order_arg = DeclareLaunchArgument('imu_quaternion_order', default_value='wxyz')
     imu_angular_velocity_scale_arg = DeclareLaunchArgument(
         'imu_angular_velocity_scale', default_value='0.017453292519943295')
-    imu_linear_acceleration_scale_arg = DeclareLaunchArgument('imu_linear_acceleration_scale', default_value='0.5')
+    imu_linear_acceleration_scale_arg = DeclareLaunchArgument('imu_linear_acceleration_scale', default_value='1.0')
     use_static_pointlio_pose_arg = DeclareLaunchArgument('use_static_pointlio_pose', default_value='false')
     lidar_tf_x_arg = DeclareLaunchArgument('lidar_tf_x', default_value='0.0')
     lidar_tf_y_arg = DeclareLaunchArgument('lidar_tf_y', default_value='0.0')
@@ -119,6 +124,7 @@ def generate_launch_description():
             'use_lidar': LaunchConfiguration('use_lidar'),
             'use_pointlio': LaunchConfiguration('use_pointlio'),
             'use_elevation': LaunchConfiguration('use_elevation'),
+            'use_cuda_elevation': LaunchConfiguration('use_cuda_elevation'),
             'use_grid_converter': LaunchConfiguration('use_grid_converter'),
             'launch_outdoor_rviz': LaunchConfiguration('launch_outdoor_rviz'),
             'initialize_type': LaunchConfiguration('initialize_type'),
@@ -228,6 +234,7 @@ def generate_launch_description():
         use_lidar_arg,
         use_pointlio_arg,
         use_elevation_arg,
+        use_cuda_elevation_arg,
         use_grid_converter_arg,
         use_patchwork_arg,
         use_ground_fallback_arg,

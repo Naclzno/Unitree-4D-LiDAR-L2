@@ -2,7 +2,7 @@ import os
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, TimerAction
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, OpaqueFunction, TimerAction
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration
@@ -11,20 +11,23 @@ from launch_ros.actions import Node
 
 def generate_launch_description():
     bringup_share = get_package_share_directory('golf_mower_bringup')
-    elevation_share = get_package_share_directory('elevation_mapping_cupy')
 
     indoor_slam_launch = os.path.join(
         bringup_share, 'launch', 'indoor_slam_test.launch.py')
     default_outdoor_rviz_config = os.path.join(
         bringup_share, 'rviz', 'outdoor_elevation.rviz')
-    elevation_core_config = os.path.join(
-        elevation_share, 'config', 'core', 'core_param.yaml')
+    elevation_ros2_core_config = os.path.join(
+        bringup_share, 'config', 'elevation_core_common.yaml')
     default_elevation_unitree_config = os.path.join(
         bringup_share, 'config', 'elevation_unitree_l2_stage1.yaml')
-
     use_lidar_arg = DeclareLaunchArgument('use_lidar', default_value='true')
     use_pointlio_arg = DeclareLaunchArgument('use_pointlio', default_value='true')
     use_elevation_arg = DeclareLaunchArgument('use_elevation', default_value='true')
+    use_cuda_elevation_arg = DeclareLaunchArgument(
+        'use_cuda_elevation',
+        default_value='true',
+        description='Use elevation_mapping_cupy when true; use CPU-only elevation_mapping_ros2 when false.'
+    )
     launch_outdoor_rviz_arg = DeclareLaunchArgument('launch_outdoor_rviz', default_value='true')
     use_lidar_tf_adapter_arg = DeclareLaunchArgument('use_lidar_tf_adapter', default_value='true')
     use_static_pointlio_pose_arg = DeclareLaunchArgument(
@@ -60,7 +63,7 @@ def generate_launch_description():
     )
     imu_linear_acceleration_scale_arg = DeclareLaunchArgument(
         'imu_linear_acceleration_scale',
-        default_value='0.5',
+        default_value='1.0',
         description='Scale Unitree SDK IMU acceleration before publishing /unilidar/imu in m/s^2.'
     )
     imu_angular_velocity_scale_arg = DeclareLaunchArgument(
@@ -132,21 +135,36 @@ def generate_launch_description():
         }.items(),
     )
 
-    elevation_mapping_node = Node(
-        package='elevation_mapping_cupy',
-        executable='elevation_mapping_node.py',
-        name='elevation_mapping_node',
-        output='screen',
-        condition=IfCondition(LaunchConfiguration('use_elevation')),
-        parameters=[
-            elevation_core_config,
-            LaunchConfiguration('elevation_unitree_config'),
-            {'use_sim_time': False},
-        ],
-    )
+    def _launch_elevation_node(context, *args, **kwargs):
+        use_cuda = LaunchConfiguration('use_cuda_elevation').perform(context).lower() in (
+            'true', '1', 'yes'
+        )
+        if use_cuda:
+            package = 'elevation_mapping_cupy'
+            core_config = os.path.join(
+                get_package_share_directory('elevation_mapping_cupy'),
+                'config', 'core', 'core_param.yaml')
+        else:
+            package = 'elevation_mapping_ros2'
+            core_config = elevation_ros2_core_config
+        return [
+            Node(
+                package=package,
+                executable='elevation_mapping_node.py',
+                name='elevation_mapping_node',
+                output='screen',
+                parameters=[
+                    core_config,
+                    LaunchConfiguration('elevation_unitree_config'),
+                    {'use_sim_time': False},
+                ],
+            )
+        ]
+
     elevation_mapping = TimerAction(
         period=15.0,
-        actions=[elevation_mapping_node],
+        condition=IfCondition(LaunchConfiguration('use_elevation')),
+        actions=[OpaqueFunction(function=_launch_elevation_node)],
     )
 
     rviz_node = Node(
@@ -162,6 +180,7 @@ def generate_launch_description():
         use_lidar_arg,
         use_pointlio_arg,
         use_elevation_arg,
+        use_cuda_elevation_arg,
         launch_outdoor_rviz_arg,
         use_lidar_tf_adapter_arg,
         use_static_pointlio_pose_arg,

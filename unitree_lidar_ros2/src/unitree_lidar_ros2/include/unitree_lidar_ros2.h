@@ -117,7 +117,7 @@ UnitreeLidarSDKNode::UnitreeLidarSDKNode(const rclcpp::NodeOptions &options)
     declare_parameter<bool>("publish_tf", true);
     declare_parameter<std::string>("imu_quaternion_order", "wxyz");
     declare_parameter<double>("imu_angular_velocity_scale", 0.017453292519943295);
-    declare_parameter<double>("imu_linear_acceleration_scale", 0.5);
+    declare_parameter<double>("imu_linear_acceleration_scale", 1.0);
     declare_parameter<double>("range_min", 0);
     declare_parameter<double>("range_max", 50);
     declare_parameter<int>("cloud_scan_num", 18);
@@ -176,6 +176,13 @@ UnitreeLidarSDKNode::UnitreeLidarSDKNode(const rclcpp::NodeOptions &options)
     cloud_txt_dir_ = get_parameter("cloud_txt_dir").as_string();
     cloud_txt_save_every_n_ = get_parameter("cloud_txt_save_every_n").as_int();
     cloud_txt_frame_count_ = 0;
+
+    RCLCPP_INFO(
+        this->get_logger(),
+        "timestamp/imu config: use_system_timestamp=%s angular_velocity_scale=%.9f linear_acceleration_scale=%.9f",
+        use_system_timestamp_ ? "true" : "false",
+        imu_angular_velocity_scale_,
+        imu_linear_acceleration_scale_);
 
     if (cloud_txt_save_every_n_ < 1)
     {
@@ -309,7 +316,9 @@ void UnitreeLidarSDKNode::timer_callback()
         if (lsdk_->getImuData(imu))
         {
             // publish imu message
-            rclcpp::Time timestamp(imu.info.stamp.sec, imu.info.stamp.nsec);
+            rclcpp::Time timestamp = use_system_timestamp_
+                ? this->now()
+                : rclcpp::Time(imu.info.stamp.sec, imu.info.stamp.nsec);
 
             sensor_msgs::msg::Imu imuMsg;
             imuMsg.header.frame_id = imu_frame_;
@@ -380,9 +389,11 @@ void UnitreeLidarSDKNode::timer_callback()
 
             transformUnitreeCloudToPCL(cloud, cloudOut);
 
-            rclcpp::Time timestamp(
-                static_cast<int32_t>(cloud.stamp),
-                static_cast<uint32_t>((cloud.stamp - static_cast<int32_t>(cloud.stamp)) * 1e9));
+            rclcpp::Time timestamp = use_system_timestamp_
+                ? this->now()
+                : rclcpp::Time(
+                    static_cast<int32_t>(cloud.stamp),
+                    static_cast<uint32_t>((cloud.stamp - static_cast<int32_t>(cloud.stamp)) * 1e9));
 
             sensor_msgs::msg::PointCloud2 cloud_msg;
             pcl::toROSMsg(*cloudOut, cloud_msg);

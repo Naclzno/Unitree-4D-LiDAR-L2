@@ -1,0 +1,32 @@
+/elevation_mapping_node:
+  ros__parameters:
+    resolution: 0.10
+    map_length: 20.0
+    sensor_noise_factor: 0.05
+    mahalanobis_thresh: 2.0
+    outlier_variance: 0.01
+    max_variance: 100.0
+    initial_variance: 1000.0
+    time_variance: 0.0001
+    time_interval: 0.1
+    update_pose_fps: 10.0
+    update_variance_fps: 5.0
+    dilation_size: 3
+    wall_num_thresh: 20
+    min_valid_distance: 0.2
+    max_height_range: 4.0
+    ramped_height_range_a: 0.3
+    ramped_height_range_b: 1.0
+    ramped_height_range_c: 0.2
+    max_ray_length: 12.0
+    cleanup_step: 0.1
+    cleanup_cos_thresh: 0.1
+    enable_edge_sharpen: true
+    enable_visibility_cleanup: true
+    use_neural_traversability: true
+    slope_obstacle_threshold: 0.20
+    variance_obstacle_threshold: 0.05
+    publish_empty_maps: true
+    map_frame: "map"
+    base_frame: "base_link"
+    corrected_map_frame: "map"
