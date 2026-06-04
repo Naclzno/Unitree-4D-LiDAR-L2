@@ -25,6 +25,11 @@ def generate_launch_description():
     use_pointlio_arg = DeclareLaunchArgument('use_pointlio', default_value='true')
     use_patchwork_arg = DeclareLaunchArgument('use_patchwork', default_value='true')
     use_map_builder_arg = DeclareLaunchArgument('use_map_builder', default_value='true')
+    use_pointlio_diagnostics_arg = DeclareLaunchArgument(
+        'use_pointlio_diagnostics',
+        default_value='false',
+        description='Print Unitree cloud/IMU timing statistics and Point-LIO odom jump warnings.'
+    )
     launch_rviz_arg = DeclareLaunchArgument('launch_rviz', default_value='true')
     use_static_pointlio_pose_arg = DeclareLaunchArgument(
         'use_static_pointlio_pose',
@@ -164,11 +169,29 @@ def generate_launch_description():
         }],
     )
 
+    pointlio_diagnostics = Node(
+        package='golf_mower_bringup',
+        executable='pointlio_input_diagnostics.py',
+        name='pointlio_input_diagnostics',
+        output='screen',
+        condition=IfCondition(LaunchConfiguration('use_pointlio_diagnostics')),
+        parameters=[{
+            'cloud_topic': '/unilidar/cloud',
+            'imu_topic': '/unilidar/imu',
+            'odom_topic': '/pointlio/odom',
+            'cloud_print_every_n': 10,
+            'imu_window_size': 300,
+            'odom_jump_distance': 0.1,
+            'odom_jump_speed': 1.0,
+        }],
+    )
+
     return LaunchDescription([
         use_lidar_arg,
         use_pointlio_arg,
         use_patchwork_arg,
         use_map_builder_arg,
+        use_pointlio_diagnostics_arg,
         launch_rviz_arg,
         use_static_pointlio_pose_arg,
         initialize_type_arg,
@@ -205,4 +228,5 @@ def generate_launch_description():
         slam,
         patchwork,
         map_builder,
+        pointlio_diagnostics,
     ])
