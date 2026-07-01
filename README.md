@@ -1,312 +1,330 @@
-# Unilidar SDK2
+# Golf Mower Robot ROS2 Workspace
 
-[中文版 | Chinese](./README_CN.md)
+这是一个面向高尔夫球场除草机器人的 ROS2 算法工作区。项目围绕 Unitree L2 激光雷达，集成了激光雷达驱动、Point-LIO 激光惯导里程计、地面分割、高程/可通行性建图、Nav2 导航和覆盖路径规划相关算法。
 
-## 1. Introduction
+## 功能概览
 
-This repository is the Software Development Kit (SDK) for the [Unitree L2](https://www.unitree.com/LiDAR) LiDAR.
+当前系统主链路：
 
-You can use the code interfaces in this repository to obtain point cloud and IMU data from our LiDAR, as well as set and get relevant configuration parameters of the lidar.
-
-We provide several common interfaces for the LiDAR:
-- The original C++ based SDK: [unitree_lidar_sdk](./unitree_lidar_sdk/README.md)
-- The package for parsing and publishing LiDAR data in the ROS environment: [unitree_lidar_ros](./unitree_lidar_ros/src/unitree_lidar_ros/README.md)
-- The package for parsing and publishing LiDAR data in the ROS2 environment: [unitree_lidar_ros2](./unitree_lidar_ros2/src/unitree_lidar_ros2/README.md)
-
-## 2. Coordinate System Definition
-
-<div style="text-align:center">
-  <img src="./docs/lidar_frame_definition.jpg" width="800">
-</div>
-
-The coordinate system of this LiDAR is defined as shown in the above figure, which meets the definition of a right-handed coordinate system. Let the LiDAR point cloud coordinate system be L, and the IMU coordinate system be I.
-
-The origin of the LiDAR point cloud coordinate system is located at the center of the bottom mounting surface of the LiDAR. Its +X-axis is opposite to the direction of the bottom cable outlet, its +Y-axis is obtained by rotating the +X-axis counterclockwise by 90 degrees, and its +Z-axis is perpendicular to the bottom surface.
-
-The three coordinate axes of the IMU coordinate system are parallel to the corresponding coordinate axes of the point cloud coordinate system, and the two only have a translation of the origin position. The origin of the IMU coordinate system in the LiDAR point cloud coordinate system is (in meters): [-0.007698, -0.014655, 0.00667].
-
-According to the standard transformation matrix method, the pose transformation from the LiDAR point cloud coordinate system L to the IMU coordinate system I is:
-
-$$
-T_{LI} =
-\begin{bmatrix}
-1 & 0 & 0 & -0.007698 \\
-0 & 1 & 0 & -0.014655 \\
-0 & 0 & 1 & 0.00667 \\
-0 & 0 & 0 & 1 \\
-\end{bmatrix}
-$$
-
-## 3. C++ SDK
-
-### 3.1 Compilation
-
-You can compile the sample programs of this project according to the standard compilation method of cmake projects:
-```bash
-cd unitree_lidar_sdk
-
-mkdir build
-
-cd build
-
-cmake .. && make -j2
+```text
+Unitree L2
+  -> /unilidar/cloud, /unilidar/imu
+  -> Point-LIO
+  -> /pointlio/odom, /pointlio/cloud_registered, /pointlio/laser_map
+  -> Patchwork++ ground segmentation
+  -> elevation mapping / traversability grid
+  -> Nav2 navigation
 ```
 
-### 3.2 Configuring Work Mode
-The LiDAR can be configured in various working modes by default, including standard FOV or wide-angle FOV, 3D mode or 2D mode, IMU enabled or disabled, Ethernet or serial connection, etc.
+主要能力：
 
-We can configure the working mode through the host computer, or we can also configure the working mode through the following interface in `unitree_lidar_sdk.h`:
-```
-virtual void setLidarWorkMode(uint32_t mode) = 0;
-```
+- Unitree L2 串口或 UDP 采集点云和 IMU。
+- Point-LIO 输出实时里程计和点云地图。
+- Patchwork++ 分割地面点和非地面障碍点。
+- elevation mapping 生成高程图和可通行性图。
+- GridMap 转 OccupancyGrid，供 Nav2 costmap 使用。
+- Nav2 室内桌面联调、室外高程导航、分割地图导航。
+- Fields2Cover 预留用于高尔夫球场全覆盖割草路径规划。
 
-Setting the working mode is implemented through a `uint32_t` integer variable, with each bit corresponding to the switching of a function. According to the bit position from low to high, the corresponding functions for positions 0 or 1 are shown in the following table:
+## 目录说明
 
-|Bit Position|Function|Value 0|Value 1|
-|---|---|---|----|
-|0|Switch between standard FOV and wide-angle FOV|Standard FOV (180°)|Wide-angle FOV (192°)|
-|1|Switch between 3D and 2D measurement modes|3D measurement mode|2D measurement mode|
-|2|Enable or disable IMU|Enable IMU|Disable IMU|
-|3|Switch between Ethernet mode and serial mode|Ethernet mode|Serial mode|
-|4|Switch between lidar power-on default start mode|Power on and start automatically|Power on and wait for start command without rotation|
-|5-31|Reserved|Reserved|Reserved|
+| 目录 | 作用 |
+| --- | --- |
+| `unitree_lidar_sdk` | Unitree L2 原始 C++ SDK。 |
+| `unitree_lidar_ros2` | Unitree L2 ROS2 驱动，发布 `/unilidar/cloud` 和 `/unilidar/imu`。 |
+| `point_lio_unilidar-2.0.2` | Unitree L2 适配版 Point-LIO。 |
+| `patchwork-plusplus-ros` | ROS2 Patchwork++ 地面分割。 |
+| `elevation_mapping_cupy` | GPU/CuPy 高程建图。 |
+| `elevation_mapping_ros2` | CPU-only 高程建图兼容实现。 |
+| `golf_mower_description` | 机器人 URDF/Xacro 和固定传感器 frame。 |
+| `golf_mower_bringup` | 本项目主要 launch、配置、诊断脚本和 Nav2 插件。 |
+| `Fields2Cover-main` | 农业/割草全覆盖路径规划库。 |
+| `robot_localization-rolling-devel` | 后续 RTK、轮速、IMU、里程计融合预留。 |
+| `autoware` | 自动驾驶栈源码，当前不是主链路必需模块。 |
 
-The common usage mode is standard FOV + 3D measurement + enable IMU + power on self-start, which means these bit positions are all kept at 0. We only need to determine whether to use Ethernet connection mode or serial connection mode. For example, in the following sample program,
-- If using Ethernet connection mode, configure the work mode to 0 (i.e., all bit positions of the integer variable are equal to 0)
-- If using serial connection mode, configure the work mode to 8 (i.e., the third bit position of the integer variable is equal to 1, and the other 0-31 bit positions are all equal to 0)
+## 环境准备
 
-The default factory lidar work mode is 0, i.e., Ethernet communication mode.
-
-### 3.3 Running with Ethernet
-
-The sample program for running the LiDAR with Ethernet connection is: `example_lidar_udp.cpp`.
-
-First, connect your LiDAR to the computer with an Ethernet cable, then confirm that the corresponding network card of your computer is configured to the default target IP address of the LiDAR:
-```bash
-192.168.1.2
-```
-
-Then, run the sample program:
-```bash
-../bin/example_lidar_udp
-```
-
-The sample output is as follows:
-```
-$ ../bin/example_lidar_udp 
-Unilidar initialization succeed!
-set Lidar work mode to: 0
-lidar hardware version = 1.1.1.1
-lidar firmware version = 2.3.3.0
-lidar sdk version = 2.0.2
-stop lidar rotation ...
-start lidar rotation ...
-dirty percentage = 1.616020 %
-time delay (second) = 0.001880
-An IMU msg is parsed!
-    system stamp = 1730191291.3044135571
-    seq = 87, stamp = 1730191291.304411172
-    quaternion (x, y, z, w) = [-0.3645, 0.0077, 0.0099, 0.9293]
-    angular_velocity (x, y, z) = [0.0209, -0.0644, 0.0146]
-    linear_acceleration (x, y, z) = [0.2215, 0.3537, 9.5822]
-An IMU msg is parsed!
-    system stamp = 1730191291.3070139885
-    seq = 88, stamp = 1730191291.307010650
-    quaternion (x, y, z, w) = [-0.3646, 0.0077, 0.0099, 0.9293]
-    angular_velocity (x, y, z) = [0.0086, -0.0039, 0.0122]
-    linear_acceleration (x, y, z) = [0.1608, 0.3222, 9.7098]
-A Cloud msg is parsed! 
-	stamp = 1730724860.502892, id = 32
-	cloud size  = 5205, ringNum = 18
-	first 10 points (x,y,z,intensity,time,ring) = 
-	  (1.554845, -1.070981, 0.000000, 0.000000, 0.000000, 1)
-	  (1.645649, -1.132876, 0.020923, 0.000000, 0.000008, 1)
-	  (1.698396, -1.168516, 0.043183, 0.000000, 0.000015, 1)
-	  (1.981559, -1.362552, 0.075574, 0.000000, 0.000023, 1)
-	  (1.981164, -1.361497, 0.100753, 0.000000, 0.000031, 1)
-	  (1.942685, -1.334285, 0.123513, 0.000000, 0.000039, 1)
-	  (1.602043, -1.099691, 0.122253, 0.000000, 0.000046, 1)
-	  (1.612709, -1.106375, 0.143620, 0.000000, 0.000054, 1)
-	  (1.616608, -1.108412, 0.164594, 0.000000, 0.000062, 1)
-	  (1.619501, -1.109757, 0.185582, 0.000000, 0.000069, 1)
-	  ...
-```
-
-If you need to modify the default IP address of the LiDAR, you can refer to the user manual to use our host computer to make the changes.
-
-### 3.4 Running with Serial Port
-
-Note that the LiDAR is shipped with Ethernet communication mode by default. If you have not yet switched the communication mode to serial communication mode, you will need to use an Ethernet connection to communicate with the LiDAR first, so that you can then switch its communication method to serial communication mode. You can use our host computer to make the switch, or you can also refer to section [4.2], use the default Ethernet communication example program `example_lidar_udp.cpp` to communicate with the lidar first, and set the lidar work mode to serial communication mode (`workMode=8`), then power off and restart the LiDAR.
-
-After confirming that the current LiDAR is in serial communication mode, we connect the LiDAR to the computer using a serial cable, and then confirm the serial port name of the LiDAR, which defaults to the following value:
-```
-"/dev/ttyACM0"
-```
-
-You can also modify the default serial port name and correspondingly modify it in the example code `example_lidar_serial.cpp`.
-
-After compiling, you can run the example program:
-```bash
-../bin/example_lidar_serial
-```
-
-The sample output is as follows:
-```
-$ ../bin/example_lidar_serial
-Unilidar initialization succeed!
-set Lidar work mode to: 0
-lidar hardware version = 1.1.1.1
-lidar firmware version = 2.3.3.0
-lidar sdk version = 2.0.2
-stop lidar rotation ...
-start lidar rotation ...
-dirty percentage = 1.363776 %
-time delay (second) = 0.002044
-An IMU msg is parsed!
-    system stamp = 1730191291.3044135571
-    seq = 87, stamp = 1730191291.304411172
-    quaternion (x, y, z, w) = [-0.3645, 0.0077, 0.0099, 0.9293]
-    angular_velocity (x, y, z) = [0.0209, -0.0644, 0.0146]
-    linear_acceleration (x, y, z) = [0.2215, 0.3537, 9.5822]
-An IMU msg is parsed!
-    system stamp = 1730191291.3070139885
-    seq = 88, stamp = 1730191291.307010650
-    quaternion (x, y, z, w) = [-0.3646, 0.0077, 0.0099, 0.9293]
-    angular_velocity (x, y, z) = [0.0086, -0.0039, 0.0122]
-    linear_acceleration (x, y, z) = [0.1608, 0.3222, 9.7098]
-A Cloud msg is parsed! 
-	stamp = 1730724860.419490, id = 31
-	cloud size  = 5217, ringNum = 18
-	first 10 points (x,y,z,intensity,time,ring) = 
-	  (-0.447932, 0.172502, 0.000000, 0.000000, 0.000000, 1)
-	  (-0.442354, 0.170217, 0.004964, 0.000000, 0.000008, 1)
-	  (-0.443261, 0.170429, 0.009948, 0.000000, 0.000015, 1)
-	  (-0.445051, 0.170981, 0.014983, 0.000000, 0.000023, 1)
-	  (-0.443060, 0.170079, 0.019891, 0.000000, 0.000031, 1)
-	  (-0.442887, 0.169877, 0.024860, 0.000000, 0.000039, 1)
-	  (-0.442665, 0.169655, 0.029825, 0.000000, 0.000046, 1)
-	  (-0.447052, 0.171199, 0.035154, 0.000000, 0.000054, 1)
-	  (-0.442076, 0.169157, 0.039747, 0.000000, 0.000062, 1)
-	  (-0.446358, 0.170658, 0.045172, 0.000000, 0.000069, 1)
-	  ...
-```
-
-
-## 4. How to Use the ROS Package
-
-### 4.1 Dependencies
-Dependencies include `PCL` and `ROS`.
-
-We have verified that this package can successfully run in the following environment:
-- `Ubuntu 20.04`
-- `ROS noetic`
-- `PCL-1.10`
-- `unitree_lidar_sdk`
-
-It is recommended that you configure an environment like this to run the package.
-
-### 4.2 Configuration
-
-The default communication method for the LiDAR is Ethernet mode. If you need to modify the working mode, you need to change the corresponding parameters in the configuration file. The path to the configuration file is:
-```
-unitree_lidar_ros/src/unitree_lidar_ros/config/config.yaml
-```
-
-If you have special needs, such as changing the cloud topic name or IMU topic name, you can also configure them in the configuration file.
-
-The default cloud topic and its coordinate system name are:
-- Topic name: "unilidar/cloud"
-- Coordinate system: "unilidar_lidar"
-
-The default IMU topic and its coordinate system name are:
-- Topic name: "unilidar/imu"
-- Coordinate system: "unilidar_imu"
-
-### 4.3 Compilation
-
-Compile:
-
-```
-cd unitree_lidar_ros
-
-catkin_make
-```
-
-### 4.4 Running
-
-Run:
-
-```
-source devel/setup.bash
-
-roslaunch unitree_lidar_ros run.launch
-```
-
-In the Rviz window, you will see our LiDAR point cloud as follows:
-
-![img](./docs/ros1_cloud.png)
-
-## 5. How to Use the ROS2 Package
-
-### 5.1 Dependencies
-
-Dependencies include `PCL` and `ROS2`.
-
-We have verified that this package can successfully run in the following environment:
-- `Ubuntu 20.04`
-- `ROS2 foxy`
-- `PCL-1.10`
-- `unitree_lidar_sdk`
-
-It is recommended that you configure an environment like this to run the package.
-
-### 5.2 Configuration
-
-The default communication method for the LiDAR is Ethernet mode. If you need to modify the working mode, you need to change the corresponding parameters in the configuration file. The path to the configuration file is:
-```
-unitree_lidar_ros2/src/unitree_lidar_ros2/launch/launch.py
-```
-
-If you have special needs, such as changing the cloud topic name or IMU topic name, you can also configure them in the configuration file.
-
-The default cloud topic and its coordinate system name are:
-- Topic name: "unilidar/cloud"
-- Coordinate system: "unilidar_lidar"
-
-The default IMU topic and its coordinate system name are:
-- Topic name: "unilidar/imu"
-- Coordinate system: "unilidar_imu"
-
-### 5.3 Compilation
-
-Compile:
+已按 ROS2 Humble 组织使用。每个终端先 source 基础环境：
 
 ```bash
-cd unilidar_sdk/unitree_lidar_ros2
-
-colcon build
+cd /home/ubuntu/unilidar_sdk2
+source /opt/ros/humble/setup.bash
 ```
 
-### 5.4 Running
-
-Run:
+如果使用串口雷达，确认设备存在：
 
 ```bash
-source install/setup.bash
-
-ros2 launch unitree_lidar_ros2 launch.py
+ls /dev/ttyACM*
 ```
 
-In the Rviz window, you will see our LiDAR point cloud as follows:
+常用串口参数：
 
-![img](./docs/ros2_cloud.png)
+- `initialize_type:=1`
+- `work_mode:=8`
+- `serial_port:=/dev/ttyACM0`
+- `baudrate:=4000000`
 
-## 6. How to Parse Raw Data Packets
+常用 UDP 参数：
 
-If you wish to parse the raw Ethernet or serial port data to obtain point cloud and IMU data, you can refer to our custom communication protocol for parsing.
+- `initialize_type:=2`
+- `work_mode:=0`
+- 本机 IP 通常配置为 `192.168.1.2`
 
-Specifically, you can refer to our user manual, as well as the following header files under `unitree_lidar_sdk`:
+## 构建步骤
+
+建议按依赖顺序分别构建。构建前先进入工作区根目录：
+
+```bash
+cd /home/ubuntu/unilidar_sdk2
+source /opt/ros/humble/setup.bash
 ```
-unitree_lidar_protocol.h
-unitree_lidar_utilities.h
+
+构建 Unitree ROS2 驱动：
+
+```bash
+colcon --log-base unitree_lidar_ros2/log build \
+  --base-paths unitree_lidar_ros2/src \
+  --install-base unitree_lidar_ros2/install \
+  --build-base unitree_lidar_ros2/build
+source unitree_lidar_ros2/install/setup.bash
 ```
+
+构建 Point-LIO：
+
+```bash
+colcon --log-base point_lio_unilidar-2.0.2/log build \
+  --base-paths point_lio_unilidar-2.0.2 \
+  --install-base point_lio_unilidar-2.0.2/install \
+  --build-base point_lio_unilidar-2.0.2/build
+source point_lio_unilidar-2.0.2/install/setup.bash
+```
+
+构建 Patchwork++：
+
+```bash
+colcon --log-base patchwork-plusplus-ros/log build \
+  --base-paths patchwork-plusplus-ros \
+  --install-base patchwork-plusplus-ros/install \
+  --build-base patchwork-plusplus-ros/build
+source patchwork-plusplus-ros/install/setup.bash
+```
+
+构建高程建图模块：
+
+```bash
+colcon --log-base elevation_mapping_cupy/log build \
+  --base-paths elevation_mapping_cupy \
+  --install-base elevation_mapping_cupy/install \
+  --build-base elevation_mapping_cupy/build
+source elevation_mapping_cupy/install/setup.bash
+
+colcon --log-base elevation_mapping_ros2/log build \
+  --base-paths elevation_mapping_ros2 \
+  --install-base elevation_mapping_ros2/install \
+  --build-base elevation_mapping_ros2/build
+source elevation_mapping_ros2/install/setup.bash
+```
+
+构建机器人描述和 bringup：
+
+```bash
+colcon --log-base golf_mower_description/log build \
+  --base-paths golf_mower_description \
+  --install-base golf_mower_description/install \
+  --build-base golf_mower_description/build
+source golf_mower_description/install/setup.bash
+
+colcon --log-base golf_mower_bringup/log build \
+  --packages-select golf_mower_bringup \
+  --install-base golf_mower_bringup/install \
+  --build-base golf_mower_bringup/build
+source golf_mower_bringup/install/setup.bash
+```
+
+## 使用步骤
+
+每次运行前建议 source 所需工作区：
+
+```bash
+cd /home/ubuntu/unilidar_sdk2
+source /opt/ros/humble/setup.bash
+source unitree_lidar_ros2/install/setup.bash
+source point_lio_unilidar-2.0.2/install/setup.bash
+source patchwork-plusplus-ros/install/setup.bash
+source elevation_mapping_cupy/install/setup.bash
+source elevation_mapping_ros2/install/setup.bash
+source golf_mower_description/install/setup.bash
+source golf_mower_bringup/install/setup.bash
+```
+
+### 1. 查看机器人模型
+
+```bash
+ros2 launch golf_mower_description description.launch.py launch_rviz:=true
+```
+
+### 2. 室内 Point-LIO 测试
+
+串口 L2：
+
+```bash
+ros2 launch golf_mower_bringup indoor_slam_test.launch.py \
+  initialize_type:=1 \
+  work_mode:=8 \
+  serial_port:=/dev/ttyACM0 \
+  baudrate:=4000000 \
+  start_lidar_rotation:=true \
+  reset_lidar_after_set_mode:=false \
+  launch_rviz:=true
+```
+
+检查输出：
+
+```bash
+ros2 topic hz /unilidar/cloud
+ros2 topic hz /unilidar/imu
+ros2 topic hz /pointlio/odom
+```
+
+### 3. 室外高程建图 Stage 1
+
+```bash
+ros2 launch golf_mower_bringup outdoor_elevation_stage1.launch.py \
+  initialize_type:=1 \
+  work_mode:=8 \
+  serial_port:=/dev/ttyACM0 \
+  baudrate:=4000000 \
+  start_lidar_rotation:=true \
+  reset_lidar_after_set_mode:=false \
+  launch_outdoor_rviz:=true
+```
+
+检查高程图：
+
+```bash
+ros2 topic hz /elevation_mapping_node/elevation_map_raw
+ros2 topic hz /elevation_mapping_node/elevation_map_filter
+ros2 run golf_mower_bringup grid_map_inspect.py
+```
+
+### 4. 可通行性栅格 Stage 2
+
+```bash
+ros2 launch golf_mower_bringup outdoor_elevation_stage2.launch.py \
+  initialize_type:=1 \
+  work_mode:=8 \
+  serial_port:=/dev/ttyACM0 \
+  baudrate:=4000000 \
+  start_lidar_rotation:=true \
+  reset_lidar_after_set_mode:=false \
+  launch_outdoor_rviz:=true
+```
+
+检查 Nav2 可用的栅格：
+
+```bash
+ros2 topic hz /elevation/traversability_grid
+ros2 topic echo /elevation/traversability_grid --once
+```
+
+### 5. Patchwork++ 地面分割 Stage 4
+
+雷达安装高度要填写实际值，不建议长期使用 `0`：
+
+```bash
+ros2 launch golf_mower_bringup outdoor_patchwork_stage4.launch.py \
+  initialize_type:=1 \
+  work_mode:=8 \
+  serial_port:=/dev/ttyACM0 \
+  baudrate:=4000000 \
+  start_lidar_rotation:=true \
+  reset_lidar_after_set_mode:=false \
+  patchwork_sensor_height:=0.80 \
+  launch_outdoor_rviz:=true
+```
+
+检查地面分割：
+
+```bash
+ros2 topic hz /ground_segmentation/ground
+ros2 topic hz /ground_segmentation/nonground
+```
+
+### 6. 分割建图 Stage 5
+
+用于生成 `ground_map.pcd` 和 `nonground_map.pcd`：
+
+```bash
+ros2 launch golf_mower_bringup outdoor_segmented_mapping_stage5.launch.py \
+  initialize_type:=1 \
+  work_mode:=8 \
+  serial_port:=/dev/ttyACM0 \
+  baudrate:=4000000 \
+  start_lidar_rotation:=true \
+  reset_lidar_after_set_mode:=false \
+  patchwork_sensor_height:=0.80 \
+  use_pointlio_diagnostics:=true
+```
+
+输出目录：
+
+```text
+golf_mower_bringup/maps/stage5_segmented/
+```
+
+### 7. 分割地图导航 Stage 5
+
+```bash
+ros2 launch golf_mower_bringup outdoor_segmented_nav_stage5.launch.py \
+  initialize_type:=1 \
+  work_mode:=8 \
+  serial_port:=/dev/ttyACM0 \
+  baudrate:=4000000 \
+  start_lidar_rotation:=true \
+  reset_lidar_after_set_mode:=false \
+  patchwork_sensor_height:=0.80 \
+  launch_outdoor_rviz:=true
+```
+
+Nav2 输出速度：
+
+```bash
+ros2 topic echo /cmd_vel
+```
+
+## 调试建议
+
+Point-LIO 初始化时，雷达和车体应保持静止 5 到 10 秒。启动瞬间移动、碰撞雷达或线缆拉扯都可能导致初始 IMU bias 和重力估计错误，表现为地图漂移。
+
+启用 Point-LIO 输入诊断：
+
+```bash
+ros2 launch golf_mower_bringup outdoor_segmented_mapping_stage5.launch.py \
+  initialize_type:=1 \
+  work_mode:=8 \
+  serial_port:=/dev/ttyACM0 \
+  baudrate:=4000000 \
+  start_lidar_rotation:=true \
+  reset_lidar_after_set_mode:=false \
+  use_pointlio_diagnostics:=true
+```
+
+重点看：
+
+- `cloud time[min,max,span]` 是否约为单帧扫描周期。
+- `imu_delta` / `cloud_delta` 是否在合理范围内。
+- 静止时 `acc_norm_mean` 是否接近 `9.81`。
+- 转动雷达时 `gyro_norm_mean` 是否符合实际角速度。如果明显小 57 倍，尝试 `imu_angular_velocity_scale:=1.0`。
+
+常见问题：
+
+- `Patchwork++ produced empty ground cloud`：检查 `patchwork_sensor_height` 和点云坐标轴方向。
+- `Lookup would require extrapolation into the future`：TF 发布时间略慢于点云时间，通常影响分割地图累计，不一定影响 Point-LIO 本身。
+- `/ground_segmentation/ground` 一直为空：不要把 `patchwork_sensor_height` 长期设为 `0`，应使用雷达实际离地高度。
+
+## 后续开发方向
+
+- 接入 RTK、轮速和 IMU，通过 `robot_localization` 融合为稳定 `map -> odom -> base_link`。
+- 使用 Fields2Cover 根据球场边界和割草宽度生成覆盖路径。
+- 将覆盖路径转换为 Nav2 waypoint/action。
+- 将割草机构状态、急停、边界保护和禁入区加入任务管理。

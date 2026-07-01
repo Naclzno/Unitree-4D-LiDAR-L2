@@ -7,15 +7,14 @@
 您可以使用这个仓库中的代码接口来获取我们的激光雷达测量的点云IMU等数据，以及设置和获取激光雷达的相关配置参数。
 
 我们为激光雷达提供了几种常用的接口：
-- 原始的基于C++的SDK：[unitree_lidar_sdk](./unitree_lidar_sdk/README.md)
-- 用于在ROS环境下解析和发布激光雷达数据的软件包：[unitree_lidar_ros](./unitree_lidar_ros/src/unitree_lidar_ros/README.md)
-- 用于在ROS2环境下解析和发布激光雷达数据的软件包：[unitree_lidar_ros2](./unitree_lidar_ros2/src/unitree_lidar_ros2/README.md)
+- 原始的基于C++的SDK：[unitree_lidar_sdk](./README.md)
+- 用于在ROS2环境下解析和发布激光雷达数据的软件包：[unitree_lidar_ros2](../unitree_lidar_ros2/src/unitree_lidar_ros2/README.md)
 
 
 ## 2. 坐标系定义
 
 <div style="text-align:center">
-  <img src="./docs/lidar_frame_definition.jpg" width="800">
+  <img src="../docs/lidar_frame_definition.jpg" width="800">
 </div>
 
 本激光雷达的坐标系定义如上图所示，它满足右手坐标系的定义。设激光雷达点云坐标系为L，记IMU坐标系为I。
@@ -241,7 +240,7 @@ roslaunch unitree_lidar_ros run.launch
 
 在Rviz窗口中，您将看到我们的激光雷达点云如下：
 
-![img](./docs/ros1_cloud.png)
+![img](../docs/ros1_cloud.png)
 
 ## 5. 如何使用ROS2软件包
 
@@ -295,7 +294,7 @@ ros2 launch unitree_lidar_ros2 launch.py
 
 在Rviz窗口中，你将看到我们的激光雷达点云如下：
 
-![img](./docs/ros2_cloud.png)
+![img](../docs/ros2_cloud.png)
 
 ## 6. 如何解析原始数据包
 
