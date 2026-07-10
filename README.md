@@ -1,117 +1,132 @@
 # Golf Mower Robot ROS2 Workspace
 
-这是一个面向高尔夫球场除草机器人的 ROS2 算法工作区。项目围绕 Unitree L2 激光雷达，集成了激光雷达驱动、Point-LIO 激光惯导里程计、地面分割、高程/可通行性建图、Nav2 导航和覆盖路径规划相关算法。
+English | [中文](README_CN.md)
 
-## 功能概览
+This workspace contains the ROS2 algorithm stack for a golf-course mowing robot. It is built around the Unitree L2 lidar, Point-LIO, Patchwork++ ground segmentation, elevation/traversability mapping, Nav2 navigation, and UM981 RTK/INS localization.
 
-当前系统主链路：
+The current full outdoor workflow is Stage 5:
 
 ```text
 Unitree L2
   -> /unilidar/cloud, /unilidar/imu
   -> Point-LIO
   -> /pointlio/odom, /pointlio/cloud_registered, /pointlio/laser_map
-  -> Patchwork++ ground segmentation
-  -> elevation mapping / traversability grid
-  -> Nav2 navigation
+  -> Patchwork++ ground/non-ground segmentation
+  -> offline segmented PCD map
+  -> RTK/INS initial localization in the offline map
+  -> Nav2 navigation over the loaded map
 ```
 
-主要能力：
+## Main Capabilities
 
-- Unitree L2 串口或 UDP 采集点云和 IMU。
-- Point-LIO 输出实时里程计和点云地图。
-- Patchwork++ 分割地面点和非地面障碍点。
-- elevation mapping 生成高程图和可通行性图。
-- GridMap 转 OccupancyGrid，供 Nav2 costmap 使用。
-- Nav2 室内桌面联调、室外高程导航、分割地图导航。
-- Fields2Cover 预留用于高尔夫球场全覆盖割草路径规划。
+- Read Unitree L2 point cloud and IMU data over serial or UDP.
+- Run Point-LIO for lidar-inertial odometry and local point cloud mapping.
+- Segment ground and obstacle points with Patchwork++.
+- Save offline segmented maps as `ground_map.pcd` and `nonground_map.pcd`.
+- Record RTK georeference metadata for the saved map.
+- Load the offline map for Nav2 navigation.
+- Use UM981 GNSS `/fix` for map initialization; provide initial yaw manually for now.
+- Provide indoor test modes with fake RTK when GNSS/RTK signal is unavailable.
+- Keep earlier Stage 1/2/3/4 launches for incremental debugging.
 
-## 目录说明
+## Directory Layout
 
-| 目录 | 作用 |
+| Directory | Purpose |
 | --- | --- |
-| `unitree_lidar_sdk` | Unitree L2 原始 C++ SDK。 |
-| `unitree_lidar_ros2` | Unitree L2 ROS2 驱动，发布 `/unilidar/cloud` 和 `/unilidar/imu`。 |
-| `point_lio_unilidar-2.0.2` | Unitree L2 适配版 Point-LIO。 |
-| `patchwork-plusplus-ros` | ROS2 Patchwork++ 地面分割。 |
-| `elevation_mapping_cupy` | GPU/CuPy 高程建图。 |
-| `elevation_mapping_ros2` | CPU-only 高程建图兼容实现。 |
-| `golf_mower_description` | 机器人 URDF/Xacro 和固定传感器 frame。 |
-| `golf_mower_bringup` | 本项目主要 launch、配置、诊断脚本和 Nav2 插件。 |
-| `Fields2Cover-main` | 农业/割草全覆盖路径规划库。 |
-| `robot_localization-rolling-devel` | 后续 RTK、轮速、IMU、里程计融合预留。 |
-| `autoware` | 自动驾驶栈源码，当前不是主链路必需模块。 |
+| `unitree_lidar_sdk` | Original Unitree L2 C++ SDK. |
+| `unitree_lidar_ros2` | Unitree L2 ROS2 driver, publishing `/unilidar/cloud` and `/unilidar/imu`. |
+| `point_lio_unilidar-2.0.2` | Point-LIO adapted for Unitree L2. |
+| `patchwork-plusplus-ros` | ROS2 Patchwork++ ground segmentation. |
+| `elevation_mapping_cupy` | GPU/CuPy elevation mapping. |
+| `elevation_mapping_ros2` | CPU elevation mapping compatibility package. |
+| `golf_mower_description` | Robot URDF/Xacro and sensor frames. |
+| `golf_mower_bringup` | Main launch files, configuration, diagnostics, map utilities, and Nav2 integration. |
+| `UM981` | Python SDK and ROS2 node for UM981 GNSS/RTK/INS. |
+| `Fields2Cover-main` | Coverage path planning library reserved for mowing paths. |
+| `robot_localization-rolling-devel` | Reserved for later wheel odometry, RTK, IMU, and lidar odometry fusion. |
+| `autoware` | Autoware source tree; not required for the current main workflow. |
 
-## 环境准备
+## Environment
 
-已按 ROS2 Humble 组织使用。每个终端先 source 基础环境：
+| Environment component | Version or model |
+| --- | --- |
+| Operating system | Ubuntu 22.04.5 LTS (Jammy Jellyfish), x86_64 |
+| GPU | NVIDIA GeForce RTX 3060 Lite Hash Rate |
+| NVIDIA driver | `535.309.01` |
+| CUDA | CUDA 12.2 |
+| ROS 2 | ROS 2 Humble Hawksbill |
 
-```bash
-cd /home/ubuntu/unilidar_sdk2
-source /opt/ros/humble/setup.bash
-```
-
-如果使用串口雷达，确认设备存在：
-
-```bash
-ls /dev/ttyACM*
-```
-
-常用串口参数：
-
-- `initialize_type:=1`
-- `work_mode:=8`
-- `serial_port:=/dev/ttyACM0`
-- `baudrate:=4000000`
-
-常用 UDP 参数：
-
-- `initialize_type:=2`
-- `work_mode:=0`
-- 本机 IP 通常配置为 `192.168.1.2`
-
-## 构建步骤
-
-建议按依赖顺序分别构建。构建前先进入工作区根目录：
+Start each terminal with:
 
 ```bash
 cd /home/ubuntu/unilidar_sdk2
 source /opt/ros/humble/setup.bash
 ```
 
-构建 Unitree ROS2 驱动：
+For serial Unitree L2, check the device:
 
 ```bash
+ls /dev/ttyACM* /dev/ttyUSB*
+```
+
+For UM981, check the device:
+
+```bash
+ls /dev/ttyUSB* /dev/ttyACM*
+```
+
+Confirmed serial ports on the real Ubuntu robot PC:
+
+Unitree Lidar:
+
+```text
+/dev/ttyACM0
+```
+
+Stable path:
+
+```text
+/dev/serial/by-id/usb-1a86_USB_Single_Serial_593A032669-if00
+```
+
+UM981 development board:
+
+```text
+/dev/ttyUSB0
+```
+
+Stable path:
+
+```text
+/dev/serial/by-id/usb-1a86_USB_Serial-if00-port0
+```
+
+## Build
+
+Build and source the packages in dependency order:
+
+```bash
+cd /home/ubuntu/unilidar_sdk2
+source /opt/ros/humble/setup.bash
+
 colcon --log-base unitree_lidar_ros2/log build \
   --base-paths unitree_lidar_ros2/src \
   --install-base unitree_lidar_ros2/install \
   --build-base unitree_lidar_ros2/build
 source unitree_lidar_ros2/install/setup.bash
-```
 
-构建 Point-LIO：
-
-```bash
 colcon --log-base point_lio_unilidar-2.0.2/log build \
   --base-paths point_lio_unilidar-2.0.2 \
   --install-base point_lio_unilidar-2.0.2/install \
   --build-base point_lio_unilidar-2.0.2/build
 source point_lio_unilidar-2.0.2/install/setup.bash
-```
 
-构建 Patchwork++：
-
-```bash
 colcon --log-base patchwork-plusplus-ros/log build \
   --base-paths patchwork-plusplus-ros \
   --install-base patchwork-plusplus-ros/install \
   --build-base patchwork-plusplus-ros/build
 source patchwork-plusplus-ros/install/setup.bash
-```
 
-构建高程建图模块：
-
-```bash
 colcon --log-base elevation_mapping_cupy/log build \
   --base-paths elevation_mapping_cupy \
   --install-base elevation_mapping_cupy/install \
@@ -123,27 +138,29 @@ colcon --log-base elevation_mapping_ros2/log build \
   --install-base elevation_mapping_ros2/install \
   --build-base elevation_mapping_ros2/build
 source elevation_mapping_ros2/install/setup.bash
-```
 
-构建机器人描述和 bringup：
-
-```bash
 colcon --log-base golf_mower_description/log build \
   --base-paths golf_mower_description \
   --install-base golf_mower_description/install \
   --build-base golf_mower_description/build
 source golf_mower_description/install/setup.bash
 
+colcon --log-base UM981/log build \
+  --base-paths UM981 \
+  --packages-select um981_ros \
+  --install-base UM981/install \
+  --build-base UM981/build
+source UM981/install/setup.bash
+
 colcon --log-base golf_mower_bringup/log build \
+  --base-paths golf_mower_bringup \
   --packages-select golf_mower_bringup \
   --install-base golf_mower_bringup/install \
   --build-base golf_mower_bringup/build
 source golf_mower_bringup/install/setup.bash
 ```
 
-## 使用步骤
-
-每次运行前建议 source 所需工作区：
+Before running launch files, source the built environments:
 
 ```bash
 cd /home/ubuntu/unilidar_sdk2
@@ -154,18 +171,153 @@ source patchwork-plusplus-ros/install/setup.bash
 source elevation_mapping_cupy/install/setup.bash
 source elevation_mapping_ros2/install/setup.bash
 source golf_mower_description/install/setup.bash
+source UM981/install/setup.bash
 source golf_mower_bringup/install/setup.bash
 ```
 
-### 1. 查看机器人模型
+## Stage 5: Mapping and Localization/Navigation
+
+Stage 5 has only two phases: first build and save the offline map, then load that map for localization and navigation. Run the source commands above in every new terminal.
+
+### Phase 1: Mapping
+
+Use fake RTK indoors when satellite positioning is unavailable:
+
+```bash
+ros2 launch golf_mower_bringup outdoor_segmented_mapping_stage5.launch.py \
+  initialize_type:=1 \
+  work_mode:=8 \
+  serial_port:=/dev/ttyACM0 \
+  baudrate:=4000000 \
+  start_lidar_rotation:=true \
+  reset_lidar_after_set_mode:=false \
+  patchwork_sensor_height:=0.75 \
+  lidar_tf_z:=0.0 \
+  imu_tf_z:=0.00667 \
+  imu_quaternion_order:=wxyz \
+  use_um981:=false \
+  use_fake_rtk:=true \
+  use_map_metadata_recorder:=true \
+  fix_topic:=/fix \
+  yaw_map_to_enu:=0.0 \
+  use_pointlio_diagnostics:=true \
+  launch_rviz:=true
+```
+
+Outdoors with a valid GNSS/RTK solution, replace these parameters in the same command:
+
+```bash
+use_um981:=true \
+um981_port:=/dev/ttyUSB0 \
+use_fake_rtk:=false
+```
+
+Each mapping launch creates a directory named with its start time, for example:
+
+```text
+golf_mower_bringup/maps/stage5_segmented/20260710_142530/
+```
+
+After mapping, verify that directory contains these files and stop the launch with `Ctrl+C`:
+
+```text
+ground_map.pcd
+nonground_map.pcd
+map_metadata.yaml
+```
+
+### Phase 2: Load Map and Localize/Navigate
+
+Open a new terminal and run the source commands above again. Use fake RTK indoors:
+
+```bash
+ros2 launch golf_mower_bringup outdoor_segmented_nav_stage5.launch.py \
+  initialize_type:=1 \
+  work_mode:=8 \
+  serial_port:=/dev/ttyACM0 \
+  baudrate:=4000000 \
+  start_lidar_rotation:=true \
+  reset_lidar_after_set_mode:=false \
+  patchwork_sensor_height:=0.75 \
+  lidar_tf_z:=0.0 \
+  imu_tf_z:=0.00667 \
+  imu_quaternion_order:=wxyz \
+  use_um981:=false \
+  use_fake_rtk:=true \
+  use_rtk_map_localizer:=true \
+  use_map_to_camera_init_adapter:=false \
+  use_um981_heading:=false \
+  rtk_map_to_camera_init_yaw:=0.0 \
+  fix_topic:=/fix \
+  launch_outdoor_rviz:=true
+```
+
+Outdoors with a valid GNSS/RTK solution, replace these parameters in the same command:
+
+```bash
+use_um981:=true \
+um981_port:=/dev/ttyUSB0 \
+use_fake_rtk:=false
+```
+
+Check the map-localization chain:
+
+```bash
+ros2 topic hz /fix
+ros2 run tf2_ros tf2_echo map camera_init
+ros2 topic echo /map --once
+ros2 topic echo /cmd_vel
+```
+
+Fake RTK only validates offline map loading, the localization interface, and the TF chain; it does not represent real GNSS accuracy. For indoor navigation testing, place the robot near the mapping start pose with the same orientation, or adjust `rtk_map_to_camera_init_yaw`.
+
+Navigation automatically loads the newest timestamped directory under `stage5_segmented` that contains all three files. To load an older map, explicitly set `segmented_map_dir` and `map_metadata_path`.
+
+Before navigation, the launch reads the `ground_map.pcd` header. If it contains zero points and `allow_offline_ground_recovery:=true`, it extracts a connected local low surface from `nonground_map.pcd`, writes `recovered_ground_map.pcd`, `recovered_nonground_map.pcd`, and `recovery_report.yaml`, then starts navigation. Failed quality checks, missing files, or invalid formats still abort the launch, and the original PCD files are never overwritten.
+
+### Stage 5 Parameter Reference
+
+| Parameter | Example | Short meaning |
+| --- | --- | --- |
+| `initialize_type` | `1` | Lidar interface: `1` for USB serial and `2` for UDP. |
+| `work_mode` | `8` | Unitree L2 serial operating mode. |
+| `serial_port` | `/dev/ttyACM0` | Unitree L2 serial device, not the UM981 port. |
+| `baudrate` | `4000000` | Unitree L2 serial baud rate. |
+| `start_lidar_rotation` | `true` | Start lidar rotation with the launch. |
+| `reset_lidar_after_set_mode` | `false` | Reset after setting lidar mode; use `false` on the current hardware. |
+| `patchwork_sensor_height` | `0.75` | Measured lidar height above ground in meters. |
+| `lidar_tf_z` | `0.0` | Lidar Z offset relative to `base_link`, in meters. |
+| `imu_tf_z` | `0.00667` | Unitree internal IMU Z mounting offset, in meters. |
+| `imu_quaternion_order` | `wxyz` | Unitree SDK IMU quaternion field order. |
+| `use_um981` | indoor `false`, outdoor `true` | Start the real UM981 GNSS node. |
+| `um981_port` | `/dev/ttyUSB0` | UM981 serial port, used only with `use_um981:=true`. |
+| `use_fake_rtk` | indoor `true` | Generate simulated `/fix` from Point-LIO odometry for indoor testing. |
+| `use_map_metadata_recorder` | mapping `true` | Write the localization datum and mapping start information to `map_metadata.yaml`. |
+| `map_metadata_path` | default Stage 5 path | Metadata file written by mapping and read by navigation. |
+| `fix_topic` | `/fix` | `NavSatFix` topic published by UM981 or fake RTK. |
+| `yaw_map_to_enu` | `0.0` | Angle from ENU east to the map X axis, in radians. |
+| `use_pointlio_diagnostics` | debugging `true` | Print cloud, IMU timing, and odometry jump diagnostics. |
+| `launch_rviz` | `true` | Start RViz during mapping. |
+| `use_rtk_map_localizer` | navigation `true` | Publish `map -> camera_init` from `/fix` and map metadata. |
+| `allow_offline_ground_recovery` | `true` | Recover connected ground from nonground when ground is empty; abort navigation if recovery quality fails. |
+| `use_map_to_camera_init_adapter` | `false` | Disable the duplicate static TF while the RTK localizer is active. |
+| `use_um981_heading` | currently `false` | Use UM981 heading; disabled because valid INS heading is unavailable. |
+| `rtk_map_to_camera_init_yaw` | `0.0` | Manual initial yaw in radians when UM981 heading is not used. |
+| `launch_outdoor_rviz` | `true` | Start RViz during localization and navigation. |
+
+For Boolean parameters, `true` enables a function and `false` disables it. Angles use radians; positions and heights use meters.
+
+## Earlier Debug Stages
+
+The earlier stages are useful for isolating one layer at a time. They are not the preferred full-system entry point once Stage 5 is working.
+
+### Robot Description
 
 ```bash
 ros2 launch golf_mower_description description.launch.py launch_rviz:=true
 ```
 
-### 2. 室内 Point-LIO 测试
-
-串口 L2：
+### Indoor Point-LIO Test
 
 ```bash
 ros2 launch golf_mower_bringup indoor_slam_test.launch.py \
@@ -178,7 +330,7 @@ ros2 launch golf_mower_bringup indoor_slam_test.launch.py \
   launch_rviz:=true
 ```
 
-检查输出：
+Check:
 
 ```bash
 ros2 topic hz /unilidar/cloud
@@ -186,7 +338,7 @@ ros2 topic hz /unilidar/imu
 ros2 topic hz /pointlio/odom
 ```
 
-### 3. 室外高程建图 Stage 1
+### Stage 1: Outdoor Elevation Mapping
 
 ```bash
 ros2 launch golf_mower_bringup outdoor_elevation_stage1.launch.py \
@@ -199,7 +351,7 @@ ros2 launch golf_mower_bringup outdoor_elevation_stage1.launch.py \
   launch_outdoor_rviz:=true
 ```
 
-检查高程图：
+Check:
 
 ```bash
 ros2 topic hz /elevation_mapping_node/elevation_map_raw
@@ -207,7 +359,7 @@ ros2 topic hz /elevation_mapping_node/elevation_map_filter
 ros2 run golf_mower_bringup grid_map_inspect.py
 ```
 
-### 4. 可通行性栅格 Stage 2
+### Stage 2: Traversability Occupancy Grid
 
 ```bash
 ros2 launch golf_mower_bringup outdoor_elevation_stage2.launch.py \
@@ -220,16 +372,27 @@ ros2 launch golf_mower_bringup outdoor_elevation_stage2.launch.py \
   launch_outdoor_rviz:=true
 ```
 
-检查 Nav2 可用的栅格：
+Check:
 
 ```bash
 ros2 topic hz /elevation/traversability_grid
 ros2 topic echo /elevation/traversability_grid --once
 ```
 
-### 5. Patchwork++ 地面分割 Stage 4
+### Stage 3: Nav2 With Elevation Grid
 
-雷达安装高度要填写实际值，不建议长期使用 `0`：
+```bash
+ros2 launch golf_mower_bringup outdoor_nav2_stage3.launch.py \
+  initialize_type:=1 \
+  work_mode:=8 \
+  serial_port:=/dev/ttyACM0 \
+  baudrate:=4000000 \
+  start_lidar_rotation:=true \
+  reset_lidar_after_set_mode:=false \
+  launch_outdoor_rviz:=true
+```
+
+### Stage 4: Patchwork++ Segmentation
 
 ```bash
 ros2 launch golf_mower_bringup outdoor_patchwork_stage4.launch.py \
@@ -239,92 +402,89 @@ ros2 launch golf_mower_bringup outdoor_patchwork_stage4.launch.py \
   baudrate:=4000000 \
   start_lidar_rotation:=true \
   reset_lidar_after_set_mode:=false \
-  patchwork_sensor_height:=0.80 \
+  patchwork_sensor_height:=0.75 \
   launch_outdoor_rviz:=true
 ```
 
-检查地面分割：
+Check:
 
 ```bash
 ros2 topic hz /ground_segmentation/ground
 ros2 topic hz /ground_segmentation/nonground
 ```
 
-### 6. 分割建图 Stage 5
+## Parameter Reference
 
-用于生成 `ground_map.pcd` 和 `nonground_map.pcd`：
+### Lidar Driver Parameters
 
-```bash
-ros2 launch golf_mower_bringup outdoor_segmented_mapping_stage5.launch.py \
-  initialize_type:=1 \
-  work_mode:=8 \
-  serial_port:=/dev/ttyACM0 \
-  baudrate:=4000000 \
-  start_lidar_rotation:=true \
-  reset_lidar_after_set_mode:=false \
-  patchwork_sensor_height:=0.80 \
-  use_pointlio_diagnostics:=true
-```
+| Parameter | Typical value | Meaning |
+| --- | --- | --- |
+| `initialize_type` | `1` serial, `2` UDP | Unitree L2 initialization mode. Use `1` for USB serial. |
+| `work_mode` | `8` serial, `0` UDP | Unitree L2 work mode. Serial L2 testing commonly uses `8`. |
+| `serial_port` | `/dev/ttyACM0` | Serial device path for Unitree L2. |
+| `baudrate` | `4000000` | Serial baudrate for Unitree L2. |
+| `start_lidar_rotation` | `true` | Start lidar motor rotation from launch. |
+| `reset_lidar_after_set_mode` | `false` | Reset lidar after mode configuration. Set `false` if reset causes unstable startup. |
+| `use_system_timestamp` | `false` | Use host time instead of sensor timestamps. Prefer `false` when sensor timestamps are valid. |
 
-输出目录：
+### Point-LIO and IMU Parameters
 
-```text
-golf_mower_bringup/maps/stage5_segmented/
-```
+| Parameter | Typical value | Meaning |
+| --- | --- | --- |
+| `pointlio_config_file` | `unilidar_l2_ros2_no_pcd.yaml` | Point-LIO configuration file. |
+| `imu_quaternion_order` | `wxyz` | Quaternion field order expected from the Unitree IMU adapter. |
+| `imu_angular_velocity_scale` | `0.017453292519943295` | Converts degrees/s to rad/s. Use `1.0` only if the driver already publishes rad/s. |
+| `imu_linear_acceleration_scale` | `1.0` | Scale factor for linear acceleration. |
+| `use_static_pointlio_pose` | `false` | Use a fixed pose for testing instead of live Point-LIO output. |
 
-### 7. 分割地图导航 Stage 5
+### TF and Sensor Mounting Parameters
 
-```bash
-ros2 launch golf_mower_bringup outdoor_segmented_nav_stage5.launch.py \
-  initialize_type:=1 \
-  work_mode:=8 \
-  serial_port:=/dev/ttyACM0 \
-  baudrate:=4000000 \
-  start_lidar_rotation:=true \
-  reset_lidar_after_set_mode:=false \
-  patchwork_sensor_height:=0.80 \
-  launch_outdoor_rviz:=true
-```
+| Parameter | Meaning |
+| --- | --- |
+| `lidar_tf_x/y/z` | Lidar position relative to `base_link`, in meters. |
+| `lidar_tf_roll/pitch/yaw` | Lidar orientation relative to `base_link`, in radians. |
+| `imu_tf_x/y/z` | IMU position relative to `base_link`, in meters. |
+| `imu_tf_roll/pitch/yaw` | IMU orientation relative to `base_link`, in radians. |
+| `map_to_camera_init_x/y/z` | Manual static offset from `map` to Point-LIO `camera_init`. |
+| `map_to_camera_init_roll/pitch/yaw` | Manual static rotation from `map` to `camera_init`, in radians. |
+| `use_map_to_camera_init_adapter` | Publish the static `map -> camera_init` adapter. Set `false` when `use_rtk_map_localizer:=true`. |
 
-Nav2 输出速度：
+### Patchwork++ Parameters
 
-```bash
-ros2 topic echo /cmd_vel
-```
+| Parameter | Typical value | Meaning |
+| --- | --- | --- |
+| `patchwork_cloud_topic` | `/unilidar/cloud` | Input cloud for ground segmentation. |
+| `patchwork_sensor_height` | `0.75` | Measured lidar mounting height above ground. Do not leave this at `0` for outdoor use. |
+| `patchwork_min_r` | `0.2` | Minimum radial range used by Patchwork++. |
+| `patchwork_max_r` | `40.0` | Maximum radial range used by Patchwork++. |
+| `patchwork_log_every_n` | `60` | Patchwork++ log throttle interval in frames. |
+| `min_ground_points` | `100` | Minimum points for accepting live Patchwork++ ground. Short failures hold the previous elevation map; persistent failures recover only the local low surface instead of treating the full raw cloud as ground. |
 
-## 调试建议
+### UM981 ROS Topics
 
-Point-LIO 初始化时，雷达和车体应保持静止 5 到 10 秒。启动瞬间移动、碰撞雷达或线缆拉扯都可能导致初始 IMU bias 和重力估计错误，表现为地图漂移。
+| Topic | Type | Meaning |
+| --- | --- | --- |
+| `/fix` | `sensor_msgs/NavSatFix` | GNSS/RTK position from GGA, INSPVAX, or DRPVA. |
+| `/imu/data_raw` | `sensor_msgs/Imu` | Not used in the current robot flow. The tested UM981 USB output did not emit RAWIMUX. |
+| `/um981/heading` | `std_msgs/Float64` | Not used in the current robot flow. Reserved for valid INS heading output. |
+| `/um981/ins_attitude` | `geometry_msgs/Vector3Stamped` | Not used in the current robot flow. |
 
-启用 Point-LIO 输入诊断：
+## Debugging Notes
 
-```bash
-ros2 launch golf_mower_bringup outdoor_segmented_mapping_stage5.launch.py \
-  initialize_type:=1 \
-  work_mode:=8 \
-  serial_port:=/dev/ttyACM0 \
-  baudrate:=4000000 \
-  start_lidar_rotation:=true \
-  reset_lidar_after_set_mode:=false \
-  use_pointlio_diagnostics:=true
-```
+Keep the robot and lidar still for 5 to 10 seconds during Point-LIO initialization. Moving the robot, touching the lidar, or pulling cables during startup can corrupt the initial IMU bias and gravity estimate, causing map drift.
 
-重点看：
+Common symptoms:
 
-- `cloud time[min,max,span]` 是否约为单帧扫描周期。
-- `imu_delta` / `cloud_delta` 是否在合理范围内。
-- 静止时 `acc_norm_mean` 是否接近 `9.81`。
-- 转动雷达时 `gyro_norm_mean` 是否符合实际角速度。如果明显小 57 倍，尝试 `imu_angular_velocity_scale:=1.0`。
+- `Patchwork++ produced empty ground cloud`: check `patchwork_sensor_height` and point cloud axis convention.
+- `Lookup would require extrapolation into the future`: TF is slightly behind the point cloud timestamp. This can affect segmented map accumulation but does not always mean Point-LIO is drifting.
+- `/ground_segmentation/ground` stays empty: do not keep `patchwork_sensor_height:=0`; use the real lidar height.
+- `/fix` has `STATUS_NO_FIX`: the UM981 is indoors or has no valid satellite solution. Use fake RTK indoors, or test GNSS outdoors.
 
-常见问题：
+## Development Roadmap
 
-- `Patchwork++ produced empty ground cloud`：检查 `patchwork_sensor_height` 和点云坐标轴方向。
-- `Lookup would require extrapolation into the future`：TF 发布时间略慢于点云时间，通常影响分割地图累计，不一定影响 Point-LIO 本身。
-- `/ground_segmentation/ground` 一直为空：不要把 `patchwork_sensor_height` 长期设为 `0`，应使用雷达实际离地高度。
-
-## 后续开发方向
-
-- 接入 RTK、轮速和 IMU，通过 `robot_localization` 融合为稳定 `map -> odom -> base_link`。
-- 使用 Fields2Cover 根据球场边界和割草宽度生成覆盖路径。
-- 将覆盖路径转换为 Nav2 waypoint/action。
-- 将割草机构状态、急停、边界保护和禁入区加入任务管理。
+- Enable and calibrate UM981 INS heading only after valid heading output is available on the tested serial port.
+- Calibrate the RTK antenna lever arm.
+- Fuse RTK, wheel odometry, IMU, and Point-LIO with `robot_localization`.
+- Generate mowing coverage paths with Fields2Cover.
+- Convert coverage paths into Nav2 waypoints/actions.
+- Add mower actuator state, emergency stop, boundary protection, and no-go zones.

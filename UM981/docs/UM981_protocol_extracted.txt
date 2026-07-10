@@ -1,0 +1,1133 @@
+                                         HIGH PRECISION
+
+                                         COMMANDS AND LOGS
+
+
+
+                                          WWW.UNICORECOMM.COM
+
+
+
+
+UM981数据接口协议
+
+
+
+
+ Copyright© 2009-2023, Unicore Communications, Inc.
+        Data subject to change without notice.
+修订记录
+版本号          修订记录                     日期
+R1.0         首次发布                     2023年9月
+
+
+
+
+权利声明
+
+       本手册提供和芯星通科技（北京）有限公司（以下简称为“和芯星通”）相应型号产品
+
+信息。
+
+       和芯星通保留本手册文档，及其所载之所有数据、设计、布局图等信息的一切权利、
+
+权益，包括但不限于已有著作权、专利权、商标权等知识产权，可以整体、部分或以不同
+
+排列组合形式进行专利权、商标权、著作权授予或登记申请的权利，以及将来可能被授予
+
+或获批登记的知识产权。
+
+       和芯星通拥有“和芯星通”、“UNICORECOMM”以及本手册下相应产品所属系列名称
+
+的注册商标专用权。
+
+       本手册之整体或其中任一部分，并未以明示、暗示、禁止反言或其他任何形式对和芯
+
+星通拥有的上述权利、权益进行整体或部分的转让、许可授予。
+
+免责声明
+
+       本手册所载信息，系根据手册更新之时所知相应型号产品情形的“原样”提供，对上
+
+述信息适于特定目的、用途之准确性、可靠性、正确性等，和芯星通不作任何保证或承诺。
+
+       和芯星通可能对产品规格、描述、参数、使用等相关事项进行修改，或一经发现手册
+
+误载信息后进行勘误，上述情形可能造成订购产品实际信息与本手册所载信息有差异。
+
+       如您发现订购产品的信息与本手册所载信息之间存有不符，请您与本公司或当地经
+
+销商联系，以获取最新的产品手册或其勘误表。
+
+
+
+
+                           i
+UM981 Commands and Logs Reference Book
+
+
+
+
+                                                           目录
+1   配置指令 .............................................................................................................. 1
+
+    1.1      惯导使能配置 ..................................................................................................... 1
+
+    1.2      惯导安装角度配置 .............................................................................................. 2
+
+    1.3      惯导外推时间配置 .............................................................................................. 3
+
+    1.4      惯导对准速度门限配置....................................................................................... 3
+
+    1.5      IMU至主天线杆臂参数配置 ................................................................................ 4
+
+    1.6      INS输出位置偏移配置 ........................................................................................ 5
+
+    1.7      INS初始航向角及std配置 ................................................................................... 6
+
+    1.8      INS初始姿态角及std配置 ................................................................................... 7
+
+    1.9      车体方向识别配置 .............................................................................................. 8
+
+2   输出语句 .............................................................................................................. 9
+
+    2.1      Normal型header说明........................................................................................ 9
+
+    2.2      Short型header说明 ......................................................................................... 11
+
+    2.3      数据输出协议 ................................................................................................... 11
+
+          2.3.1       IMUATT信息 ...................................................................................................12
+
+          2.3.2       GYRATT信息 ...................................................................................................15
+
+          2.3.3       INSHOTINFOR0信息 ......................................................................................16
+
+          2.3.4       INSPVAX信息 ..................................................................................................17
+
+          2.3.5       RAWIMUX信息 ................................................................................................19
+
+          2.3.6       DRPVA组合导航定位输出...............................................................................22
+
+
+
+
+                                                                 I
+1 配置指令
+
+1.1 惯导使能配置
+
+   UM981模块惯导器件默认处于开启状态。用户可使用CONFIG INS DISABLE指令关闭
+
+惯导器件；若要再次开启惯导功能，需输入CONFIG INS RESET使能INS并复位到未对准状
+
+态。
+
+   命令格式为：
+
+   CONFIG INS [参数]
+
+   命令示例：
+
+   CONFIG INS DISABLE
+
+表 1-1 惯导设备参数
+
+指令头       设备            参数        参数描述
+                        Disable   关闭惯导
+CONFIG    INS
+                        Reset     开启惯导并复位到未对准状态
+
+
+
+
+                                  1
+UM981 Commands and Logs Reference Book
+
+
+1.2 惯导安装角度配置
+
+   本指令用于设定UM981模块相对于载体XYZ方向的安装角，使UM981模块的XYZ轴方
+
+向和载体XYZ轴方向相一致。
+
+   命令格式为：
+
+   CONFIG INS ANGLE [参数]
+
+   命令示例：
+
+   CONFIG INS ANGLE 0 9000 18000
+
+表 1-2 配置 INS 安装角
+
+指令头      设备        角度       参数           参数描述
+                                         惯导模块X轴相对于载体坐标X轴的旋转角
+                            ANGLEX       度（右手螺旋）；
+                                         单位：0.01度；范围：0~36000
+                                         惯导模块Y轴相对于载体坐标Y轴的旋转角
+CONFIG   INS       ANGLE    ANGLEY       度（右手螺旋）；
+                                         单位：0.01度；范围：0~36000
+                                         惯导模块Z轴相对于载体坐标Z轴的旋转角
+                            ANGELZ       度（右手螺旋）；
+                                         单位：0.01度；范围：0~36000
+
+
+
+
+                                     2
+1.3 惯导外推时间配置
+
+   该指令设置惯导系统在无卫星导航信号下继续定位的时间，以秒为单位。
+
+   命令格式为：
+
+   CONFIG INS TIMEOUT [参数]
+
+   命令示例：
+
+   CONFIG INS TIMEOUT 60
+
+表 1-3 设置惯导外推时间长度
+
+指令头         设备       时间指令         参数       参数描述
+                                           无卫星导航信号下继续定位的时间，单
+                                  1~1000
+CONFIG      INS      TIMEOUT               位为秒
+                                  ＞1000    非推荐值
+
+
+
+
+1.4 惯导对准速度门限配置
+
+   本指令设置INS动态对准的速度门限，载体速度低于该门限值时INS不能实现初始化对
+
+准。当接收机接入双天线且双天线可以完成定向时，惯导利用双天线定向信息完成初始化
+
+对准，则此命令不生效。
+
+   命令格式为：
+
+   CONFIG INS ALIGNMENTVEL [参数]
+
+   命令示例：
+
+   CONFIG INS ALIGNMENTVEL 5.0
+
+表 1-4 设置惯导对准速度门限
+
+指令头       设备      对准门限指令            参数       参数描述
+                                             设定要进行惯导器件速度校准的门
+CONFIG    INS     ALIGNMENTVEL      速度门限值
+                                             限值，单位：m/s
+
+
+
+
+                                       3
+UM981 Commands and Logs Reference Book
+
+
+1.5 IMU 至主天线杆臂参数配置
+
+   此命令输入IMU和GNSS主天线相位中心之间的偏移量，即惯导至主天线杆臂参数。x、
+
+y和z代表IMU到主天线相位中心的矢量。a、b和c字段用于输入测量中的可能的误差。例如，
+
+如果“X”偏移测量精度为1厘米，则在“a”字段中输入0.01。
+
+   测量杆臂参数时应尽可能精确，以提升组合结果的性能。
+
+   命令格式：
+
+   CONFIG IMUTOANT OFFSET x y z [a] [b] [c]
+
+   命令示例：
+
+   CONFIG IMUTOANT OFFSET 0.54 0.32 1.20 0.03 0.03 0.05
+
+表 1-5 IMU 至主天线杆臂参数配置
+
+指令头                      参数        参数描述
+                         x         X方向偏移量，单位：米，范围-100~100；
+                         y         Y方向偏移量，单位：米，范围-100~100；
+                         z         Z方向偏移量，单位：米，范围-100~100；
+                                   X方向偏移量的误差，单位：米，范围0.01~10；
+CONFIG IMUTOANT          a
+                                   （默认为x方向偏移的10%到最小0.01m）
+OFFSET
+                                   Y方向偏移量的误差，单位：米，范围0.01~10；
+                         b
+                                   （默认为y方向偏移的10%到最小0.01m）
+                                   Z方向偏移量的误差，单位：米，范围0.01~10；
+                         c
+                                   （默认为z方向偏移的10%到最小0.01m）
+
+
+
+
+                                         4
+                       图 1-1 IMU 到天线相位中心的偏移量
+
+
+
+
+   当按照图 1-1 IMU到天线相位中心的偏移量安装时，为-X，-Y和+Z偏移。
+
+
+
+
+1.6 INS 输出位置偏移配置
+
+   UM981模块的中心为O，另一个点为P，此命令用于设置UM981模块中心O到点P的向
+
+量数值，使得INSPVAX/DRPVA等消息输出P点的位置和速度。
+
+   命令格式：
+
+   CONFIG INSSOL OFFSET xoffset yoffset zoffset
+
+   命令示例：
+
+   CONFIG INSSOL OFFSET 0.15 0.15 0.25
+
+表 1-6 INS 输出位置偏移配置
+
+指令头                        参数         参数描述
+
+                           X offset   X方向偏移量，单位：米，范围 -100~100；
+
+CONFIG INSSOL OFFSET       Y offset   Y方向偏移量，单位：米，范围 -100~100；
+
+                           Z offset   Z方向偏移量，单位：米，范围 -100~100；
+
+
+
+
+                                         5
+UM981 Commands and Logs Reference Book
+
+
+1.7 INS 初始航向角及 std 配置
+
+   此命令用于配置INS初始航向角及其STD，使得INS能够在静态下完成对准初始化。此
+
+时对准后的精度不高，在载体运动一段时间后，INS的精度才会逐渐收敛提升。
+
+
+    此命令不支持保存。
+   命令格式：
+
+   CONFIG INS AZIMUTH azimuth azSTD
+
+   命令示例：
+
+   CONFIG INS AZIMUTH 90 5
+
+   在以上例子中，初始航向角被设置为90度。这意味着定位模块的Y轴指向东，在5度的
+
+标准偏差内。
+
+表 1-7 INS 初始航向及 std 配置
+
+指令头          参数         参数描述
+
+             azimuth    INS初始航向角，单位：度，范围0~360，（北偏东为正）；
+CONFIG INS
+                        航向角标准差，单位：度，范围0.000278 ~ 45（0.000278度
+AZIMUTH      azSTD
+                        约等于1角秒），精确到小数点后6位
+
+
+
+
+                                      6
+1.8 INS 初始姿态角及 std 配置
+
+   此命令用于配置INS的初始姿态角及STD，使用此命令使得INS立即对准而不再需要动
+
+态对准过程。此时对准后的精度不高，在载体运动一段时间后，INS的精度才会逐渐收敛
+
+提升。
+
+   下面列出了这个命令的注意事项和特殊条件：
+
+   1、这种对准是用户即时输入的，这一命令会使系统更快地启动进入导航模式，输入值
+
+尽量是准确的，否则将影响系统性能。
+
+   2、如果不确定输入的角度精度，请增大输入的角度std值。
+
+
+    此命令不支持保存。
+   命令格式：
+
+   CONFIG INS ATTITUDE pitch roll azimuth pitchSTD rollSTD azSTD
+
+   命令示例：
+
+   CONFIG INS ATTITUDE 0 0 90 5 5 5
+
+   在以上例子中，初始俯仰角和横滚角被设置为0度，初始航向角被设置为90度，标准
+
+差为5度。这意味着模块基本水平放置，Y轴指向东，在5度的标准偏差内。
+
+表 1-8 INS 初始姿态及 std 配置
+
+指令头          参数            参数描述
+                           INS初始俯仰角，单位：度，范围-90~90，（沿X轴，右手螺
+             pitch
+                           旋为正）；
+                           INS初始横滚角，单位：度，范围-90~90，（沿Y轴，右手螺
+             roll
+                           旋为正）；
+CONFIG INS
+             azimuth       INS初始航向角，单位：度，范围0~360，（北偏东为正）；
+ATTITUDE
+                           俯仰角标准差，单位：度，范围0.000278 ~ 45（0.000278度
+             pitchSTD
+                           约等于1角秒），精确到小数点后6位；
+                           横滚角标准差，单位：度，范围0.000278 ~ 45（0.000278度
+             rollSTD
+                           约等于1角秒），精确到小数点后6位；
+
+
+
+                                        7
+UM981 Commands and Logs Reference Book
+
+
+指令头            参数         参数描述
+                          航向角标准差，单位：度，范围0.000278 ~ 45（0.000278度
+               azSTD
+                          约等于1角秒），精确到小数点后6位
+
+
+
+
+1.9 车体方向识别配置
+
+   该指令用于配置车体初始运动方向，辅助INS完成动态对准。
+
+   命令格式：
+
+   CONFIG INSDIRECTION [参数]
+
+   命令示例：
+
+   CONFIG INSDIRECTION AUTO
+
+   CONFIG INSDIRECTION FORWARD
+
+   CONFIG INSDIRECTION BACKWARD
+
+表 1-9 车体方向识别配置
+
+指令头                 参数           参数描述
+                                 算法内部自检测车体运动方向，若检测不出，则
+                    AUTO（默认）
+                                 认为前进
+CONFIG
+INSDIRECTION        FORWARD      告知算法车体前进
+
+                    BACKWARD     告知算法车体后退
+
+
+
+
+                                    8
+2 输出语句
+
+2.1 Normal 型 header 说明
+
+表 2-1 二进制信息 Header（头）结构
+
+ID   字段              类型       描述                   字节数   字节偏移
+
+1    Sync            Char     十六进制 0xAA.           1     0
+2    Sync            Char     十六进制 0x44.           1     1
+3    Sync            Char     十六进制 0x12.           1     2
+     Header
+4                    Uchar    头长度 0x1C             1     3
+     Length
+5    Message ID      Ushort   Log的信息ID             2     4
+                              00 =二进制
+     Message
+6                    Char     01 = ASCII           1     6
+     Type
+                              10 = 简化ASCII
+7    Reserved        Uchar    保留                   1     7
+     Message                  信息长度（字节），不包
+8                    Ushort                        2     8
+     Length                   括Log头和CRC比特。
+9    Reserved        Ushort   保留                   2     10
+10   Idle Time       Uchar    CPU idle，0~100       1     12
+                              GPS时间质量。 20 =
+                              UNKNOWN；160 = FINE
+                              ，二进制枚举值20表明接
+11   Time Status     Enum                          1     13
+                              收机时间未知，160表明
+                              接收机已计算出准确时间
+                              。
+12   Week            Ushort   GPS 周数               2     14
+13   ms              Ulong    以ms为单位的GPS周内秒        4     16
+14   Reserved        Ulong                         4     20
+                              北斗与GPS时系差。
+     BDS time
+                              该字段存储一周内GPS秒
+15   offset to GPS   Ushort                        2     24
+                              与北斗秒的差异。
+     Second
+                              北斗秒= GPS秒–时系差
+16   Reserved        Ushort                        2     26
+
+
+
+                                           9
+UM981 Commands and Logs Reference Book
+
+
+
+
+表 2-2 ASCII 信息 Header（头）结构
+
+ID    字段                类型        描述
+                                  同步字符，ASCII信息始终以一个“#”字符
+1     Sync              Char
+                                  开始
+
+2     Message           Char      本手册中log或命令的ASCII名称
+
+                                  产生log信息的接口名称。字符串由接口名称
+                                  加以x的后缀组成，x是1-31的数字，则用来
+3     Port              Char
+                                  表示虚拟接口。若未指示虚拟接口，则假定
+                                  虚拟接口为0。
+                                  用于多条log输出。这是一个从N-1到0的递减
+4     Sequence#         Long      数字，0意味着最后1条。多数log信息同一时
+                                  间只有1条，这种情况该值为0。
+                                  处理器空闲时间的最小百分比，每秒计算1次
+5     % IdleTime        Float
+                                  。
+                                  GPS 时间质量。当前取值Unknown或Fine
+6     TimeStatus        Enum      ，前者表明接收机还未能计算出准确的GPS
+                                  时间。
+7     Week              Ulong     GPS 周数
+8     Seconds           GPSec     GPS周内秒，精确到ms。
+
+9     Receiver Status   Ulong     保留位
+
+
+
+      BDS time offset
+10                      Char      保留位
+      to GPS Second
+
+
+      UTC time offset
+11                      Ulong     当前闰秒
+      to GPS Second
+12    ;                 Char      该字符表示Header（头）结束
+
+
+
+
+                                   10
+2.2 Short 型 header 说明
+
+     BINARY格式的Header，总长度为12个字节。
+
+表 2-3 Short Header 二进制格式定义
+
+ID        字段              类型        描述                  字节数   字节偏移
+1         Sync            Uchar     十六进制0xAA.           1     0
+2         Sync            Uchar     十六进制0x44.           1     1
+3         Sync            Uchar     十六进制0xB6            1     2
+                                    MessageLength，不包括
+4         MessageLength   Uchar                         1     3
+                                    header的长度
+5         Message ID      Ushort    Message ID          2     4
+6         Wn              Ushort    时间周                 2     6
+7         Ms              ULONG     周内秒（毫秒）             4     8
+
+表 2-4 Short Header ASCII 格式定义
+
+ID        字段              类型       描述
+1         Sync            Char     同步字符，ASCII信息始终以一个“%”字符开始
+2         Message         Char     本手册中log或命令的ASCII名称
+3         Wn              Ushort   GPS周数
+4         Ms              ulong    GPS周内秒，精确到ms。
+
+
+
+
+2.3 数据输出协议
+
+     一条数据包含header（头）+data（数据）+CRC（校验）；
+
+     header部分有两种格式，即normal型header和short型header，见上节说明。
+
+     对于一条MSG，最多有四种输出格式：
+
+     1)     XXXA表示输出normal header、ASCII格式的数据；
+
+     2)     XXXB表示输出normal header、BINARY格式的数据；
+
+     3)     XXXSA表示输出short header、ASCII格式的数据；
+
+     4)     XXXSB表示输出short header、BINARY格式的数据。
+
+
+
+                                           11
+UM981 Commands and Logs Reference Book
+
+
+    如GYRATT数据体，四种输出格式如下表 2-5 所示。
+
+表 2-5 数据输出类型
+
+                             Normal header           Short header
+ASCII                        GYRATTA                 GYRATTSA
+BINARY                       GYRATTB                 GYRATTSB
+
+* 目前仅GYRATT支持short header。
+
+
+
+
+2.3.1 IMUATT 信息
+
+    在INS完成初始化后，输出IMU的测量值信息和INS的姿态信息。
+
+    Message ID：1442
+
+    ASCII输出语法：
+
+    IMUATTA 0.1
+
+    BINARY输出语法：
+
+    IMUATTB 0.1
+
+    消息输出：
+
+    #IMUATTA,87,GPS,FINE,2264,459002400,0,0,18,10404;INS_ALIGNING,NONE,0,0,0,
+
+0,0,-31,-166,-3974,-5,-1,2,0,0*bf075814
+
+
+
+
+                                             12
+表 2-6 IMUATT 数据结构
+
+ID   字段           数据描述                       类型      字节数   字节偏移
+     IMUATT
+1                 消息头信息，参见表 2-1和表 2-2                H     0
+     header
+2    INS Status   INS解状态，参见表 2-7             Enum    4     H
+3    Pos Type     位置类型，参见表 2-8               Enum    4     H+4
+4    SOL age      进入INS解的总时间，单位0.001s        UINT    4     H+8
+
+5    Dr age       INS DR的时间，单位0.1s           USHORT 2      H+12
+
+                  横滚角（沿Y轴右手螺旋），单位
+6    Roll                                    SHORT   2     H+14
+                  360/32767 [deg]
+                  俯仰角（沿X轴右手螺旋），单位
+7    Pitch                                   SHORT   2     H+16
+                  360/32767 [deg]
+                  航向角，北向东为正，单位
+8    Azimuth                                 SHORT   2     H+18
+                  360/32767 [deg]
+                  X轴向加速度，单位
+9    Acc_X                                   SHORT   2     H+20
+                  80/32767[m/s^2]
+                  Y轴向加速度，单位
+10   Acc_Y                                   SHORT   2     H+22
+                  80/32767[m/s^2]
+                  Z轴向加速度，单位
+11   Acc_Z                                   SHORT   2     H+24
+                  80/32767[m/s^2]
+12   Gyro_X       X轴角速度，单位500/32767[deg/s]   SHORT   2     H+26
+13   Gyro_Y       Y轴角速度，单位500/32767[deg/s]   SHORT   2     H+28
+14   Gyro_Z       Z轴角速度，单位500/32767[deg/s]   SHORT   2     H+30
+15   Reserved     保留                         SHORT   2     H+32
+16   Reserved     保留                         SHORT   2     H+34
+17   xxxx         32位CRC校验（仅ASCII或二进制）       Hex     4     H+36
+
+18   [CR][LF]     语句结束符（仅ASCII）              -
+
+
+
+
+                                    13
+UM981 Commands and Logs Reference Book
+
+
+表 2-7 惯导解算状态
+
+二进制      字段                       描述
+0        INS_INACTIVE             IMU数据无效，INS没有工作
+1        INS_ALIGNING             INS正在初始对准中
+2        INS_HIGH_VARIANCE        INS已进入导航模式，但航向角误差超限。对
+                                  于大多数IMU，默认阈值是2度。
+3        INS_SOLUTION_GOOD        进入导航模式且INS解正常
+6        INS_SOLUTION_FREE        INS的解处于DR模式，没有GNSS解参与组合解
+                                  算
+7        INS_ALIGNMENT_COMPLETE   INS滤波器完成初始对准，但还没有足够的动
+                                  态使其满足精度指标要求。
+
+
+
+表 2-8 位置和速度类型
+
+二进制     字段                        描述
+0       NONE                      无解
+1-51    Reserved                  保留
+52      INS                       纯惯导定位解
+53      INS_PSRSP                 惯导与单点定位组合解
+54      INS_PSRDIFF               惯导与伪距差分定位组合解
+55      INS_RTKFLOAT              惯导与载波相位差分浮点解组合解
+56      INS_RTKFIXED              惯导与载波相位差分固定解组合解
+57-74   Reserved                  保留
+
+
+
+
+                                      14
+2.3.2 GYRATT 信息
+
+     在INS完成初始化后，输出IMU的测量值信息和INS的姿态信息。
+
+     Message ID：
+
+     GYRATT：1444
+
+     GYRATTS：1443
+
+     ASCII输出语法：
+
+     GYRATTA 0.1
+
+     GYRATTSA 0.1
+
+     BINARY输出语法：
+
+     GYRATTB 0.1
+
+     GYRATTSB 0.1
+
+     消息输出：
+
+     #GYRATTA,86,GPS,FINE,2264,458998000,0,0,18,6003;INS_ALIGNING,NONE,0,0,0,0,
+
+0,0,0,0*d027dc6b
+
+     %GYRATTSA,2264,459017550;INS_ALIGNING,NONE,0,0,0,0,0,0,0,0*89b0a7b9
+
+表 2-9 GYRATT 数据结构
+
+ID    字段            数据描述                            类型        字节数      字节偏移
+      GYRATT        消息头信息，参见表 2-1、表 2-2
+1                                                             H        0
+      header        、表 2-3和表 2-4
+2     INS Status    INS解状态，参见表 2-7                  UCHAR     1        H
+3     Pos Type      位置类型，参见表 2-8                    UCHAR     1        H+1
+4     Dr age        INS DR的时间，单位0.1s                USHORT    2        H+2
+5     SOL age       进入INS解的总时间，单位0.001s             UINT      4        H+4
+                    横滚角（沿Y轴右手螺旋）,单位
+6     Roll                                          SHORT     2        H+8
+                    360/32767 [deg]
+                    俯仰角（沿X轴右手螺旋），单位
+7     Pitch                                         SHORT     2        H+10
+                    360/32767 [deg]
+
+                                        15
+UM981 Commands and Logs Reference Book
+
+
+ID     字段          数据描述                        类型         字节数   字节偏移
+                   航向角，北向东为正，单位
+8      Azimuth                                 SHORT      2     H+12
+                   360/32767 [deg]
+9      Gyro_Z      Z轴角速度，单位500/32767 [deg/s]   SHORT      2     H+14
+10     Reserved    保留                          SHORT      2     H+16
+11     Reserved    保留                          SHORT      2     H+18
+12     xxxx        32位CRC校验（仅ASCII或二进制）        Hex        4     H+20
+
+13     [CR][LF]    语句结束符（仅ASCII）               -
+
+
+
+
+2.3.3 INSHOTINFOR0 信息
+
+     在板卡启动后，输出该信息给上位机，在下次板卡上电开机时，上位机将之前收到的
+
+最后一条该信息传给板卡，以辅助INS快速初始化。
+
+     Message ID：1441
+
+     BINARY输出语法：
+
+     INSHOTINFOR0B 0.1
+
+表 2-10 INSHOTINFOR0 数据结构
+
+ID      字段               数据描述                      类型     字节数   字节偏移
+        INSHOTINFOR0
+1                        消息头信息，参见表 2-1和表 2-2              H     0
+        header
+2~15    Body[48]         数据信息                      Char   48    H
+16      xxxx             32位CRC校验（仅ASCII或二进制）      Hex    4     H+48
+
+17      [CR][LF]         语句结束符（仅ASCII）             -
+
+
+
+
+                                     16
+2.3.4 INSPVAX 信息
+
+      输出组合导航位置、速度及姿态信息，及这些信息的估计误差等。
+
+      Message ID：1465
+
+      ASCII输出语法：
+
+      INSPVAXA 1
+
+      BINARY输出语法：
+
+      INSPVAXB 1
+
+      消息输出
+
+      #INSPVAXA,COM1,0,73.5,FINESTEERING,1695,309428.000,00000040,4e77,43562;
+
+INS_SOLUTION_GOOD,INS_PSRSP,51.11637873403,-114.03825114994,1063.6093,-
+
+16.9000,-0.0845,-0.0464,-0.0127,0.138023492,0.069459386,90.000923268,0.9428,
+
+0.6688,1.4746,0.0430,0.0518,0.0521,0.944295466,0.944567084,1.000131845,3,0*e877c
+
+178
+
+表 2-11 INSPVAX 数据结构
+
+ID     字段               数据描述                          类型      字节数      字节偏移
+
+1      INSPVAX          消息头信息，参见表 2-1和表 2-2                   H        0
+
+2      INS Status       INS解状态，参见表 2-7 惯导解算状 Enum             4        H
+                        态
+3      Pos Type         位置类型，参见表 2-8 位置和速度类 Enum              4        H+4
+                        型
+4      Latitude         纬度（WGS84）[degrees]            Double 8         H+8
+
+5      Longitude        经度（WGS84）[degrees]            Double 8         H+16
+
+6      Height           海拔高 [m]                       Double 8         H+24
+
+7      Undulation       大地水准面差距 – 大地水准面和              Float   4        H+32
+                        WGS84椭球面之间的距离。大地水准
+                        面高于椭球面为正值，否则，为负值
+                        。（m）
+8      North Velocity   北向速度（负值为南向）[m/s]              Double 8         H+36
+
+
+                                         17
+UM981 Commands and Logs Reference Book
+
+
+ID   字段              数据描述                 类型      字节数   字节偏移
+
+9    East Velocity   东向速度（负值为西向）[m/s]     Double 8      H+44
+
+10   Up Velocity     天向速度 [m/s]           Double 8      H+52
+
+11   Roll            横滚角（沿Y轴右手螺旋）[度]      Double 8      H+60
+
+12   Pitch           俯仰角（沿X轴右手螺旋）[度]      Double 8      H+68
+
+13   Azimuth         航向角，从北向顺时针方向为正（绕 Double 8          H+76
+                     Z轴左手螺旋），这是由IMU陀螺经组
+                     合滤波器计算出的惯性方位角。
+14   Lat σ           纬度标准差 [m]            Float   4     H+84
+
+15   Long σ          经度标准差 [m]            Float   4     H+88
+
+16   Height σ        高度标准差 [m]            Float   4     H+92
+
+17   North Vel σ     北向速度标准差 [m/s]        Float   4     H+96
+
+18   East Vel σ      东向速度标准差 [m/s]        Float   4     H+100
+
+19   Up Vel σ        天向速度标准差 [m/s]        Float   4     H+104
+
+20   Roll σ          横滚角标准差 [度]           Float   4     H+108
+
+21   Pitch σ         俯仰角标准差 [度]           Float   4     H+112
+
+22   Azimuth σ       航向角标准差 [度]           Float   4     H+116
+
+23   Ext sol stat    扩展的解决方案状态，见表 2-12 扩 Hex      4     H+120
+                     展的解状态
+24   Time Since      上次ZUPT或位置更新后的运行时间（ Ushort    2     H+124
+     Update          秒）
+25   xxxx            32-bit CRC           Hex     4     H+126
+26   [CR][LF]        语句结束符（ASCII only）    -       -     -
+
+
+
+
+                                     18
+表 2-12 扩展的解状态
+
+比特      十六进制位掩码                       描述
+0       0x00000001                    上一更新历元采用了位置更新
+1       0x00000002                    上一更新历元采用了相位更新
+2       0x00000004                    上一更新历元采用了零速修正更新
+3       0x00000008                    上一更新历元采用了里程计更新
+4       0x00000010                    上一更新历元采用了航向对准（ALIGN）更新
+5       0x00000020                    保留
+6       0x00000040                    惯性解具有收敛误差估计
+7       0x00000080 - 0x80000000       保留
+
+
+
+2.3.5 RAWIMUX 信息
+
+     该语句包含IMU状态指示、加速度计和陀螺仪相对于IMU外壳坐标系的测量值。该信
+
+息支持ontime输出，最大支持100Hz，支持ASCII和BINARY输出。
+
+     Message ID：1461
+
+     ASCII输出语法：
+
+     RAWIMUXA 0.01
+
+     BINARY输出语法：
+
+     RAWIMUXB 0.01
+
+     消息输出：
+
+     #RAWIMUXA,COM1,0,60.0,FINE,2261,366772.050,0,0,0;00,64,2261,366772.050,0ac0
+
+0000,16278,-70,172,-1044,-90,-200*bffb7522
+
+表 2-13 RAWIMUX 数据结构
+
+ID    字段             数据描述                           类型        字节数      字节偏移
+1     RAWIMUX        消息头信息，参见表 2-1和表 2-2            -         H        0
+      header
+2     IMU 错误         简化的IMU错误标志                     Uchar     1        H
+                     01 - IMU错误
+                     00 - IMU正常
+
+
+                                         19
+UM981 Commands and Logs Reference Book
+
+
+ID   字段                数据描述                        类型         字节数   字节偏移
+3    IMU 类型            IMU类型标志，参见表 2-14            Uchar      1     H+1
+4    Week              GNSS周数                      Ushort     2     H+2
+5    Seconds Into      周内秒数                        Double     8     H+4
+     Week
+6    IMU Status        IMU状态信息，参见表 2-15            Hex        4     H+12
+                                                   Ulong
+7    Z Accel Output    加速度计在Z轴方向上的测量值，转            Long       4     H+16
+                       换参数见表 2-14 IMU类型
+8    - (Y Accel        加速度计在（-Y）轴方向上的测量            Long       4     H+20
+     Output)           值，转换参数见表 2-14 IMU类型
+9    X Accel Output    加速度计在X轴方向上的测量值，转            Long       4     H+24
+                       换参数见表 2-14 IMU类型
+10   Z Gyro Output     陀螺在Z轴方向上的测量值，转换参            Long       4     H+28
+                       数见表 2-14 IMU类型
+11   - (Y Gyro         陀螺在（-Y）轴方向上的测量值，            Long       4     H+32
+     Output)           转换参数见表 2-14 IMU类型
+12   X Gyro Output     陀螺在X轴方向上的测量值，转换参            Long       4     H+36
+                       数见表 2-14 IMU类型
+13   xxxx              32-bit CRC                  Hex        4     H+40
+14   [CR][LF]          语句结束符（仅ASCII）               -          -     -
+
+
+
+表 2-14 IMU 类型
+
+ID   IMU描述                     陀螺比例因子              加速度计比例因子
+0    UNKNOWN
+64   02                        250/32767 (deg/s)   2g/32767
+
+
+
+表 2-15 02 IMU 状态
+
+字       比特        字段              描述                   取值范围
+        0         0x00000001      告警状态标志
+        1         0x00000002
+N0                                保留
+        2         0x00000004
+        3         0x00000008      SPI通信错误              0 = 通过, 1 = 失败
+                                                       0 = 通过,
+N1      4         0x00000010      传感器超量程
+                                                       1 = 至少一种超量程
+
+
+                                              20
+字    比特   字段           描述                         取值范围
+     5    0x00000020   初始自检失败                     0 = 通过, 1= 失败
+     6    0x00000040   Flash存储失败                  0 = 通过, 1= 失败
+     7    0x00000080   处理超限                       0 = 通过, 1= 失败
+     8    0x00000100   自检失败 – X-轴陀螺               0 = 通过, 1= 失败
+     9    0x00000200   自检失败 – Y-轴陀螺               0 = 通过, 1= 失败
+N2
+     10   0x00000400   自检失败 – Z-轴陀螺               0 = 通过, 1= 失败
+     11   0x00000800   自检失败 – X-轴加速度计             0 = 通过, 1= 失败
+     12   0x00001000   自检失败 – Y-轴加速度计             0 = 通过, 1= 失败
+     13   0x00002000   自检失败 – Z-轴加速度计             0 = 通过, 1= 失败
+N3
+     14   0x00004000
+                       保留
+     15   0x00008000
+     16   0x00010000
+     17   0x00020000
+N4
+     18   0x00040000
+     19   0x00080000
+     20   0x00100000
+     21   0x00200000
+N5                     温度信息存在bit21-bit31构成的11位的二进制补码数据里，
+     22   0x00400000
+                       转换到浮点型温度（℃）算法如下：
+     23   0x00800000
+                       ULONG ulStatus;
+     24   0x01000000
+                       SHORT sTemp = INT(ulStatus) >>21;
+     25   0x02000000
+N6                     FLOAT fTemperature = sTemp*0.125+23;
+     26   0x04000000
+     27   0x08000000
+     28   0x10000000
+     29   0x20000000
+N7
+     30   0x40000000
+     31   0x80000000
+
+
+
+
+                                   21
+UM981 Commands and Logs Reference Book
+
+
+2.3.6 DRPVA 组合导航定位输出
+
+      本指令输出使用INS组合导航定位的位置、速度及姿态等信息，及这些信息的估计误
+
+差等。
+
+      Message ID：57024
+
+      ASCII输出语法：
+
+      DRPVAA 0.2
+
+      BINARY输出语法：
+
+      DRPVAB 0.2
+
+      消息输出：
+
+      #DRPVAA,COM1,0,92.0,FINE,1867,111471.800,00000000,14,0;SOL_COMPUTED,SIN
+
+GLE,WGS84,0,0,0,0,0.800,2573.000,40.07899836523,116.23661722090,68.5569,-
+
+9.7848,0.1522,0.1489,0.0213,-0.0001,-0.0001,0.0010,0.0096,0.0097,0.0097,359.589710,-
+
+1.236787,1.344697,0.0000,0.0020,0.0020,1,0,0,0,0.0000,0.0000,0.0000,0.0000,0.000000,
+
+0.000000,0.000000,0.000000*9aa8b508
+
+表 2-16 DRPVA 数据结构
+
+ID         字段            数据描述                            类型        字节数     字节偏移
+1          DRPVA header 消息头信息，参见表 2-1和表                            H       0
+                         2-2
+2          sol status    解的状态，参考表 2-17                   Enum      4       H
+3          pos type      位置类型，参考表 2-8                    Enum      4       H+4
+4          datum id#     坐标系ID，当前仅支持WGS84，               Enum      4       H+8
+                         ASCII输出为WGS84，二进制枚
+                         举值为61
+5~8        Reserved[4]   保留                              CHAR      4       H+12
+9          Dr_age        纯INS解算的时间，s                     Float     4       H+16
+10         Sol_age       连续定位的时间，s                       Float     4       H+20
+11         lat           纬度，deg                          Double    8       H+24
+12         lon           经度，deg                          Double    8       H+32
+
+
+
+                                          22
+ID      字段              数据描述                  类型       字节数   字节偏移
+13      hgt             海拔高，m                 Double   8     H+40
+14      undulation      大地水准面差距-大地水准面和        Float    4     H+48
+                        WGS84椭球面之间的距离，m
+15      lat σ           纬度标准差，m               Float    4     H+52
+16      lon σ           经度标准差，m               Float    4     H+56
+17      hgt σ           高度标准差，m               Float    4     H+60
+18      Ve              东向速度，m/s              Double   8     H+64
+19      Vn              北向速度，m/s              Double   8     H+72
+20      Vu              天向速度，m/s              Double   8     H+80
+21      Veσ             东向速度标准差，m/s           Float    4     H+88
+22      Vnσ             北向速度标准差，m/s           Float    4     H+92
+23      Vuσ             天向速度标准差，m/s           Float    4     H+96
+24      Heading         航向角，北偏东为正，deg，        Double   8     H+100
+                        [0,360]
+25      Pitch           俯仰角，车头朝上为正，deg，[-     Double   8     H+108
+                        90, 90]
+26      Roll            横滚角，车身右倾为正，deg，[-     Double   8     H+116
+                        180, 180]
+27      Heading σ       航向角标准差，deg            Float    4     H+124
+28      Pitch σ         俯仰角标准差，deg            Float    4     H+128
+29      Roll σ          横滚角标准差，deg            Float    4     H+132
+30~33   Reserved[4]     保留                    Long     16    H+136
+34~37   Reserved[4]     保留                    Float    16    H+152
+38~41   Reserved[4]     保留                    Double   32    H+168
+42      xxxx            32位CRC校验（仅ASCII和二进制   Hex      4     H+200
+                        ）
+43      [CR][LF]        语句结束符（仅ASCII）         -        -     -
+
+
+
+表 2-17 解的状态
+
+解状态                                 描述
+0              SOL_COMPUTED         已解出
+1              INSUFFICIENT_OBS     观测数据不足
+2              NO_CONVERGENCE       无法收敛，输出解无效
+4              COV_TRACE            协方差矩阵的迹超过最大值（迹>1000米）
+
+
+
+                                      23
+和芯星通科技（北京）有限公司
+
+Unicore Communications, Inc.
+
+北京市海淀区丰贤东路 7 号北斗星通大厦三层
+F3, No.7, Fengxian East Road, Haidian, Beijing, P.R.China,
+100094
+www.unicorecomm.com
+
+Phone: 86-10-69939800
+
+Fax: 86-10-69939888
+
+info@unicorecomm.com
+

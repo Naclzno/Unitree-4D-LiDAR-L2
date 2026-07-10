@@ -30,6 +30,7 @@ def generate_launch_description():
     )
     launch_outdoor_rviz_arg = DeclareLaunchArgument('launch_outdoor_rviz', default_value='true')
     use_lidar_tf_adapter_arg = DeclareLaunchArgument('use_lidar_tf_adapter', default_value='true')
+    use_map_to_camera_init_adapter_arg = DeclareLaunchArgument('use_map_to_camera_init_adapter', default_value='true')
     use_static_pointlio_pose_arg = DeclareLaunchArgument(
         'use_static_pointlio_pose',
         default_value='false',
@@ -101,6 +102,7 @@ def generate_launch_description():
             'use_pointlio': LaunchConfiguration('use_pointlio'),
             'launch_rviz': 'false',
             'use_tf_adapter': 'true',
+            'use_map_to_camera_init_adapter': LaunchConfiguration('use_map_to_camera_init_adapter'),
             'use_lidar_tf_adapter': LaunchConfiguration('use_lidar_tf_adapter'),
             'use_static_pointlio_pose': LaunchConfiguration('use_static_pointlio_pose'),
             'map_to_camera_init_x': LaunchConfiguration('map_to_camera_init_x'),
@@ -183,6 +185,7 @@ def generate_launch_description():
         use_cuda_elevation_arg,
         launch_outdoor_rviz_arg,
         use_lidar_tf_adapter_arg,
+        use_map_to_camera_init_adapter_arg,
         use_static_pointlio_pose_arg,
         map_to_camera_init_x_arg,
         map_to_camera_init_y_arg,

@@ -1,0 +1,22 @@
+{
+  "source": "/home/ubuntu/unilidar_sdk2/golf_mower_bringup/maps/stage5_segmented/20260710_153304/nonground_map.pcd",
+  "mapping_start": {
+    "x": -0.018653090712168058,
+    "y": 0.02805811033097829,
+    "z": -0.03326923635653483
+  },
+  "selected_ground_z_hypothesis": -0.03326923635653483,
+  "parameters": {
+    "sensor_height": 0.75,
+    "cell_size": 0.2,
+    "ground_band": 0.15,
+    "max_step_height": 0.18,
+    "max_slope_deg": 20.0
+  },
+  "result": {
+    "input_points": 147554,
+    "ground_points": 4696,
+    "nonground_points": 142858,
+    "connected_ground_cells": 235
+  }
+}

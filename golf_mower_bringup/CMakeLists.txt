@@ -52,6 +52,9 @@ install(PROGRAMS
   scripts/static_pointlio_odom.py
   scripts/pcd_to_occupancy_grid.py
   scripts/segmented_map_builder.py
+  scripts/fake_rtk_from_odom.py
+  scripts/map_metadata_recorder.py
+  scripts/rtk_map_localizer.py
   DESTINATION lib/${PROJECT_NAME}
 )
 

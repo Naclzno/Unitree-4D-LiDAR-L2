@@ -79,7 +79,7 @@ def generate_launch_description():
     )
     patchwork_sensor_height_arg = DeclareLaunchArgument(
         'patchwork_sensor_height',
-        default_value='0.80',
+        default_value='0.75',
         description='Approximate lidar mounting height in meters for Patchwork++.'
     )
     patchwork_min_r_arg = DeclareLaunchArgument(
@@ -164,6 +164,7 @@ def generate_launch_description():
             'ground_cloud_topic': '/ground_segmentation/ground',
             'output_cloud_topic': '/golf_mower/ground_cloud_for_elevation',
             'min_ground_points': ParameterValue(LaunchConfiguration('min_ground_points'), value_type=int),
+            'sensor_height': ParameterValue(LaunchConfiguration('patchwork_sensor_height'), value_type=float),
         }],
     )
 

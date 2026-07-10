@@ -1,0 +1,26 @@
+{
+  "version": 1,
+  "map_frame": "map",
+  "pointlio_map_frame": "camera_init",
+  "pointlio_body_frame": "aft_mapped",
+  "datum": {
+    "latitude": 39.77198153576384,
+    "longitude": 116.353032810978,
+    "altitude": 78.99996495841512,
+    "frame_id": "rtk_antenna",
+    "stamp": 1783668786.7816842
+  },
+  "alignment": {
+    "yaw_map_to_enu": 0.0,
+    "note": "yaw_map_to_enu is the yaw of the offline map x-axis in ENU radians."
+  },
+  "mapping_start_pointlio_pose": {
+    "frame_id": "camera_init",
+    "child_frame_id": "aft_mapped",
+    "x": -0.018653090712168058,
+    "y": 0.02805811033097829,
+    "z": -0.03326923635653483,
+    "yaw": 0.02915265248844159,
+    "stamp": 1783668786.790387
+  }
+}

@@ -1,13 +1,98 @@
 import os
+import importlib.util
 
 from ament_index_python.packages import get_package_share_directory
 from launch import LaunchDescription
-from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, TimerAction
+from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription, OpaqueFunction, SetLaunchConfiguration, TimerAction
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
+
+
+STAGE5_MAP_ROOT = '/home/ubuntu/unilidar_sdk2/golf_mower_bringup/maps/stage5_segmented'
+
+
+def _latest_complete_map_dir(root_dir):
+    if os.path.isdir(root_dir):
+        for name in sorted(os.listdir(root_dir), reverse=True):
+            candidate = os.path.join(root_dir, name)
+            required = ('ground_map.pcd', 'nonground_map.pcd', 'map_metadata.yaml')
+            if os.path.isdir(candidate) and all(
+                os.path.isfile(os.path.join(candidate, filename)) for filename in required
+            ):
+                return candidate
+    return root_dir
+
+
+def _pcd_point_count(path):
+    if not os.path.isfile(path):
+        raise RuntimeError(f'Stage 5 navigation aborted: ground map does not exist: {path}')
+
+    header = {}
+    with open(path, 'rb') as pcd:
+        for _ in range(128):
+            raw_line = pcd.readline()
+            if not raw_line:
+                break
+            try:
+                line = raw_line.decode('ascii').strip()
+            except UnicodeDecodeError as exc:
+                raise RuntimeError(
+                    f'Stage 5 navigation aborted: invalid PCD header in {path}'
+                ) from exc
+            if not line or line.startswith('#'):
+                continue
+            parts = line.split()
+            header[parts[0].upper()] = parts[1:]
+            if parts[0].upper() == 'DATA':
+                break
+
+    try:
+        if header.get('POINTS'):
+            return int(header['POINTS'][0])
+        if header.get('WIDTH') and header.get('HEIGHT'):
+            return int(header['WIDTH'][0]) * int(header['HEIGHT'][0])
+    except (ValueError, IndexError) as exc:
+        raise RuntimeError(
+            f'Stage 5 navigation aborted: invalid point count in PCD header: {path}'
+        ) from exc
+    raise RuntimeError(f'Stage 5 navigation aborted: PCD point count is missing: {path}')
+
+
+def _validate_ground_map(context):
+    map_dir = LaunchConfiguration('segmented_map_dir').perform(context)
+    ground_path = os.path.join(os.path.expanduser(map_dir), 'ground_map.pcd')
+    point_count = _pcd_point_count(ground_path)
+    if point_count <= 0:
+        allow_recovery = LaunchConfiguration('allow_offline_ground_recovery').perform(context).lower()
+        if allow_recovery not in ('1', 'true', 'yes', 'on'):
+            raise RuntimeError(
+                'Stage 5 navigation aborted: ground_map.pcd contains 0 points and '
+                f'offline recovery is disabled. File: {ground_path}')
+        helper_path = os.path.join(os.path.dirname(__file__), 'offline_ground_recovery.py')
+        spec = importlib.util.spec_from_file_location('offline_ground_recovery', helper_path)
+        helper = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(helper)
+        metadata_path = LaunchConfiguration('map_metadata_path').perform(context)
+        sensor_height = float(LaunchConfiguration('patchwork_sensor_height').perform(context))
+        recovered_ground, recovered_nonground, report = helper.recover_ground_map(
+            os.path.expanduser(map_dir),
+            os.path.expanduser(metadata_path),
+            sensor_height=sensor_height,
+        )
+        print(
+            '[stage5_map_check] offline ground recovered: '
+            f'ground_points={report["result"]["ground_points"]}, '
+            f'ground_cells={report["result"]["connected_ground_cells"]}, '
+            f'file={recovered_ground}')
+        return [
+            SetLaunchConfiguration('ground_map_filename', os.path.basename(recovered_ground)),
+            SetLaunchConfiguration('nonground_map_filename', os.path.basename(recovered_nonground)),
+        ]
+    print(f'[stage5_map_check] ground_map.pcd points={point_count}, file={ground_path}')
+    return []
 
 
 def generate_launch_description():
@@ -25,6 +110,7 @@ def generate_launch_description():
     patchwork_params = os.path.join(patchwork_share, 'config', 'params.yaml')
     rviz_config = os.path.join(
         bringup_share, 'rviz', 'outdoor_elevation.rviz')
+    default_map_session_dir = _latest_complete_map_dir(STAGE5_MAP_ROOT)
 
     use_lidar_arg = DeclareLaunchArgument('use_lidar', default_value='true')
     use_pointlio_arg = DeclareLaunchArgument('use_pointlio', default_value='true')
@@ -37,6 +123,26 @@ def generate_launch_description():
     use_grid_converter_arg = DeclareLaunchArgument('use_grid_converter', default_value='true')
     use_patchwork_arg = DeclareLaunchArgument('use_patchwork', default_value='true')
     use_ground_fallback_arg = DeclareLaunchArgument('use_ground_fallback', default_value='true')
+    allow_offline_ground_recovery_arg = DeclareLaunchArgument(
+        'allow_offline_ground_recovery',
+        default_value='true',
+        description='Recover a connected low ground surface from nonground_map.pcd when ground_map.pcd is empty.'
+    )
+    use_rtk_map_localizer_arg = DeclareLaunchArgument(
+        'use_rtk_map_localizer',
+        default_value='false',
+        description='Use /fix and map_metadata.yaml to publish map -> camera_init for offline map localization.'
+    )
+    use_fake_rtk_arg = DeclareLaunchArgument(
+        'use_fake_rtk',
+        default_value='false',
+        description='Publish fake /fix from /pointlio/odom for indoor testing of the RTK map-localization path.'
+    )
+    use_um981_arg = DeclareLaunchArgument(
+        'use_um981',
+        default_value='false',
+        description='Start UM981 ROS node and publish GNSS GGA as /fix. UM981 IMU/INS output is not used.'
+    )
     use_nav2_arg = DeclareLaunchArgument('use_nav2', default_value='true')
     launch_outdoor_rviz_arg = DeclareLaunchArgument('launch_outdoor_rviz', default_value='true')
 
@@ -60,6 +166,11 @@ def generate_launch_description():
         'imu_angular_velocity_scale', default_value='0.017453292519943295')
     imu_linear_acceleration_scale_arg = DeclareLaunchArgument('imu_linear_acceleration_scale', default_value='1.0')
     use_static_pointlio_pose_arg = DeclareLaunchArgument('use_static_pointlio_pose', default_value='false')
+    use_map_to_camera_init_adapter_arg = DeclareLaunchArgument(
+        'use_map_to_camera_init_adapter',
+        default_value='true',
+        description='Publish static map -> camera_init from the SLAM adapter. Set false when use_rtk_map_localizer is true.'
+    )
     lidar_tf_x_arg = DeclareLaunchArgument('lidar_tf_x', default_value='0.0')
     lidar_tf_y_arg = DeclareLaunchArgument('lidar_tf_y', default_value='0.0')
     lidar_tf_z_arg = DeclareLaunchArgument('lidar_tf_z', default_value='0.0')
@@ -98,7 +209,7 @@ def generate_launch_description():
     )
     patchwork_sensor_height_arg = DeclareLaunchArgument(
         'patchwork_sensor_height',
-        default_value='0.80',
+        default_value='0.75',
         description='Approximate lidar mounting height in meters for Patchwork++.'
     )
     patchwork_min_r_arg = DeclareLaunchArgument('patchwork_min_r', default_value='0.2')
@@ -112,8 +223,45 @@ def generate_launch_description():
 
     segmented_map_dir_arg = DeclareLaunchArgument(
         'segmented_map_dir',
-        default_value='/home/ubuntu/unilidar_sdk2/golf_mower_bringup/maps/stage5_segmented',
-        description='Directory containing ground_map.pcd and nonground_map.pcd.'
+        default_value=default_map_session_dir,
+        description='Timestamped directory containing ground_map.pcd and nonground_map.pcd; defaults to latest complete run.'
+    )
+    ground_map_filename_arg = DeclareLaunchArgument(
+        'ground_map_filename', default_value='ground_map.pcd')
+    nonground_map_filename_arg = DeclareLaunchArgument(
+        'nonground_map_filename', default_value='nonground_map.pcd')
+    map_metadata_path_arg = DeclareLaunchArgument(
+        'map_metadata_path',
+        default_value=os.path.join(default_map_session_dir, 'map_metadata.yaml'),
+        description='Offline map georeference metadata from the selected timestamped map directory.'
+    )
+    fix_topic_arg = DeclareLaunchArgument('fix_topic', default_value='/fix')
+    um981_port_arg = DeclareLaunchArgument(
+        'um981_port',
+        default_value='/dev/ttyUSB0',
+        description='UM981 USB serial port. Prefer the /dev/serial/by-id/... path when it exists.'
+    )
+    um981_baud_arg = DeclareLaunchArgument('um981_baud', default_value='115200')
+    um981_frame_id_arg = DeclareLaunchArgument('um981_frame_id', default_value='rtk_antenna')
+    rtk_map_to_camera_init_yaw_arg = DeclareLaunchArgument(
+        'rtk_map_to_camera_init_yaw',
+        default_value='0.0',
+        description='Initial yaw for map -> camera_init. Single-antenna RTK cannot estimate this automatically.'
+    )
+    use_um981_heading_arg = DeclareLaunchArgument(
+        'use_um981_heading',
+        default_value='false',
+        description='Use UM981 INS heading topic to initialize map -> camera_init yaw.'
+    )
+    um981_heading_topic_arg = DeclareLaunchArgument(
+        'um981_heading_topic',
+        default_value='/um981/heading',
+        description='std_msgs/Float64 heading in degrees, north-clockwise/east-positive.'
+    )
+    um981_heading_offset_deg_arg = DeclareLaunchArgument(
+        'um981_heading_offset_deg',
+        default_value='0.0',
+        description='Offset from UM981 heading to robot/Point-LIO forward heading, in degrees.'
     )
     nav_map_resolution_arg = DeclareLaunchArgument('nav_map_resolution', default_value='0.10')
     nav2_start_delay_arg = DeclareLaunchArgument('nav2_start_delay', default_value='25.0')
@@ -139,6 +287,7 @@ def generate_launch_description():
             'imu_angular_velocity_scale': LaunchConfiguration('imu_angular_velocity_scale'),
             'imu_linear_acceleration_scale': LaunchConfiguration('imu_linear_acceleration_scale'),
             'use_static_pointlio_pose': LaunchConfiguration('use_static_pointlio_pose'),
+            'use_map_to_camera_init_adapter': LaunchConfiguration('use_map_to_camera_init_adapter'),
             'lidar_tf_x': LaunchConfiguration('lidar_tf_x'),
             'lidar_tf_y': LaunchConfiguration('lidar_tf_y'),
             'lidar_tf_z': LaunchConfiguration('lidar_tf_z'),
@@ -169,9 +318,9 @@ def generate_launch_description():
         output='screen',
         parameters=[{
             'free_pcd_path': PathJoinSubstitution([
-                LaunchConfiguration('segmented_map_dir'), 'ground_map.pcd']),
+                LaunchConfiguration('segmented_map_dir'), LaunchConfiguration('ground_map_filename')]),
             'occupied_pcd_path': PathJoinSubstitution([
-                LaunchConfiguration('segmented_map_dir'), 'nonground_map.pcd']),
+                LaunchConfiguration('segmented_map_dir'), LaunchConfiguration('nonground_map_filename')]),
             'map_topic': '/map',
             'frame_id': 'map',
             'resolution': ParameterValue(LaunchConfiguration('nav_map_resolution'), value_type=float),
@@ -210,6 +359,64 @@ def generate_launch_description():
             'ground_cloud_topic': '/ground_segmentation/ground',
             'output_cloud_topic': '/golf_mower/ground_cloud_for_elevation',
             'min_ground_points': ParameterValue(LaunchConfiguration('min_ground_points'), value_type=int),
+            'sensor_height': ParameterValue(LaunchConfiguration('patchwork_sensor_height'), value_type=float),
+        }],
+    )
+
+    fake_rtk = Node(
+        package='golf_mower_bringup',
+        executable='fake_rtk_from_odom.py',
+        name='fake_rtk_from_odom',
+        output='screen',
+        condition=IfCondition(LaunchConfiguration('use_fake_rtk')),
+        parameters=[{
+            'odom_topic': '/pointlio/odom',
+            'fix_topic': LaunchConfiguration('fix_topic'),
+            'frame_id': 'rtk_antenna',
+            'metadata_path': LaunchConfiguration('map_metadata_path'),
+            'position_covariance_m2': 0.04,
+        }],
+    )
+
+    um981_node = Node(
+        package='um981_ros',
+        executable='um981_node',
+        name='um981_node',
+        output='screen',
+        condition=IfCondition(LaunchConfiguration('use_um981')),
+        remappings=[
+            ('/fix', LaunchConfiguration('fix_topic')),
+        ],
+        parameters=[{
+            'port': LaunchConfiguration('um981_port'),
+            'baud': ParameterValue(LaunchConfiguration('um981_baud'), value_type=int),
+            'frame_id': LaunchConfiguration('um981_frame_id'),
+            'imu_frame_id': 'um981_imu',
+            'commands': ['GNGGA 1'],
+        }],
+    )
+
+    rtk_map_localizer = Node(
+        package='golf_mower_bringup',
+        executable='rtk_map_localizer.py',
+        name='rtk_map_localizer',
+        output='screen',
+        condition=IfCondition(LaunchConfiguration('use_rtk_map_localizer')),
+        parameters=[{
+            'metadata_path': LaunchConfiguration('map_metadata_path'),
+            'fix_topic': LaunchConfiguration('fix_topic'),
+            'odom_topic': '/pointlio/odom',
+            'map_frame': 'map',
+            'camera_init_frame': 'camera_init',
+            'map_to_camera_init_yaw': ParameterValue(
+                LaunchConfiguration('rtk_map_to_camera_init_yaw'), value_type=float),
+            'use_heading_topic': ParameterValue(
+                LaunchConfiguration('use_um981_heading'), value_type=bool),
+            'heading_topic': LaunchConfiguration('um981_heading_topic'),
+            'heading_offset_deg': ParameterValue(
+                LaunchConfiguration('um981_heading_offset_deg'), value_type=float),
+            'publish_once': True,
+            'min_fix_status': 0,
         }],
     )
 
@@ -238,6 +445,10 @@ def generate_launch_description():
         use_grid_converter_arg,
         use_patchwork_arg,
         use_ground_fallback_arg,
+        allow_offline_ground_recovery_arg,
+        use_rtk_map_localizer_arg,
+        use_fake_rtk_arg,
+        use_um981_arg,
         use_nav2_arg,
         launch_outdoor_rviz_arg,
         initialize_type_arg,
@@ -252,6 +463,7 @@ def generate_launch_description():
         imu_angular_velocity_scale_arg,
         imu_linear_acceleration_scale_arg,
         use_static_pointlio_pose_arg,
+        use_map_to_camera_init_adapter_arg,
         lidar_tf_x_arg,
         lidar_tf_y_arg,
         lidar_tf_z_arg,
@@ -277,11 +489,26 @@ def generate_launch_description():
         patchwork_log_every_n_arg,
         min_ground_points_arg,
         segmented_map_dir_arg,
+        ground_map_filename_arg,
+        nonground_map_filename_arg,
+        map_metadata_path_arg,
+        fix_topic_arg,
+        um981_port_arg,
+        um981_baud_arg,
+        um981_frame_id_arg,
+        rtk_map_to_camera_init_yaw_arg,
+        use_um981_heading_arg,
+        um981_heading_topic_arg,
+        um981_heading_offset_deg_arg,
         nav_map_resolution_arg,
         nav2_start_delay_arg,
+        OpaqueFunction(function=_validate_ground_map),
         stage2,
         segmented_map,
         patchwork,
         ground_fallback,
+        fake_rtk,
+        um981_node,
+        rtk_map_localizer,
         nav2,
     ])

@@ -5,7 +5,7 @@ from launch import LaunchDescription
 from launch.actions import DeclareLaunchArgument, IncludeLaunchDescription
 from launch.conditions import IfCondition
 from launch.launch_description_sources import PythonLaunchDescriptionSource
-from launch.substitutions import LaunchConfiguration
+from launch.substitutions import LaunchConfiguration, PythonExpression
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
 
@@ -40,6 +40,11 @@ def generate_launch_description():
         'use_tf_adapter',
         default_value='true',
         description='Publish temporary map/base frames for indoor bench testing.'
+    )
+    use_map_to_camera_init_adapter_arg = DeclareLaunchArgument(
+        'use_map_to_camera_init_adapter',
+        default_value='true',
+        description='Publish temporary map -> camera_init TF. Disable when RTK map localizer publishes it.'
     )
     use_lidar_tf_adapter_arg = DeclareLaunchArgument(
         'use_lidar_tf_adapter',
@@ -212,7 +217,10 @@ def generate_launch_description():
         executable='static_transform_publisher',
         name='map_to_camera_init_tf',
         output='screen',
-        condition=IfCondition(LaunchConfiguration('use_tf_adapter')),
+        condition=IfCondition(PythonExpression([
+            "'", LaunchConfiguration('use_tf_adapter'), "' == 'true' and '",
+            LaunchConfiguration('use_map_to_camera_init_adapter'), "' == 'true'"
+        ])),
         arguments=[
             '--x', LaunchConfiguration('map_to_camera_init_x'),
             '--y', LaunchConfiguration('map_to_camera_init_y'),
@@ -317,6 +325,7 @@ def generate_launch_description():
         use_pointlio_arg,
         launch_rviz_arg,
         use_tf_adapter_arg,
+        use_map_to_camera_init_adapter_arg,
         use_lidar_tf_adapter_arg,
         use_static_pointlio_pose_arg,
         map_to_camera_init_x_arg,
