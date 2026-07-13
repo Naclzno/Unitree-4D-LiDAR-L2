@@ -29,6 +29,29 @@ Unitree L2
 - Provide indoor test modes with fake RTK when GNSS/RTK signal is unavailable.
 - Keep earlier Stage 1/2/3/4 launches for incremental debugging.
 
+## Current Project Status
+
+| Subsystem | Status | Current scope |
+| --- | --- | --- |
+| Unitree L2 point cloud and IMU | Integrated | Serial/UDP driver publishes `/unilidar/cloud` and `/unilidar/imu`. |
+| Point-LIO odometry | Integrated | Publishes lidar-inertial odometry and registered point clouds. |
+| Patchwork++ segmentation | Integrated, under calibration | Ground/non-ground topics are connected; ground output can still become empty and requires mounting/axis validation. |
+| Live elevation and traversability | Integrated | Supports GPU or CPU elevation mapping and a conservative low-surface fallback. |
+| Offline segmented mapping | Integrated | Saves timestamped ground, non-ground, and georeference metadata; supports offline ground recovery. |
+| UM981 GNSS position | Partially integrated | GGA `/fix` initializes the robot in the offline map; UM981 IMU/INS heading is not used. |
+| Continuous localization fusion | Not integrated | RTK currently initializes `map -> camera_init`; wheel odometry, RTK, IMU, and Point-LIO are not yet fused continuously. |
+| Nav2 planning and obstacle avoidance | Integrated at algorithm level | Produces `/cmd_vel` using the offline global map and live local terrain/obstacles. |
+| Chassis motor driver | Not implemented | No node currently consumes `/cmd_vel` to drive the physical wheels. |
+| Wheel encoder odometry | Not implemented | No `/wheel/odom` source or calibrated chassis kinematics. |
+| Mower actuator | Model only | `mower_tool` exists in URDF, but there is no blade motor interface, feedback, or fault handling. |
+| Coverage path planning | Source only | Fields2Cover is present but is not connected to ROS boundaries, no-go zones, or Nav2 waypoints. |
+| Mission manager | Not implemented | No mowing task state machine, pause/resume, return, or coverage progress tracking. |
+| Safety system | Not implemented | No integrated emergency-stop state, command watchdog, geofence, blade interlock, or safety controller. |
+
+The repository currently provides a perception, mapping, localization-initialization, and navigation-planning prototype. It is not yet a complete autonomous mower: physical motion, blade actuation, coverage execution, and safety interlocks must be implemented and validated before field mowing.
+
+The next system milestone is a safe chassis control loop: `/cmd_vel` to motor commands, wheel encoder odometry, a hardware emergency stop, and a command-timeout stop. After that, add continuous state estimation, Fields2Cover integration, the mower actuator, and the mission/safety state machine.
+
 ## Directory Layout
 
 | Directory | Purpose |
@@ -260,6 +283,14 @@ um981_port:=/dev/ttyUSB0 \
 use_fake_rtk:=false
 ```
 
+#### Navigation Startup and Map Handling
+
+Navigation automatically loads the newest timestamped directory under `stage5_segmented` that contains `ground_map.pcd`, `nonground_map.pcd`, and `map_metadata.yaml`. To load an older map, explicitly set `segmented_map_dir` and `map_metadata_path`.
+
+Before navigation, the launch reads the `ground_map.pcd` header. If it contains zero points and `allow_offline_ground_recovery:=true`, it extracts a connected local low surface from `nonground_map.pcd`, writes `recovered_ground_map.pcd`, `recovered_nonground_map.pcd`, and `recovery_report.yaml`, then starts navigation. Failed quality checks, missing files, or invalid formats still abort the launch, and the original PCD files are never overwritten.
+
+Fake RTK only validates offline map loading, the localization interface, and the TF chain; it does not represent real GNSS accuracy. For indoor navigation testing, place the robot near the mapping start pose with the same orientation, or adjust `rtk_map_to_camera_init_yaw`.
+
 Check the map-localization chain:
 
 ```bash
@@ -269,11 +300,29 @@ ros2 topic echo /map --once
 ros2 topic echo /cmd_vel
 ```
 
-Fake RTK only validates offline map loading, the localization interface, and the TF chain; it does not represent real GNSS accuracy. For indoor navigation testing, place the robot near the mapping start pose with the same orientation, or adjust `rtk_map_to_camera_init_yaw`.
+#### `/cmd_vel` Output
 
-Navigation automatically loads the newest timestamped directory under `stage5_segmented` that contains all three files. To load an older map, explicitly set `segmented_map_dir` and `map_metadata_path`.
+`/cmd_vel` is the robot body velocity target produced by Nav2. Its message type is `geometry_msgs/msg/Twist`; it is not a motor speed, encoder measurement, or measured robot velocity. A differential-drive chassis mainly uses these fields:
 
-Before navigation, the launch reads the `ground_map.pcd` header. If it contains zero points and `allow_offline_ground_recovery:=true`, it extracts a connected local low surface from `nonground_map.pcd`, writes `recovered_ground_map.pcd`, `recovered_nonground_map.pcd`, and `recovery_report.yaml`, then starts navigation. Failed quality checks, missing files, or invalid formats still abort the launch, and the original PCD files are never overwritten.
+| Field | Unit | Meaning |
+| --- | --- | --- |
+| `linear.x` | m/s | Forward/backward body velocity; positive is forward and negative is reverse. |
+| `angular.z` | rad/s | Body yaw rate about the Z axis; positive turns left and negative turns right. |
+
+`linear.y`, `linear.z`, `angular.x`, and `angular.y` should remain zero for a normal differential-drive chassis. An all-zero message is a stop target. For example:
+
+```yaml
+linear:
+  x: 0.30
+  y: 0.0
+  z: 0.0
+angular:
+  x: 0.0
+  y: 0.0
+  z: 0.20
+```
+
+This command asks the robot to move forward at `0.30 m/s` while turning left at `0.20 rad/s`. The physical chassis driver must subscribe to `/cmd_vel`, convert it into left and right wheel targets using the chassis kinematics, and send them through the motor-controller protocol. It must also enforce velocity limits, command-timeout stops, communication-failure stops, and a hardware emergency stop. That physical chassis driver is not implemented in this repository yet, so observing `/cmd_vel` does not mean the wheels will move.
 
 ### Stage 5 Parameter Reference
 

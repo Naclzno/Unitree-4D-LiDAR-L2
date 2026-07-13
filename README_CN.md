@@ -30,6 +30,29 @@ Unitree L2
 - 室内没有 RTK/GNSS 信号时，可用 fake RTK 测试完整链路。
 - 保留 Stage 1/2/3/4 用于逐层调试。
 
+## 当前项目完成度
+
+| 子系统 | 状态 | 当前范围 |
+| --- | --- | --- |
+| Unitree L2点云和IMU | 已接入 | 串口/UDP驱动发布 `/unilidar/cloud` 和 `/unilidar/imu`。 |
+| Point-LIO里程计 | 已接入 | 发布激光惯导里程计和配准点云。 |
+| Patchwork++地面分割 | 已接入，仍需标定 | ground/nonground话题已连接；ground仍可能为空，需要继续验证安装外参和坐标轴。 |
+| 实时高程和可通行性 | 已接入 | 支持GPU或CPU高程建图，并带保守的局部最低表面fallback。 |
+| 离线分割地图 | 已接入 | 按时间戳保存ground、nonground和地理元数据，支持离线ground恢复。 |
+| UM981 GNSS位置 | 部分接入 | 使用GGA `/fix` 初始化离线地图位置；UM981 IMU/INS heading尚未使用。 |
+| 连续定位融合 | 未接入 | RTK目前只初始化 `map -> camera_init`；轮速、RTK、IMU和Point-LIO尚未持续融合。 |
+| Nav2规划和避障 | 算法层已接入 | 使用离线全局地图和实时局部地形/障碍生成 `/cmd_vel`。 |
+| 底盘电机驱动 | 未实现 | 当前没有节点消费 `/cmd_vel` 并驱动物理车轮。 |
+| 轮速里程计 | 未实现 | 没有 `/wheel/odom` 数据源和经过标定的底盘运动学。 |
+| 割草执行器 | 仅模型 | URDF包含 `mower_tool`，但没有刀盘电机接口、反馈和故障处理。 |
+| 覆盖路径规划 | 仅源码 | Fields2Cover已放入仓库，但尚未连接ROS边界、禁入区和Nav2航点。 |
+| 任务管理 | 未实现 | 没有割草任务状态机、暂停/恢复、返航和覆盖进度管理。 |
+| 安全系统 | 未实现 | 没有集成急停状态、速度命令看门狗、电子围栏、刀盘互锁和安全控制器。 |
+
+当前仓库属于感知、建图、定位初始化和导航规划原型，还不是完整的自主除草机器人。实体运动、刀盘执行、覆盖作业和安全互锁完成并验证前，不能用于真实球场自动割草。
+
+下一系统里程碑应先完成安全底盘闭环：`/cmd_vel` 转电机命令、轮速里程计、硬件急停和命令超时停车。之后再依次接入持续状态融合、Fields2Cover、割草执行器以及任务/安全状态机。
+
 ## 目录说明
 
 | 目录 | 作用 |
@@ -261,6 +284,14 @@ um981_port:=/dev/ttyUSB0 \
 use_fake_rtk:=false
 ```
 
+#### 定位导航启动与地图处理
+
+导航默认自动加载 `stage5_segmented` 下最新且同时包含 `ground_map.pcd`、`nonground_map.pcd` 和 `map_metadata.yaml` 的时间戳目录。如需加载指定历史地图，可显式设置 `segmented_map_dir` 和 `map_metadata_path`。
+
+导航启动前会读取 `ground_map.pcd` 的 PCD 头部。若点数为 0 且 `allow_offline_ground_recovery:=true`，程序会从 `nonground_map.pcd` 提取与建图起点连通的局部最低地表，生成 `recovered_ground_map.pcd`、`recovered_nonground_map.pcd` 和 `recovery_report.yaml` 后再启动。恢复质量不合格、文件缺失或格式无效时仍会报错退出，原始 PCD 不会被覆盖。
+
+fake RTK 只用于验证离线地图加载、定位接口和 TF 链路，不代表真实 GNSS 精度。室内导航测试时，机器人应尽量放回建图起点并保持相同朝向；否则需要调整 `rtk_map_to_camera_init_yaw`。
+
 检查地图定位链路：
 
 ```bash
@@ -270,11 +301,29 @@ ros2 topic echo /map --once
 ros2 topic echo /cmd_vel
 ```
 
-fake RTK 只用于验证离线地图加载、定位接口和 TF 链路，不代表真实 GNSS 精度。室内导航测试时，机器人应尽量放回建图起点并保持相同朝向；否则需要调整 `rtk_map_to_camera_init_yaw`。
+#### `/cmd_vel` 输出说明
 
-导航默认自动加载 `stage5_segmented` 下最新且同时包含上述三个文件的时间戳目录。如需加载指定历史地图，可显式设置 `segmented_map_dir` 和 `map_metadata_path`。
+`/cmd_vel` 是 Nav2 输出的车体速度目标，消息类型为 `geometry_msgs/msg/Twist`，不是电机转速、编码器数据或机器人实际速度。本项目的差速底盘主要使用以下字段：
 
-导航启动前会读取 `ground_map.pcd` 的 PCD 头部。若点数为 0 且 `allow_offline_ground_recovery:=true`，程序会从 `nonground_map.pcd` 提取与建图起点连通的局部最低地表，生成 `recovered_ground_map.pcd`、`recovered_nonground_map.pcd` 和 `recovery_report.yaml` 后再启动。恢复质量不合格、文件缺失或格式无效时仍会报错退出，原始 PCD 不会被覆盖。
+| 字段 | 单位 | 含义 |
+| --- | --- | --- |
+| `linear.x` | m/s | 车体前后线速度；正值前进，负值后退。 |
+| `angular.z` | rad/s | 车体绕 Z 轴的角速度；正值左转，负值右转。 |
+
+`linear.y`、`linear.z`、`angular.x` 和 `angular.y` 对普通差速底盘应保持为 0。全零消息表示停车目标。例如：
+
+```yaml
+linear:
+  x: 0.30
+  y: 0.0
+  z: 0.0
+angular:
+  x: 0.0
+  y: 0.0
+  z: 0.20
+```
+
+该消息表示机器人以 `0.30 m/s` 前进，同时以 `0.20 rad/s` 向左转。真实底盘驱动需要订阅 `/cmd_vel`，根据底盘运动学将其换算为左右轮目标速度，再通过底盘控制器协议发送给电机；同时必须实现速度限制、命令超时停车、通信故障停车和硬件急停。当前仓库还没有实现这个真实底盘驱动，因此能够观察到 `/cmd_vel` 不代表物理车轮会运动。
 
 ### Stage 5 参数说明
 
