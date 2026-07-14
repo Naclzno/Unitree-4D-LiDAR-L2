@@ -9,19 +9,24 @@
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
+  <depend>fields2cover</depend>
+  <depend>geometry_msgs</depend>
   <depend>nav2_costmap_2d</depend>
+  <depend>nav2_msgs</depend>
   <depend>nav_msgs</depend>
   <depend>pluginlib</depend>
   <depend>rclcpp</depend>
+  <depend>rclcpp_action</depend>
+  <depend>std_srvs</depend>
+  <depend>visualization_msgs</depend>
+  <depend>yaml-cpp</depend>
 
   <exec_depend>launch</exec_depend>
   <exec_depend>launch_ros</exec_depend>
-  <exec_depend>geometry_msgs</exec_depend>
   <exec_depend>elevation_mapping_cupy</exec_depend>
   <exec_depend>elevation_mapping_ros2</exec_depend>
   <exec_depend>grid_map_msgs</exec_depend>
   <exec_depend>nav2_bringup</exec_depend>
-  <exec_depend>nav2_msgs</exec_depend>
   <exec_depend>rclpy</exec_depend>
   <exec_depend>sensor_msgs</exec_depend>
   <exec_depend>std_msgs</exec_depend>

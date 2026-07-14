@@ -144,6 +144,11 @@ def generate_launch_description():
         description='Start UM981 ROS node and publish GNSS GGA as /fix. UM981 IMU/INS output is not used.'
     )
     use_nav2_arg = DeclareLaunchArgument('use_nav2', default_value='true')
+    use_coverage_planner_arg = DeclareLaunchArgument(
+        'use_coverage_planner',
+        default_value='false',
+        description='Start the Fields2Cover ROS2 planner for a configured map-frame work area.'
+    )
     launch_outdoor_rviz_arg = DeclareLaunchArgument('launch_outdoor_rviz', default_value='true')
 
     initialize_type_arg = DeclareLaunchArgument('initialize_type', default_value='2')
@@ -265,6 +270,17 @@ def generate_launch_description():
     )
     nav_map_resolution_arg = DeclareLaunchArgument('nav_map_resolution', default_value='0.10')
     nav2_start_delay_arg = DeclareLaunchArgument('nav2_start_delay', default_value='25.0')
+    coverage_area_file_arg = DeclareLaunchArgument(
+        'coverage_area_file',
+        default_value=os.path.join(bringup_share, 'config', 'coverage_test_area.yaml'))
+    coverage_output_file_arg = DeclareLaunchArgument(
+        'coverage_output_file',
+        default_value='~/.ros/golf_mower/coverage_path.yaml')
+    coverage_dry_run_arg = DeclareLaunchArgument('coverage_dry_run', default_value='true')
+    coverage_path_pose_spacing_arg = DeclareLaunchArgument(
+        'coverage_path_pose_spacing', default_value='0.10')
+    coverage_nav_waypoint_spacing_arg = DeclareLaunchArgument(
+        'coverage_nav_waypoint_spacing', default_value='0.75')
 
     stage2 = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(stage2_launch),
@@ -437,6 +453,24 @@ def generate_launch_description():
         ],
     )
 
+    coverage_planner = Node(
+        package='golf_mower_bringup',
+        executable='coverage_planner_node',
+        name='coverage_planner',
+        output='screen',
+        condition=IfCondition(LaunchConfiguration('use_coverage_planner')),
+        parameters=[{
+            'area_file': LaunchConfiguration('coverage_area_file'),
+            'output_file': LaunchConfiguration('coverage_output_file'),
+            'dry_run': ParameterValue(
+                LaunchConfiguration('coverage_dry_run'), value_type=bool),
+            'path_pose_spacing': ParameterValue(
+                LaunchConfiguration('coverage_path_pose_spacing'), value_type=float),
+            'nav_waypoint_spacing': ParameterValue(
+                LaunchConfiguration('coverage_nav_waypoint_spacing'), value_type=float),
+        }],
+    )
+
     return LaunchDescription([
         use_lidar_arg,
         use_pointlio_arg,
@@ -450,6 +484,7 @@ def generate_launch_description():
         use_fake_rtk_arg,
         use_um981_arg,
         use_nav2_arg,
+        use_coverage_planner_arg,
         launch_outdoor_rviz_arg,
         initialize_type_arg,
         work_mode_arg,
@@ -502,6 +537,11 @@ def generate_launch_description():
         um981_heading_offset_deg_arg,
         nav_map_resolution_arg,
         nav2_start_delay_arg,
+        coverage_area_file_arg,
+        coverage_output_file_arg,
+        coverage_dry_run_arg,
+        coverage_path_pose_spacing_arg,
+        coverage_nav_waypoint_spacing_arg,
         OpaqueFunction(function=_validate_ground_map),
         stage2,
         segmented_map,
@@ -511,4 +551,5 @@ def generate_launch_description():
         um981_node,
         rtk_map_localizer,
         nav2,
+        coverage_planner,
     ])

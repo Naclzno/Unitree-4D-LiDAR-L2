@@ -27,6 +27,7 @@ Unitree L2
 - Load the offline map for Nav2 navigation.
 - Use UM981 GNSS `/fix` for map initialization; provide initial yaw manually for now.
 - Provide indoor test modes with fake RTK when GNSS/RTK signal is unavailable.
+- Generate ROS2 coverage paths from map-frame boundaries and exclusions with Fields2Cover.
 - Keep earlier Stage 1/2/3/4 launches for incremental debugging.
 
 ## Current Project Status
@@ -44,13 +45,13 @@ Unitree L2
 | Chassis motor driver | Not implemented | No node currently consumes `/cmd_vel` to drive the physical wheels. |
 | Wheel encoder odometry | Not implemented | No `/wheel/odom` source or calibrated chassis kinematics. |
 | Mower actuator | Model only | `mower_tool` exists in URDF, but there is no blade motor interface, feedback, or fault handling. |
-| Coverage path planning | Source only | Fields2Cover is present but is not connected to ROS boundaries, no-go zones, or Nav2 waypoints. |
+| Coverage path planning | Integrated with ROS2 | Reads map-frame boundaries and exclusions from YAML, publishes paths/markers, saves results, and provides an optional Nav2 action; dry-run is the default. |
 | Mission manager | Not implemented | No mowing task state machine, pause/resume, return, or coverage progress tracking. |
 | Safety system | Not implemented | No integrated emergency-stop state, command watchdog, geofence, blade interlock, or safety controller. |
 
 The repository currently provides a perception, mapping, localization-initialization, and navigation-planning prototype. It is not yet a complete autonomous mower: physical motion, blade actuation, coverage execution, and safety interlocks must be implemented and validated before field mowing.
 
-The next system milestone is a safe chassis control loop: `/cmd_vel` to motor commands, wheel encoder odometry, a hardware emergency stop, and a command-timeout stop. After that, add continuous state estimation, Fields2Cover integration, the mower actuator, and the mission/safety state machine.
+The next system milestone is a safe chassis control loop: `/cmd_vel` to motor commands, wheel encoder odometry, a hardware emergency stop, and a command-timeout stop. After that, complete continuous state estimation, physical coverage-path execution, the mower actuator, and the mission/safety state machine.
 
 ## Directory Layout
 
@@ -65,7 +66,7 @@ The next system milestone is a safe chassis control loop: `/cmd_vel` to motor co
 | `golf_mower_description` | Robot URDF/Xacro and sensor frames. |
 | `golf_mower_bringup` | Main launch files, configuration, diagnostics, map utilities, and Nav2 integration. |
 | `UM981` | Python SDK and ROS2 node for UM981 GNSS/RTK/INS. |
-| `Fields2Cover-main` | Coverage path planning library reserved for mowing paths. |
+| `Fields2Cover-main` | Fields2Cover library used by the ROS2 planner in `golf_mower_bringup`. |
 | `robot_localization-rolling-devel` | Reserved for later wheel odometry, RTK, IMU, and lidar odometry fusion. |
 | `autoware` | Autoware source tree; not required for the current main workflow. |
 
@@ -175,6 +176,14 @@ colcon --log-base UM981/log build \
   --build-base UM981/build
 source UM981/install/setup.bash
 
+colcon --log-base Fields2Cover-main/log build \
+  --base-paths Fields2Cover-main \
+  --packages-select fields2cover \
+  --install-base Fields2Cover-main/install \
+  --build-base Fields2Cover-main/build \
+  --cmake-args -DBUILD_TUTORIALS=OFF -DBUILD_PYTHON=OFF -DBUILD_TESTING=OFF
+source Fields2Cover-main/install/setup.bash
+
 colcon --log-base golf_mower_bringup/log build \
   --base-paths golf_mower_bringup \
   --packages-select golf_mower_bringup \
@@ -195,6 +204,7 @@ source elevation_mapping_cupy/install/setup.bash
 source elevation_mapping_ros2/install/setup.bash
 source golf_mower_description/install/setup.bash
 source UM981/install/setup.bash
+source Fields2Cover-main/install/setup.bash
 source golf_mower_bringup/install/setup.bash
 ```
 
@@ -272,6 +282,10 @@ ros2 launch golf_mower_bringup outdoor_segmented_nav_stage5.launch.py \
   use_um981_heading:=false \
   rtk_map_to_camera_init_yaw:=0.0 \
   fix_topic:=/fix \
+  use_coverage_planner:=true \
+  coverage_area_file:=/home/ubuntu/unilidar_sdk2/golf_mower_bringup/config/coverage_test_area.yaml \
+  coverage_output_file:=~/.ros/golf_mower/coverage_path.yaml \
+  coverage_dry_run:=true \
   launch_outdoor_rviz:=true
 ```
 
@@ -353,8 +367,180 @@ This command asks the robot to move forward at `0.30 m/s` while turning left at 
 | `use_um981_heading` | currently `false` | Use UM981 heading; disabled because valid INS heading is unavailable. |
 | `rtk_map_to_camera_init_yaw` | `0.0` | Manual initial yaw in radians when UM981 heading is not used. |
 | `launch_outdoor_rviz` | `true` | Start RViz during localization and navigation. |
+| `use_coverage_planner` | default `false` | Start the Fields2Cover ROS2 node with Stage5 navigation. |
+| `coverage_area_file` | example YAML path | Map-frame work boundary, exclusions, and robot planning parameters. |
+| `coverage_output_file` | `~/.ros/golf_mower/coverage_path.yaml` | Destination for the generated path. |
+| `coverage_dry_run` | currently `true` | Plan, publish, and save without submitting a Nav2 execution goal. |
+| `coverage_path_pose_spacing` | `0.10` | Sampling distance for the published/saved path, in meters. |
+| `coverage_nav_waypoint_spacing` | `0.75` | Sampling distance for Nav2 execution poses, in meters. |
 
 For Boolean parameters, `true` enables a function and `false` disables it. Angles use radians; positions and heights use meters.
+
+## Coverage Path Planning
+
+The planner reads `golf_mower_bringup/config/coverage_test_area.yaml` and generates mowing swaths and turns in the `map` frame.
+
+Start the planner in terminal A and keep it running:
+
+```bash
+cd /home/ubuntu/unilidar_sdk2
+source /opt/ros/humble/setup.bash
+source Fields2Cover-main/install/setup.bash
+source golf_mower_bringup/install/setup.bash
+
+ros2 launch golf_mower_bringup coverage_planner.launch.py \
+  area_file:=/home/ubuntu/unilidar_sdk2/golf_mower_bringup/config/coverage_test_area.yaml \
+  output_file:=~/.ros/golf_mower/coverage_path.yaml \
+  dry_run:=true \
+  launch_rviz:=true
+```
+
+The node plans automatically at startup and displays the result in RViz; initial display does not require `replan`.
+
+Main interfaces:
+
+| Interface | Type | Purpose |
+| --- | --- | --- |
+| `/coverage_path` | `nav_msgs/msg/Path` | Continuous coverage path in the `map` frame. |
+| `/coverage_markers` | `visualization_msgs/msg/MarkerArray` | RViz work boundary, exclusions, and coverage path. |
+| `/coverage_planner/replan` | `std_srvs/srv/Trigger` | Reload the YAML file and replan. |
+| `/coverage_planner/execute` | `std_srvs/srv/Trigger` | Submit poses to Nav2; rejected while `dry_run=true`. |
+
+After editing the YAML file, replan from terminal B:
+
+```bash
+cd /home/ubuntu/unilidar_sdk2
+source /opt/ros/humble/setup.bash
+source Fields2Cover-main/install/setup.bash
+source golf_mower_bringup/install/setup.bash
+
+ros2 service call /coverage_planner/replan std_srvs/srv/Trigger '{}'
+```
+
+`'{}'` is the empty request required by `std_srvs/srv/Trigger`; keep it unchanged.
+
+For Stage5 phase 2, append:
+
+```bash
+use_coverage_planner:=true \
+coverage_area_file:=/home/ubuntu/unilidar_sdk2/golf_mower_bringup/config/coverage_test_area.yaml \
+coverage_dry_run:=true
+```
+
+Core YAML parameters:
+
+| YAML parameter | Unit | Meaning |
+| --- | --- | --- |
+| `robot.width` | m | Physical chassis width used by Fields2Cover to reserve headland space. |
+| `robot.coverage_width` | m | Effective cutting width per pass; determines adjacent swath spacing. |
+| `robot.min_turning_radius` | m | Minimum permitted radius of the robot center trajectory. |
+| `robot.cruise_speed` | m/s | Desired speed on straight mowing swaths; currently Fields2Cover path metadata only. |
+| `robot.turn_speed` | m/s | Desired speed on connections and turns; currently Fields2Cover path metadata only. |
+| `planner.headland_swaths` | passes | Number of boundary headland passes reserved for turns. |
+| `planner.swath_angle_deg` | degree | Swath direction; use `null` to let Fields2Cover choose it. |
+
+`planner.headland_swaths` uses the robot width as its unit. It specifies the width reserved inside the boundary for turning; it is not the number of laps the robot must drive:
+
+```text
+┌──────────────────────────────┐  Work-area boundary
+│      Headland turn area      │
+│    ┌────────────────────┐    │
+│    │  → → → → → → → →  │    │
+│    │  ← ← ← ← ← ← ← ←  │    │  Mowing swaths
+│    │  → → → → → → → →  │    │
+│    └────────────────────┘    │
+│      Headland turn area      │
+└──────────────────────────────┘
+```
+
+The approximate reserved width is `robot.width × planner.headland_swaths`. For example, `robot.width: 0.5` and `headland_swaths: 10` reserve about `5 m` inside the boundary for turns and connections between mowing swaths. Too small a value can make turns cross the boundary; too large a value reduces the usable central mowing area.
+
+`boundary` and `exclusions` use meters in the offline map's `map` frame. `cruise_speed` and `turn_speed` do not currently change Nav2 speed. Keep `dry_run:=true` until the chassis and safety system are complete.
+
+### Generate a Candidate Boundary from Point Cloud
+
+After mapping, generate a convex candidate boundary from the largest connected ground region. Replace `<map-directory>` with the actual timestamped directory:
+
+```bash
+cd /home/ubuntu/unilidar_sdk2
+source /opt/ros/humble/setup.bash
+source golf_mower_bringup/install/setup.bash
+
+ros2 run golf_mower_bringup coverage_boundary_from_pcd.py \
+  --ground-pcd <map-directory>/ground_map.pcd \
+  --output <map-directory>/coverage_candidate.yaml \
+  --resolution 0.25 \
+  --connect-gap-cells 2 \
+  --robot-width 1.50 \
+  --coverage-width 1.00 \
+  --min-turning-radius 1.0 \
+  --headland-swaths 3
+```
+
+`resolution` is the ground raster cell size. `connect-gap-cells` bridges small scanning gaps. The resulting `coverage_candidate.yaml` can be passed directly as `coverage_area_file` for a `dry_run` visualization. It is a **convex-hull candidate** of the largest connected ground region and may include concavities, unobserved holes, roads, or areas where mowing is prohibited. Verify it in RViz and add `exclusions` manually before commanding robot motion.
+
+An empty `ground_map.pcd` cannot produce a candidate. First run Stage 5 phase 2 ground recovery, then use `recovered_ground_map.pcd` from the same directory as the input.
+
+### Complete Stage 5 Coverage Workflow
+
+Prepare the following before starting phase 2:
+
+1. A complete timestamped map directory from phase 1 containing `ground_map.pcd`, `nonground_map.pcd`, and `map_metadata.yaml`. The latest complete directory is selected automatically; use `segmented_map_dir` and `map_metadata_path` to select a specific run.
+2. `coverage_test_area.yaml`. Its `boundary` and `exclusions` must use the offline map's `map` coordinates. The point-cloud map does not automatically define the mowing boundary. Also enter the real chassis width, cutting width, and minimum turning radius.
+3. For indoor testing, return the robot close to the mapping start pose with the same heading and use fake RTK. For outdoor operation, prepare a valid UM981 solution and the correct map-heading alignment.
+
+Phase 2 runs this pipeline:
+
+```text
+Load ground/nonground PCD files
+  -> build the Nav2 /map
+  -> RTK or fake RTK establishes map -> camera_init
+  -> Point-LIO supplies the live local pose
+  -> Fields2Cover reads coverage_test_area.yaml
+  -> publish the coverage path
+  -> Nav2 follows the coverage waypoints
+  -> output /cmd_vel to the chassis driver
+```
+
+Keep `coverage_dry_run:=true` during initial integration. The node plans automatically and RViz displays the boundary, exclusions, and path, but no Nav2 goal is executed. After verifying localization and the path, restart phase 2 with `coverage_dry_run:=false`, then submit the path from another sourced terminal:
+
+```bash
+ros2 service call /coverage_planner/execute std_srvs/srv/Trigger '{}'
+```
+
+Main outputs:
+
+| Output | Purpose |
+| --- | --- |
+| `/map` | Nav2 occupancy grid built from the offline ground/non-ground clouds. |
+| `/coverage_path` | Complete continuous coverage path in the `map` frame. |
+| `/coverage_markers` | Boundary, exclusions, and path visualization in RViz. |
+| `~/.ros/golf_mower/coverage_path.yaml` | Saved path file; change it with `coverage_output_file`. |
+| Nav2 `NavigateThroughPoses` goal | Navigation waypoints sampled from the coverage path. |
+| `/cmd_vel` | Body velocity target produced by Nav2 for the chassis driver. |
+
+The real chassis driver is not implemented in this repository yet. Offline-map loading, localization, coverage planning, and Nav2 velocity-output tests are available, but `/cmd_vel` alone does not drive the physical wheels.
+
+### Obstacle Handling and Remaining Work
+
+Fields2Cover decides where mowing is required, while Nav2 tracks the path safely. They do not directly conflict, but the current system cannot automatically recover areas missed during obstacle avoidance:
+
+| Obstacle type | Handling |
+| --- | --- |
+| Fixed trees, buildings, bunkers, and ponds | Add them to `coverage_test_area.yaml` under `exclusions` so Fields2Cover plans around them. |
+| People, vehicles, and temporary equipment | Let the Nav2 local costmap slow, stop, or locally avoid them. |
+| Long-term blockage | The current Nav2 task may fail; a future task manager must skip the segment and schedule it for recovery. |
+
+Complete the following before autonomous mowing:
+
+1. Split the full coverage path into independently executable swaths or path segments.
+2. Add a coverage task manager with `PENDING`, `ACTIVE`, `COMPLETED`, `BLOCKED`, and `RETRY` states.
+3. Wait or use local avoidance for short blockages; after a timeout, cancel the segment, mark it incomplete, and continue with another segment.
+4. Maintain a mowed-area grid from the robot's measured trajectory and cutter width instead of assuming that every planned path was completed.
+5. After the task or when an obstacle clears, derive recovery areas from the uncovered grid and invoke Fields2Cover again.
+6. Stop safely on boundary violations, localization loss, costmap failure, communication timeout, or emergency-stop activation.
+
+Keep `coverage_dry_run:=true` until the task-management and safety mechanisms are implemented, or restrict low-speed Nav2 tracking tests to a controlled area.
 
 ## Earlier Debug Stages
 
@@ -534,6 +720,6 @@ Common symptoms:
 - Enable and calibrate UM981 INS heading only after valid heading output is available on the tested serial port.
 - Calibrate the RTK antenna lever arm.
 - Fuse RTK, wheel odometry, IMU, and Point-LIO with `robot_localization`.
-- Generate mowing coverage paths with Fields2Cover.
-- Convert coverage paths into Nav2 waypoints/actions.
+- Calibrate coverage parameters against the real course boundary, exclusions, and mowing width.
+- Validate physical Nav2 coverage execution after the safe chassis loop is complete.
 - Add mower actuator state, emergency stop, boundary protection, and no-go zones.

@@ -1,0 +1,34 @@
+frame_id: map
+
+# Coordinates are meters in the Stage5 map frame. Replace this example with
+# the measured mowing boundary before outdoor use.
+boundary:
+  - [-20.0, -20.0]
+  - [20.0, -20.0]
+  - [20.0, 20.0]
+  - [-20.0, 20.0]
+
+# Each polygon is a no-go area. Include robot half-width, localization error,
+# and tracking error in the polygon coordinates. Example syntax:
+# exclusions:
+#   - [[8.0, 4.0], [12.0, 4.0], [12.0, 7.0], [8.0, 7.0]]
+exclusions: []
+
+robot:
+  # Physical chassis width used by Fields2Cover, in meters.
+  width: 1.50
+  # Effective width cut by one pass, in meters.
+  coverage_width: 1.00
+  # Minimum center-line turning radius, in meters.
+  min_turning_radius: 1.0
+  # Desired speed on straight mowing swaths, in m/s. This is Fields2Cover
+  # path metadata; it does not override the Nav2 controller speed limits.
+  cruise_speed: 0.40
+  # Desired speed on connection/turn sections, in m/s. This is also path
+  # metadata and is not currently sent to Nav2 by NavigateThroughPoses.
+  turn_speed: 0.20
+
+planner:
+  headland_swaths: 3
+  # Set to null to let Fields2Cover choose an angle automatically.
+  swath_angle_deg: 0.0

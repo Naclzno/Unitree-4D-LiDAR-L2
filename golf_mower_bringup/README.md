@@ -11,7 +11,11 @@ cd /home/ubuntu/unilidar_sdk2
 source /opt/ros/humble/setup.bash
 source unitree_lidar_ros2/install/setup.bash
 source point_lio_unilidar-2.0.2/install/setup.bash
-colcon build --packages-select golf_mower_bringup --install-base golf_mower_bringup/install --build-base golf_mower_bringup/build --log-base golf_mower_bringup/log
+colcon --log-base golf_mower_bringup/log build \
+  --base-paths golf_mower_bringup \
+  --packages-select golf_mower_bringup \
+  --install-base golf_mower_bringup/install \
+  --build-base golf_mower_bringup/build
 source golf_mower_bringup/install/setup.bash
 ros2 launch golf_mower_bringup indoor_slam_test.launch.py
 ```

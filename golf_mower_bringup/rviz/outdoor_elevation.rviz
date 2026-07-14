@@ -384,6 +384,30 @@ Visualization Manager:
         {}
       Queue Size: 300
       Value: false
+    - Alpha: 1
+      Buffer Length: 1
+      Class: rviz_default_plugins/Path
+      Color: 25; 140; 255
+      Enabled: true
+      Head Diameter: 0
+      Head Length: 0
+      Line Style: Lines
+      Line Width: 0.05000000074505806
+      Name: Coverage Path
+      Pose Color: 25; 140; 255
+      Pose Style: None
+      Queue Size: 10
+      Topic: /coverage_path
+      Unreliable: false
+      Value: true
+    - Class: rviz_default_plugins/MarkerArray
+      Enabled: true
+      Marker Topic: /coverage_markers
+      Name: Coverage Boundary
+      Namespaces:
+        {}
+      Queue Size: 10
+      Value: true
     - Class: rviz_default_plugins/TF
       Enabled: false
       Filter (blacklist): ""

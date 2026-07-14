@@ -2,10 +2,34 @@ cmake_minimum_required(VERSION 3.8)
 project(golf_mower_bringup)
 
 find_package(ament_cmake REQUIRED)
+find_package(Fields2Cover CONFIG REQUIRED)
+find_package(geometry_msgs REQUIRED)
 find_package(nav2_costmap_2d REQUIRED)
+find_package(nav2_msgs REQUIRED)
 find_package(nav_msgs REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
+find_package(rclcpp_action REQUIRED)
+find_package(std_srvs REQUIRED)
+find_package(visualization_msgs REQUIRED)
+find_package(yaml-cpp REQUIRED)
+
+add_executable(coverage_planner_node
+  src/coverage_planner_node.cpp
+)
+ament_target_dependencies(coverage_planner_node
+  geometry_msgs
+  nav2_msgs
+  nav_msgs
+  rclcpp
+  rclcpp_action
+  std_srvs
+  visualization_msgs
+)
+target_link_libraries(coverage_planner_node
+  Fields2Cover::Fields2Cover
+  yaml-cpp
+)
 
 add_library(golf_mower_costmap_plugins SHARED
   src/traversability_layer.cpp
@@ -38,6 +62,10 @@ install(TARGETS golf_mower_costmap_plugins
   RUNTIME DESTINATION bin
 )
 
+install(TARGETS coverage_planner_node
+  RUNTIME DESTINATION lib/${PROJECT_NAME}
+)
+
 install(PROGRAMS
   scripts/pointlio_odom_tf_bridge.py
   scripts/nav2_send_spin_goal.py
@@ -51,6 +79,7 @@ install(PROGRAMS
   scripts/stage5_runtime_diagnostics.py
   scripts/static_pointlio_odom.py
   scripts/pcd_to_occupancy_grid.py
+  scripts/coverage_boundary_from_pcd.py
   scripts/segmented_map_builder.py
   scripts/fake_rtk_from_odom.py
   scripts/map_metadata_recorder.py
