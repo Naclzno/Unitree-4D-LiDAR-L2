@@ -1,6 +1,13 @@
 <class_libraries>
   <library path="golf_mower_costmap_plugins">
     <class
+      type="golf_mower_bringup::GeofenceLayer"
+      base_class_type="nav2_costmap_2d::Layer">
+      <description>
+        Applies the Fields2Cover work boundary and exclusion polygons as lethal Nav2 costs.
+      </description>
+    </class>
+    <class
       type="golf_mower_bringup::TraversabilityLayer"
       base_class_type="nav2_costmap_2d::Layer">
       <description>

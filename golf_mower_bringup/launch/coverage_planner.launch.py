@@ -19,10 +19,17 @@ def generate_launch_description():
         DeclareLaunchArgument(
             'output_file',
             default_value='~/.ros/golf_mower/coverage_path.yaml'),
+        DeclareLaunchArgument(
+            'mission_state_file',
+            default_value='~/.ros/golf_mower/coverage_mission_state.yaml'),
         DeclareLaunchArgument('dry_run', default_value='true'),
         DeclareLaunchArgument('path_pose_spacing', default_value='0.10'),
         DeclareLaunchArgument('nav_waypoint_spacing', default_value='0.75'),
         DeclareLaunchArgument('republish_period_sec', default_value='2.0'),
+        DeclareLaunchArgument('segment_max_waypoints', default_value='30'),
+        DeclareLaunchArgument('segment_max_retries', default_value='1'),
+        DeclareLaunchArgument('segment_timeout_sec', default_value='180.0'),
+        DeclareLaunchArgument('continue_after_blocked', default_value='true'),
         DeclareLaunchArgument('launch_rviz', default_value='true'),
         Node(
             package='golf_mower_bringup',
@@ -32,6 +39,7 @@ def generate_launch_description():
             parameters=[{
                 'area_file': LaunchConfiguration('area_file'),
                 'output_file': LaunchConfiguration('output_file'),
+                'mission_state_file': LaunchConfiguration('mission_state_file'),
                 'dry_run': ParameterValue(
                     LaunchConfiguration('dry_run'), value_type=bool),
                 'path_pose_spacing': ParameterValue(
@@ -40,6 +48,14 @@ def generate_launch_description():
                     LaunchConfiguration('nav_waypoint_spacing'), value_type=float),
                 'republish_period_sec': ParameterValue(
                     LaunchConfiguration('republish_period_sec'), value_type=float),
+                'segment_max_waypoints': ParameterValue(
+                    LaunchConfiguration('segment_max_waypoints'), value_type=int),
+                'segment_max_retries': ParameterValue(
+                    LaunchConfiguration('segment_max_retries'), value_type=int),
+                'segment_timeout_sec': ParameterValue(
+                    LaunchConfiguration('segment_timeout_sec'), value_type=float),
+                'continue_after_blocked': ParameterValue(
+                    LaunchConfiguration('continue_after_blocked'), value_type=bool),
             }],
         ),
         Node(

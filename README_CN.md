@@ -47,8 +47,8 @@ Unitree L2
 | 轮速里程计 | 未实现 | 没有 `/wheel/odom` 数据源和经过标定的底盘运动学。 |
 | 割草执行器 | 仅模型 | URDF包含 `mower_tool`，但没有刀盘电机接口、反馈和故障处理。 |
 | 覆盖路径规划 | 已接入ROS2 | 从YAML读取 `map` 边界和禁入区，发布路径/Marker、保存结果，并提供可选Nav2 action；默认dry-run。 |
-| 任务管理 | 未实现 | 没有割草任务状态机、暂停/恢复、返航和覆盖进度管理。 |
-| 安全系统 | 未实现 | 没有集成急停状态、速度命令看门狗、电子围栏、刀盘互锁和安全控制器。 |
+| 任务管理 | 基础版已实现 | 按完整条带/转弯序列逐段执行、重试、超时、阻塞跳过和取消；尚无实际覆盖记录与补割。 |
+| 安全系统 | 部分实现 | Nav2地理围栏限制作业边界和禁入区；急停、命令看门狗、刀盘互锁和安全控制器尚未接入。 |
 
 当前仓库属于感知、建图、定位初始化和导航规划原型，还不是完整的自主除草机器人。实体运动、刀盘执行、覆盖作业和安全互锁完成并验证前，不能用于真实球场自动割草。
 
@@ -285,6 +285,7 @@ ros2 launch golf_mower_bringup outdoor_segmented_nav_stage5.launch.py \
   fix_topic:=/fix \
   use_coverage_planner:=true \
   coverage_area_file:=/home/ubuntu/unilidar_sdk2/golf_mower_bringup/config/coverage_test_area.yaml \
+  use_coverage_geofence:=true \
   coverage_output_file:=~/.ros/golf_mower/coverage_path.yaml \
   coverage_dry_run:=true \
   launch_outdoor_rviz:=true
@@ -370,7 +371,9 @@ angular:
 | `launch_outdoor_rviz` | `true` | 定位导航时是否启动 RViz。 |
 | `use_coverage_planner` | 默认 `false` | 是否在Stage5导航中启动Fields2Cover ROS2节点。 |
 | `coverage_area_file` | 示例YAML路径 | `map`坐标系下的作业边界、禁入区和机器人规划参数。 |
+| `use_coverage_geofence` | 覆盖任务时 `true` | 将同一份 `boundary/exclusions` 写入Nav2全局和局部代价地图，禁止局部绕障越界。 |
 | `coverage_output_file` | `~/.ros/golf_mower/coverage_path.yaml` | 保存生成路径的位置。 |
+| `coverage_mission_state_file` | `~/.ros/golf_mower/coverage_mission_state.yaml` | 保存每个任务段状态、重试次数和最近事件；仅用于诊断，不会自动续跑。 |
 | `coverage_dry_run` | 当前 `true` | 只规划、发布和保存，不向Nav2提交执行目标。 |
 | `coverage_path_pose_spacing` | `0.10` | 发布/保存路径的采样间距，单位米。 |
 | `coverage_nav_waypoint_spacing` | `0.75` | 提交给Nav2的航点采样间距，单位米。 |
@@ -404,8 +407,10 @@ ros2 launch golf_mower_bringup coverage_planner.launch.py \
 | --- | --- | --- |
 | `/coverage_path` | `nav_msgs/msg/Path` | `map` 坐标系下的连续覆盖路径。 |
 | `/coverage_markers` | `visualization_msgs/msg/MarkerArray` | 作业边界、禁入区和覆盖路径的RViz显示。 |
+| `/coverage_planner/status` | `std_msgs/msg/String` | 当前任务段及完成、阻塞、取消数量。 |
 | `/coverage_planner/replan` | `std_srvs/srv/Trigger` | 重新读取YAML并规划。 |
-| `/coverage_planner/execute` | `std_srvs/srv/Trigger` | 向Nav2提交航点；`dry_run=true` 时拒绝执行。 |
+| `/coverage_planner/execute` | `std_srvs/srv/Trigger` | 启动逐段Nav2执行；`dry_run=true` 时拒绝执行。 |
+| `/coverage_planner/cancel` | `std_srvs/srv/Trigger` | 取消当前目标和剩余覆盖任务。 |
 
 修改YAML后，在终端B重新规划：
 
@@ -425,8 +430,16 @@ Stage5第二阶段可增加：
 ```bash
 use_coverage_planner:=true \
 coverage_area_file:=/home/ubuntu/unilidar_sdk2/golf_mower_bringup/config/coverage_test_area.yaml \
-coverage_dry_run:=true
+use_coverage_geofence:=true \
+coverage_dry_run:=true \
+coverage_mission_state_file:=~/.ros/golf_mower/coverage_mission_state.yaml \
+coverage_segment_max_waypoints:=30 \
+coverage_segment_max_retries:=1 \
+coverage_segment_timeout_sec:=180.0 \
+coverage_continue_after_blocked:=true
 ```
+
+`coverage_segment_max_waypoints` 是单段航点数的告警阈值，不会在完整割草条带或转弯中间强制切断；`coverage_segment_max_retries` 是每段失败后的重试次数；`coverage_segment_timeout_sec` 是单段超时；`coverage_continue_after_blocked` 决定某段最终失败后是否继续后续段。
 
 YAML核心参数：
 
@@ -524,24 +537,40 @@ ros2 service call /coverage_planner/execute std_srvs/srv/Trigger '{}'
 
 ### 障碍物处理与待完成任务
 
-Fields2Cover负责决定“哪里需要割草”，Nav2负责安全跟踪路径。两者不直接冲突，但当前系统还不能自动恢复因绕障造成的漏割区域：
+Fields2Cover负责决定“哪里需要割草”，Nav2负责安全跟踪路径。覆盖节点现在会把完整路径拆成任务段，逐段提交Nav2，并记录 `PENDING`、`ACTIVE`、`COMPLETED`、`BLOCKED` 和 `CANCELED` 状态。失败段会重试并可在超过次数后跳过，但系统仍不能自动恢复因绕障造成的漏割区域：
 
 | 障碍类型 | 处理方式 |
 | --- | --- |
 | 树木、建筑、沙坑、水池等固定障碍 | 写入 `coverage_test_area.yaml` 的 `exclusions`，由Fields2Cover生成绕开障碍的覆盖路径。 |
 | 行人、车辆、临时设备等动态障碍 | 由Nav2局部代价地图减速、停车或局部绕行。 |
-| 长时间阻塞 | 当前Nav2任务可能失败，需要后续任务管理器跳过该段并安排补割。 |
+| 长时间阻塞 | 单段超时后取消并重试；最终失败则标记 `BLOCKED`，按配置停止或继续下一段。 |
 
-真实无人割草前还需要完成：
+#### 覆盖任务管理器使用
 
-1. 将完整覆盖路径拆分为可独立执行的条带或路径段。
-2. 增加覆盖任务管理器，记录 `PENDING`、`ACTIVE`、`COMPLETED`、`BLOCKED` 和 `RETRY` 状态。
-3. 短时障碍采用等待或Nav2局部绕行；超时后取消当前段、标记未完成并继续下一段。
-4. 根据机器人实际轨迹和刀盘宽度维护已割覆盖栅格，而不是仅根据规划路径判断完成情况。
-5. 任务结束或障碍消失后，从未覆盖栅格生成补割区域，并重新调用Fields2Cover规划。
-6. 增加越界、定位失效、代价地图失效、通信超时和急停条件下的安全停车。
+1. 先以 `coverage_dry_run:=true` 启动Stage5第二阶段，在RViz确认定位、边界和覆盖路径。
+2. 确认后停止第二阶段，将 `coverage_dry_run:=false` 后重新启动；节点仍只会准备任务，不会自动运动。
+3. 在另一个已source的终端手动启动任务：
 
-在上述任务管理与安全机制完成前，应保持 `coverage_dry_run:=true`，或只在封闭测试区域低速验证Nav2路径跟踪。
+```bash
+ros2 service call /coverage_planner/execute std_srvs/srv/Trigger '{}'
+```
+
+4. 节点按完整割草条带及其后续转弯序列拆分任务；`coverage_segment_max_waypoints` 仅在单段过长时告警。每段成功后进入下一段；失败时按 `coverage_segment_max_retries` 重试；超过 `coverage_segment_timeout_sec` 会取消；最终失败后由 `coverage_continue_after_blocked` 决定停止或继续。
+
+查看状态或取消任务：
+
+```bash
+ros2 topic echo /coverage_planner/status
+ros2 service call /coverage_planner/cancel std_srvs/srv/Trigger '{}'
+```
+
+真实无人割草前仍需完成：
+
+1. 根据机器人实际轨迹和刀盘开关状态维护已割覆盖栅格，而不是仅根据规划路径判断完成情况。
+2. 任务结束或障碍消失后，从未覆盖栅格生成补割区域，并重新调用Fields2Cover规划。
+3. 增加定位失效、代价地图失效、通信超时和急停条件下的安全停车。
+
+在上述覆盖恢复与安全机制完成前，应保持 `coverage_dry_run:=true`，或只在封闭测试区域低速验证Nav2路径跟踪。
 
 ## 早期调试 Stage
 

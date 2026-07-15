@@ -10,6 +10,7 @@ find_package(nav_msgs REQUIRED)
 find_package(pluginlib REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclcpp_action REQUIRED)
+find_package(std_msgs REQUIRED)
 find_package(std_srvs REQUIRED)
 find_package(visualization_msgs REQUIRED)
 find_package(yaml-cpp REQUIRED)
@@ -23,6 +24,7 @@ ament_target_dependencies(coverage_planner_node
   nav_msgs
   rclcpp
   rclcpp_action
+  std_msgs
   std_srvs
   visualization_msgs
 )
@@ -32,6 +34,7 @@ target_link_libraries(coverage_planner_node
 )
 
 add_library(golf_mower_costmap_plugins SHARED
+  src/geofence_layer.cpp
   src/traversability_layer.cpp
 )
 target_include_directories(golf_mower_costmap_plugins PUBLIC
@@ -44,6 +47,7 @@ ament_target_dependencies(golf_mower_costmap_plugins
   pluginlib
   rclcpp
 )
+target_link_libraries(golf_mower_costmap_plugins yaml-cpp)
 pluginlib_export_plugin_description_file(
   nav2_costmap_2d golf_mower_costmap_plugins.xml
 )

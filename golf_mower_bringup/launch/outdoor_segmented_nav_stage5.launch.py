@@ -9,6 +9,7 @@ from launch.launch_description_sources import PythonLaunchDescriptionSource
 from launch.substitutions import LaunchConfiguration, PathJoinSubstitution
 from launch_ros.actions import Node
 from launch_ros.parameter_descriptions import ParameterValue
+from nav2_common.launch import RewrittenYaml
 
 
 STAGE5_MAP_ROOT = '/home/ubuntu/unilidar_sdk2/golf_mower_bringup/maps/stage5_segmented'
@@ -276,11 +277,42 @@ def generate_launch_description():
     coverage_output_file_arg = DeclareLaunchArgument(
         'coverage_output_file',
         default_value='~/.ros/golf_mower/coverage_path.yaml')
+    coverage_mission_state_file_arg = DeclareLaunchArgument(
+        'coverage_mission_state_file',
+        default_value='~/.ros/golf_mower/coverage_mission_state.yaml')
     coverage_dry_run_arg = DeclareLaunchArgument('coverage_dry_run', default_value='true')
+    use_coverage_geofence_arg = DeclareLaunchArgument(
+        'use_coverage_geofence',
+        default_value='false',
+        description='Apply coverage boundary/exclusions as lethal costs in Nav2 local and global costmaps.'
+    )
     coverage_path_pose_spacing_arg = DeclareLaunchArgument(
         'coverage_path_pose_spacing', default_value='0.10')
     coverage_nav_waypoint_spacing_arg = DeclareLaunchArgument(
         'coverage_nav_waypoint_spacing', default_value='0.75')
+    coverage_segment_max_waypoints_arg = DeclareLaunchArgument(
+        'coverage_segment_max_waypoints', default_value='30')
+    coverage_segment_max_retries_arg = DeclareLaunchArgument(
+        'coverage_segment_max_retries', default_value='1')
+    coverage_segment_timeout_sec_arg = DeclareLaunchArgument(
+        'coverage_segment_timeout_sec', default_value='180.0')
+    coverage_continue_after_blocked_arg = DeclareLaunchArgument(
+        'coverage_continue_after_blocked', default_value='true')
+
+    configured_nav2_params = RewrittenYaml(
+        source_file=nav2_params,
+        param_rewrites={
+            'local_costmap.local_costmap.geofence_layer.enabled':
+                LaunchConfiguration('use_coverage_geofence'),
+            'local_costmap.local_costmap.geofence_layer.area_file':
+                LaunchConfiguration('coverage_area_file'),
+            'global_costmap.global_costmap.geofence_layer.enabled':
+                LaunchConfiguration('use_coverage_geofence'),
+            'global_costmap.global_costmap.geofence_layer.area_file':
+                LaunchConfiguration('coverage_area_file'),
+        },
+        convert_types=True,
+    )
 
     stage2 = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(stage2_launch),
@@ -445,7 +477,7 @@ def generate_launch_description():
                 launch_arguments={
                     'use_sim_time': 'false',
                     'autostart': 'true',
-                    'params_file': nav2_params,
+                    'params_file': configured_nav2_params,
                     'use_composition': 'False',
                     'use_respawn': 'False',
                 }.items(),
@@ -462,12 +494,21 @@ def generate_launch_description():
         parameters=[{
             'area_file': LaunchConfiguration('coverage_area_file'),
             'output_file': LaunchConfiguration('coverage_output_file'),
+            'mission_state_file': LaunchConfiguration('coverage_mission_state_file'),
             'dry_run': ParameterValue(
                 LaunchConfiguration('coverage_dry_run'), value_type=bool),
             'path_pose_spacing': ParameterValue(
                 LaunchConfiguration('coverage_path_pose_spacing'), value_type=float),
             'nav_waypoint_spacing': ParameterValue(
                 LaunchConfiguration('coverage_nav_waypoint_spacing'), value_type=float),
+            'segment_max_waypoints': ParameterValue(
+                LaunchConfiguration('coverage_segment_max_waypoints'), value_type=int),
+            'segment_max_retries': ParameterValue(
+                LaunchConfiguration('coverage_segment_max_retries'), value_type=int),
+            'segment_timeout_sec': ParameterValue(
+                LaunchConfiguration('coverage_segment_timeout_sec'), value_type=float),
+            'continue_after_blocked': ParameterValue(
+                LaunchConfiguration('coverage_continue_after_blocked'), value_type=bool),
         }],
     )
 
@@ -539,9 +580,15 @@ def generate_launch_description():
         nav2_start_delay_arg,
         coverage_area_file_arg,
         coverage_output_file_arg,
+        coverage_mission_state_file_arg,
         coverage_dry_run_arg,
+        use_coverage_geofence_arg,
         coverage_path_pose_spacing_arg,
         coverage_nav_waypoint_spacing_arg,
+        coverage_segment_max_waypoints_arg,
+        coverage_segment_max_retries_arg,
+        coverage_segment_timeout_sec_arg,
+        coverage_continue_after_blocked_arg,
         OpaqueFunction(function=_validate_ground_map),
         stage2,
         segmented_map,

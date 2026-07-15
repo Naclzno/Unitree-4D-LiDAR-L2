@@ -46,8 +46,8 @@ Unitree L2
 | Wheel encoder odometry | Not implemented | No `/wheel/odom` source or calibrated chassis kinematics. |
 | Mower actuator | Model only | `mower_tool` exists in URDF, but there is no blade motor interface, feedback, or fault handling. |
 | Coverage path planning | Integrated with ROS2 | Reads map-frame boundaries and exclusions from YAML, publishes paths/markers, saves results, and provides an optional Nav2 action; dry-run is the default. |
-| Mission manager | Not implemented | No mowing task state machine, pause/resume, return, or coverage progress tracking. |
-| Safety system | Not implemented | No integrated emergency-stop state, command watchdog, geofence, blade interlock, or safety controller. |
+| Mission manager | Basic implementation | Executes complete swath/turn sequences with retries, timeouts, blocked-segment handling, and cancellation; actual coverage tracking and recovery remain. |
+| Safety system | Partial implementation | A Nav2 geofence enforces work boundaries and exclusions; emergency stop, command watchdog, blade interlock, and safety controller remain. |
 
 The repository currently provides a perception, mapping, localization-initialization, and navigation-planning prototype. It is not yet a complete autonomous mower: physical motion, blade actuation, coverage execution, and safety interlocks must be implemented and validated before field mowing.
 
@@ -284,6 +284,7 @@ ros2 launch golf_mower_bringup outdoor_segmented_nav_stage5.launch.py \
   fix_topic:=/fix \
   use_coverage_planner:=true \
   coverage_area_file:=/home/ubuntu/unilidar_sdk2/golf_mower_bringup/config/coverage_test_area.yaml \
+  use_coverage_geofence:=true \
   coverage_output_file:=~/.ros/golf_mower/coverage_path.yaml \
   coverage_dry_run:=true \
   launch_outdoor_rviz:=true
@@ -369,7 +370,9 @@ This command asks the robot to move forward at `0.30 m/s` while turning left at 
 | `launch_outdoor_rviz` | `true` | Start RViz during localization and navigation. |
 | `use_coverage_planner` | default `false` | Start the Fields2Cover ROS2 node with Stage5 navigation. |
 | `coverage_area_file` | example YAML path | Map-frame work boundary, exclusions, and robot planning parameters. |
+| `use_coverage_geofence` | `true` for coverage missions | Apply the same `boundary/exclusions` to Nav2 local and global costmaps to prevent local avoidance from leaving the work area. |
 | `coverage_output_file` | `~/.ros/golf_mower/coverage_path.yaml` | Destination for the generated path. |
+| `coverage_mission_state_file` | `~/.ros/golf_mower/coverage_mission_state.yaml` | Stores segment states, retry counts, and the latest event for diagnostics; it never resumes motion automatically. |
 | `coverage_dry_run` | currently `true` | Plan, publish, and save without submitting a Nav2 execution goal. |
 | `coverage_path_pose_spacing` | `0.10` | Sampling distance for the published/saved path, in meters. |
 | `coverage_nav_waypoint_spacing` | `0.75` | Sampling distance for Nav2 execution poses, in meters. |
@@ -403,8 +406,10 @@ Main interfaces:
 | --- | --- | --- |
 | `/coverage_path` | `nav_msgs/msg/Path` | Continuous coverage path in the `map` frame. |
 | `/coverage_markers` | `visualization_msgs/msg/MarkerArray` | RViz work boundary, exclusions, and coverage path. |
+| `/coverage_planner/status` | `std_msgs/msg/String` | Current segment and completed, blocked, and canceled counts. |
 | `/coverage_planner/replan` | `std_srvs/srv/Trigger` | Reload the YAML file and replan. |
-| `/coverage_planner/execute` | `std_srvs/srv/Trigger` | Submit poses to Nav2; rejected while `dry_run=true`. |
+| `/coverage_planner/execute` | `std_srvs/srv/Trigger` | Start segmented Nav2 execution; rejected while `dry_run=true`. |
+| `/coverage_planner/cancel` | `std_srvs/srv/Trigger` | Cancel the active goal and remaining coverage mission. |
 
 After editing the YAML file, replan from terminal B:
 
@@ -424,8 +429,16 @@ For Stage5 phase 2, append:
 ```bash
 use_coverage_planner:=true \
 coverage_area_file:=/home/ubuntu/unilidar_sdk2/golf_mower_bringup/config/coverage_test_area.yaml \
-coverage_dry_run:=true
+use_coverage_geofence:=true \
+coverage_dry_run:=true \
+coverage_mission_state_file:=~/.ros/golf_mower/coverage_mission_state.yaml \
+coverage_segment_max_waypoints:=30 \
+coverage_segment_max_retries:=1 \
+coverage_segment_timeout_sec:=180.0 \
+coverage_continue_after_blocked:=true
 ```
+
+`coverage_segment_max_waypoints` is an advisory threshold for a long segment; it never cuts a complete mowing swath or turn sequence. `coverage_segment_max_retries` controls retries, `coverage_segment_timeout_sec` is the per-segment timeout, and `coverage_continue_after_blocked` selects whether later segments continue after a final failure.
 
 Core YAML parameters:
 
@@ -523,24 +536,40 @@ The real chassis driver is not implemented in this repository yet. Offline-map l
 
 ### Obstacle Handling and Remaining Work
 
-Fields2Cover decides where mowing is required, while Nav2 tracks the path safely. They do not directly conflict, but the current system cannot automatically recover areas missed during obstacle avoidance:
+Fields2Cover decides where mowing is required, while Nav2 tracks the path safely. The coverage node now splits the full path into task segments, submits them to Nav2 sequentially, and records `PENDING`, `ACTIVE`, `COMPLETED`, `BLOCKED`, and `CANCELED` states. Failed segments are retried and may be skipped after the retry limit, but the system still cannot automatically recover areas missed during obstacle avoidance:
 
 | Obstacle type | Handling |
 | --- | --- |
 | Fixed trees, buildings, bunkers, and ponds | Add them to `coverage_test_area.yaml` under `exclusions` so Fields2Cover plans around them. |
 | People, vehicles, and temporary equipment | Let the Nav2 local costmap slow, stop, or locally avoid them. |
-| Long-term blockage | The current Nav2 task may fail; a future task manager must skip the segment and schedule it for recovery. |
+| Long-term blockage | Cancel and retry after the segment timeout; after the final failure, mark it `BLOCKED` and stop or continue according to configuration. |
 
-Complete the following before autonomous mowing:
+#### Using the Coverage Task Manager
 
-1. Split the full coverage path into independently executable swaths or path segments.
-2. Add a coverage task manager with `PENDING`, `ACTIVE`, `COMPLETED`, `BLOCKED`, and `RETRY` states.
-3. Wait or use local avoidance for short blockages; after a timeout, cancel the segment, mark it incomplete, and continue with another segment.
-4. Maintain a mowed-area grid from the robot's measured trajectory and cutter width instead of assuming that every planned path was completed.
-5. After the task or when an obstacle clears, derive recovery areas from the uncovered grid and invoke Fields2Cover again.
-6. Stop safely on boundary violations, localization loss, costmap failure, communication timeout, or emergency-stop activation.
+1. Start Stage 5 phase 2 with `coverage_dry_run:=true` and verify localization, the boundary, and the coverage path in RViz.
+2. Stop phase 2, restart it with `coverage_dry_run:=false`. The node prepares the mission but does not move the robot automatically.
+3. Start the mission manually from another sourced terminal:
 
-Keep `coverage_dry_run:=true` until the task-management and safety mechanisms are implemented, or restrict low-speed Nav2 tracking tests to a controlled area.
+```bash
+ros2 service call /coverage_planner/execute std_srvs/srv/Trigger '{}'
+```
+
+4. The node splits tasks by complete mowing swaths and their following turn sequences; `coverage_segment_max_waypoints` only warns when a segment is long. A successful segment advances to the next one; a failed segment retries according to `coverage_segment_max_retries`; `coverage_segment_timeout_sec` cancels stalled segments; `coverage_continue_after_blocked` selects whether later segments continue after a final failure.
+
+Inspect or cancel the mission with:
+
+```bash
+ros2 topic echo /coverage_planner/status
+ros2 service call /coverage_planner/cancel std_srvs/srv/Trigger '{}'
+```
+
+The following work remains before autonomous mowing:
+
+1. Maintain a mowed-area grid from the measured trajectory and cutter state instead of assuming every planned path was completed.
+2. After the task or when an obstacle clears, derive recovery areas from the uncovered grid and invoke Fields2Cover again.
+3. Stop safely on localization loss, costmap failure, communication timeout, or emergency-stop activation.
+
+Keep `coverage_dry_run:=true` until coverage recovery and safety mechanisms are implemented, or restrict low-speed Nav2 tracking tests to a controlled area.
 
 ## Earlier Debug Stages
 
