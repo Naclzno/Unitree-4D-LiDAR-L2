@@ -25,7 +25,7 @@ def generate_launch_description():
     use_elevation_arg = DeclareLaunchArgument('use_elevation', default_value='true')
     use_cuda_elevation_arg = DeclareLaunchArgument(
         'use_cuda_elevation',
-        default_value='true',
+        default_value='false',
         description='Use elevation_mapping_cupy when true; use CPU-only elevation_mapping_ros2 when false.'
     )
     launch_outdoor_rviz_arg = DeclareLaunchArgument('launch_outdoor_rviz', default_value='true')

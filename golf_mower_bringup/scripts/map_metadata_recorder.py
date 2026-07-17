@@ -3,6 +3,7 @@
 import json
 import math
 import os
+import time
 from typing import Optional
 
 import rclpy
@@ -24,10 +25,18 @@ class MapMetadataRecorder(Node):
         self.declare_parameter('yaw_map_to_enu', 0.0)
         self.declare_parameter('write_period_sec', 2.0)
         self.declare_parameter('overwrite', False)
+        self.declare_parameter('min_fix_samples', 3)
+        self.declare_parameter('min_odom_samples', 100)
+        self.declare_parameter('max_fix_age_sec', 2.0)
+        self.declare_parameter('max_odom_age_sec', 1.0)
 
         self.fix: Optional[NavSatFix] = None
         self.odom: Optional[Odometry] = None
         self.written = False
+        self.fix_samples = 0
+        self.odom_samples = 0
+        self.last_fix_monotonic: Optional[float] = None
+        self.last_odom_monotonic: Optional[float] = None
         self.output_path = os.path.expanduser(str(self.get_parameter('output_path').value))
 
         self.create_subscription(
@@ -59,16 +68,33 @@ class MapMetadataRecorder(Node):
             self.get_logger().warn('Ignoring invalid NavSatFix lat/lon', throttle_duration_sec=5.0)
             return
         self.fix = msg
+        self.fix_samples += 1
+        self.last_fix_monotonic = time.monotonic()
         self.try_write()
 
     def odom_callback(self, msg: Odometry):
         self.odom = msg
+        self.odom_samples += 1
+        self.last_odom_monotonic = time.monotonic()
         self.try_write()
 
     def try_write(self):
         if self.written and not bool(self.get_parameter('overwrite').value):
             return
         if self.fix is None or self.odom is None:
+            return
+        if self.fix_samples < int(self.get_parameter('min_fix_samples').value):
+            return
+        if self.odom_samples < int(self.get_parameter('min_odom_samples').value):
+            return
+        now = time.monotonic()
+        max_fix_age = float(self.get_parameter('max_fix_age_sec').value)
+        max_odom_age = float(self.get_parameter('max_odom_age_sec').value)
+        if self.last_fix_monotonic is None or now - self.last_fix_monotonic > max_fix_age:
+            self.get_logger().warn('Waiting for a fresh GNSS fix before writing metadata', throttle_duration_sec=5.0)
+            return
+        if self.last_odom_monotonic is None or now - self.last_odom_monotonic > max_odom_age:
+            self.get_logger().warn('Waiting for fresh Point-LIO odometry before writing metadata', throttle_duration_sec=5.0)
             return
 
         data = {
@@ -98,7 +124,9 @@ class MapMetadataRecorder(Node):
             },
         }
 
-        os.makedirs(os.path.dirname(self.output_path), exist_ok=True)
+        output_dir = os.path.dirname(self.output_path)
+        if output_dir:
+            os.makedirs(output_dir, exist_ok=True)
         with open(self.output_path, 'w', encoding='utf-8') as metadata:
             json.dump(data, metadata, indent=2, ensure_ascii=False)
             metadata.write('\n')

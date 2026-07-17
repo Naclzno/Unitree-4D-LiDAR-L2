@@ -22,10 +22,11 @@ def generate_launch_description():
     default_pointlio_config = os.path.join(
         point_lio_share, 'config', 'unilidar_l2_ros2.yaml')
     map_session_name = datetime.now().strftime('%Y%m%d_%H%M%S')
-    default_map_session_dir = os.path.join(
-        '/home/ubuntu/unilidar_sdk2/golf_mower_bringup/maps/stage5_segmented',
-        map_session_name,
+    map_root = os.environ.get(
+        'GOLF_MOWER_MAP_ROOT',
+        os.path.expanduser('~/unilidar_sdk2/golf_mower_bringup/maps/stage5_segmented'),
     )
+    default_map_session_dir = os.path.join(map_root, map_session_name)
 
     use_lidar_arg = DeclareLaunchArgument('use_lidar', default_value='true')
     use_pointlio_arg = DeclareLaunchArgument('use_pointlio', default_value='true')
@@ -138,6 +139,18 @@ def generate_launch_description():
     )
     um981_baud_arg = DeclareLaunchArgument('um981_baud', default_value='115200')
     um981_frame_id_arg = DeclareLaunchArgument('um981_frame_id', default_value='rtk_antenna')
+    um981_require_rtk_fixed_arg = DeclareLaunchArgument(
+        'um981_require_rtk_fixed',
+        default_value='true',
+        description='Accept UM981 /fix only from GGA RTK-fixed output. Disable only for controlled GNSS diagnostics.',
+    )
+    um981_allow_rtk_float_arg = DeclareLaunchArgument(
+        'um981_allow_rtk_float',
+        default_value='false',
+        description='Allow RTK-float UM981 fixes when RTK-fixed is unavailable. Not recommended for map metadata.',
+    )
+    um981_min_satellites_arg = DeclareLaunchArgument('um981_min_satellites', default_value='10')
+    um981_max_hdop_arg = DeclareLaunchArgument('um981_max_hdop', default_value='1.5')
     yaw_map_to_enu_arg = DeclareLaunchArgument(
         'yaw_map_to_enu',
         default_value='0.0',
@@ -264,6 +277,13 @@ def generate_launch_description():
             'frame_id': LaunchConfiguration('um981_frame_id'),
             'imu_frame_id': 'um981_imu',
             'commands': ['GNGGA 1'],
+            'require_rtk_fixed': ParameterValue(
+                LaunchConfiguration('um981_require_rtk_fixed'), value_type=bool),
+            'allow_rtk_float': ParameterValue(
+                LaunchConfiguration('um981_allow_rtk_float'), value_type=bool),
+            'min_satellites': ParameterValue(
+                LaunchConfiguration('um981_min_satellites'), value_type=int),
+            'max_hdop': ParameterValue(LaunchConfiguration('um981_max_hdop'), value_type=float),
         }],
     )
 
@@ -333,6 +353,10 @@ def generate_launch_description():
         um981_port_arg,
         um981_baud_arg,
         um981_frame_id_arg,
+        um981_require_rtk_fixed_arg,
+        um981_allow_rtk_float_arg,
+        um981_min_satellites_arg,
+        um981_max_hdop_arg,
         yaw_map_to_enu_arg,
         slam,
         patchwork,

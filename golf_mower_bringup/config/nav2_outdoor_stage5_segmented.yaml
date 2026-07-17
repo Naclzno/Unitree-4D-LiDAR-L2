@@ -136,7 +136,7 @@ local_costmap:
       width: 12
       height: 12
       resolution: 0.10
-      footprint: "[[0.65, 0.45], [0.65, -0.45], [-0.65, -0.45], [-0.65, 0.45]]"
+      footprint: "[[0.65, 0.75], [0.65, -0.75], [-0.65, -0.75], [-0.65, 0.75]]"
       plugins: [voxel_layer, terrain_layer, geofence_layer, inflation_layer]
       voxel_layer:
         plugin: nav2_costmap_2d::VoxelLayer
@@ -190,7 +190,7 @@ global_costmap:
       width: 20
       height: 20
       resolution: 0.10
-      footprint: "[[0.65, 0.45], [0.65, -0.45], [-0.65, -0.45], [-0.65, 0.45]]"
+      footprint: "[[0.65, 0.75], [0.65, -0.75], [-0.65, -0.75], [-0.65, 0.75]]"
       track_unknown_space: true
       plugins: [static_layer, geofence_layer, inflation_layer]
       static_layer:

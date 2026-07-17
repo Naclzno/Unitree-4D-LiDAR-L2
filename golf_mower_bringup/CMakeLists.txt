@@ -84,6 +84,8 @@ install(PROGRAMS
   scripts/static_pointlio_odom.py
   scripts/pcd_to_occupancy_grid.py
   scripts/coverage_boundary_from_pcd.py
+  scripts/motor_driver_node.py
+  scripts/safety_controller_node.py
   scripts/segmented_map_builder.py
   scripts/fake_rtk_from_odom.py
   scripts/map_metadata_recorder.py

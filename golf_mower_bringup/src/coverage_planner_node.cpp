@@ -166,7 +166,7 @@ public:
     segment_max_waypoints_ = declare_parameter<int>("segment_max_waypoints", 30);
     segment_max_retries_ = declare_parameter<int>("segment_max_retries", 1);
     segment_timeout_sec_ = declare_parameter<double>("segment_timeout_sec", 180.0);
-    continue_after_blocked_ = declare_parameter<bool>("continue_after_blocked", true);
+    continue_after_blocked_ = declare_parameter<bool>("continue_after_blocked", false);
     action_name_ = declare_parameter<std::string>(
       "navigate_through_poses_action", "navigate_through_poses");
     if (path_pose_spacing_ <= 0.0 || nav_waypoint_spacing_ <= 0.0 ||
@@ -970,7 +970,7 @@ private:
   bool mission_active_{false};
   bool cancel_requested_{false};
   bool user_canceling_{false};
-  bool continue_after_blocked_{true};
+  bool continue_after_blocked_{false};
   int segment_max_waypoints_{30};
   int segment_max_retries_{1};
   double segment_timeout_sec_{180.0};

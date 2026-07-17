@@ -20,7 +20,7 @@ def generate_launch_description():
     use_elevation_arg = DeclareLaunchArgument('use_elevation', default_value='true')
     use_cuda_elevation_arg = DeclareLaunchArgument(
         'use_cuda_elevation',
-        default_value='true',
+        default_value='false',
         description='Use elevation_mapping_cupy when true; use CPU-only elevation_mapping_ros2 when false.'
     )
     use_grid_converter_arg = DeclareLaunchArgument('use_grid_converter', default_value='true')

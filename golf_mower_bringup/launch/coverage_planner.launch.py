@@ -29,7 +29,7 @@ def generate_launch_description():
         DeclareLaunchArgument('segment_max_waypoints', default_value='30'),
         DeclareLaunchArgument('segment_max_retries', default_value='1'),
         DeclareLaunchArgument('segment_timeout_sec', default_value='180.0'),
-        DeclareLaunchArgument('continue_after_blocked', default_value='true'),
+        DeclareLaunchArgument('continue_after_blocked', default_value='false'),
         DeclareLaunchArgument('launch_rviz', default_value='true'),
         Node(
             package='golf_mower_bringup',

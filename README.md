@@ -1,8 +1,8 @@
-# Golf Mower Robot ROS2 Workspace
+# Golf Mower Robot ROS2 Project
 
 English | [中文](README_CN.md)
 
-This workspace contains the ROS2 algorithm stack for a golf-course mowing robot. It is built around the Unitree L2 lidar, Point-LIO, Patchwork++ ground segmentation, elevation/traversability mapping, Nav2 navigation, and UM981 RTK/INS localization.
+This ROS2 source repository contains the algorithm stack for a golf-course mowing robot. It is built around the Unitree L2 lidar, Point-LIO, Patchwork++ ground segmentation, elevation/traversability mapping, Nav2 navigation, and UM981 RTK/INS localization.
 
 The current full outdoor workflow is Stage 5:
 
@@ -28,6 +28,7 @@ Unitree L2
 - Use UM981 GNSS `/fix` for map initialization; provide initial yaw manually for now.
 - Provide indoor test modes with fake RTK when GNSS/RTK signal is unavailable.
 - Generate ROS2 coverage paths from map-frame boundaries and exclusions with Fields2Cover.
+- Translate `/cmd_vel` into the documented motor-controller serial protocol with a default-safe, explicitly armed driver.
 - Keep earlier Stage 1/2/3/4 launches for incremental debugging.
 
 ## Current Project Status
@@ -42,16 +43,16 @@ Unitree L2
 | UM981 GNSS position | Partially integrated | GGA `/fix` initializes the robot in the offline map; UM981 IMU/INS heading is not used. |
 | Continuous localization fusion | Not integrated | RTK currently initializes `map -> camera_init`; wheel odometry, RTK, IMU, and Point-LIO are not yet fused continuously. |
 | Nav2 planning and obstacle avoidance | Integrated at algorithm level | Produces `/cmd_vel` using the offline global map and live local terrain/obstacles. |
-| Chassis motor driver | Not implemented | No node currently consumes `/cmd_vel` to drive the physical wheels. |
+| Chassis motor driver | Prototype integrated | `motor_driver_node.py` maps the gated motor velocity stream to documented discrete commands, with timeout brake, dry-run, and explicit arming. Serial settings and real-wheel calibration remain unverified. |
 | Wheel encoder odometry | Not implemented | No `/wheel/odom` source or calibrated chassis kinematics. |
 | Mower actuator | Model only | `mower_tool` exists in URDF, but there is no blade motor interface, feedback, or fault handling. |
 | Coverage path planning | Integrated with ROS2 | Reads map-frame boundaries and exclusions from YAML, publishes paths/markers, saves results, and provides an optional Nav2 action; dry-run is the default. |
 | Mission manager | Basic implementation | Executes complete swath/turn sequences with retries, timeouts, blocked-segment handling, and cancellation; actual coverage tracking and recovery remain. |
-| Safety system | Partial implementation | A Nav2 geofence enforces work boundaries and exclusions; emergency stop, command watchdog, blade interlock, and safety controller remain. |
+| Safety system | Initial software gate integrated | The safety controller gates `/cmd_vel` using explicit enable, odometry freshness, command freshness, and a latched software E-stop; hardware emergency stop and blade interlock remain. |
 
 The repository currently provides a perception, mapping, localization-initialization, and navigation-planning prototype. It is not yet a complete autonomous mower: physical motion, blade actuation, coverage execution, and safety interlocks must be implemented and validated before field mowing.
 
-The next system milestone is a safe chassis control loop: `/cmd_vel` to motor commands, wheel encoder odometry, a hardware emergency stop, and a command-timeout stop. After that, complete continuous state estimation, physical coverage-path execution, the mower actuator, and the mission/safety state machine.
+The next milestone is physical validation of the chassis loop: motor protocol feedback, wheel encoder odometry, a wired emergency stop, and controlled low-speed tests. Continuous state estimation, physical coverage execution, blade control, and the mission/safety state machine follow after that.
 
 ## Directory Layout
 
@@ -64,7 +65,8 @@ The next system milestone is a safe chassis control loop: `/cmd_vel` to motor co
 | `elevation_mapping_cupy` | GPU/CuPy elevation mapping. |
 | `elevation_mapping_ros2` | CPU elevation mapping compatibility package. |
 | `golf_mower_description` | Robot URDF/Xacro and sensor frames. |
-| `golf_mower_bringup` | Main launch files, configuration, diagnostics, map utilities, and Nav2 integration. |
+| `golf_mower_bringup` | Main launch files, configuration, diagnostics, map utilities, Nav2 integration, coverage planner, motor driver, and safety controller. |
+| `motor` | Motor-controller Serial V2 protocol reference. |
 | `UM981` | Python SDK and ROS2 node for UM981 GNSS/RTK/INS. |
 | `Fields2Cover-main` | Fields2Cover library used by the ROS2 planner in `golf_mower_bringup`. |
 | `robot_localization-rolling-devel` | Reserved for later wheel odometry, RTK, IMU, and lidar odometry fusion. |
@@ -245,6 +247,8 @@ um981_port:=/dev/ttyUSB0 \
 use_fake_rtk:=false
 ```
 
+The UM981 gate accepts `rtk_fixed` GGA output by default, with at least 10 satellites and HDOP no greater than 1.5. Use `/um981/fix_quality` to inspect rejection reasons. Loosen `um981_require_rtk_fixed`, `um981_allow_rtk_float`, `um981_min_satellites`, or `um981_max_hdop` only for controlled diagnostics.
+
 Each mapping launch creates a directory named with its start time, for example:
 
 ```text
@@ -298,6 +302,8 @@ um981_port:=/dev/ttyUSB0 \
 use_fake_rtk:=false
 ```
 
+Stage 5 uses CPU elevation mapping by default (`use_cuda_elevation:=false`). Enable CUDA only after confirming that the NVIDIA driver and GPU runtime are healthy. Map directories default to `~/unilidar_sdk2/golf_mower_bringup/maps/stage5_segmented`; set `GOLF_MOWER_MAP_ROOT` before launching to use another location.
+
 #### Navigation Startup and Map Handling
 
 Navigation automatically loads the newest timestamped directory under `stage5_segmented` that contains `ground_map.pcd`, `nonground_map.pcd`, and `map_metadata.yaml`. To load an older map, explicitly set `segmented_map_dir` and `map_metadata_path`.
@@ -337,7 +343,69 @@ angular:
   z: 0.20
 ```
 
-This command asks the robot to move forward at `0.30 m/s` while turning left at `0.20 rad/s`. The physical chassis driver must subscribe to `/cmd_vel`, convert it into left and right wheel targets using the chassis kinematics, and send them through the motor-controller protocol. It must also enforce velocity limits, command-timeout stops, communication-failure stops, and a hardware emergency stop. That physical chassis driver is not implemented in this repository yet, so observing `/cmd_vel` does not mean the wheels will move.
+This command asks the robot to move forward at `0.30 m/s` while turning left at `0.20 rad/s`. In Stage 5, the safety controller forwards this stream to `/motor/cmd_vel`; `motor_driver_node.py` consumes that topic by default and uses the Serial V2 protocol in `motor/最新电机命令.md`. Its currently supported mapping is forward, reverse, forward arcs, in-place turns, and brake; it deliberately rejects reverse-turn commands because the documented `0x09` differential command does not define signed wheel directions.
+
+#### Motor Driver
+
+The motor driver is disabled by default. It sends a frame only when the requested motion or speed changes. A zero `/cmd_vel`, `/cmd_vel` timeout, disarm request, startup arming, and process shutdown send the configured stop command; the default is the documented `0x04` brake frame. `/motor_driver/status` reports commanded state only, not measured wheel motion.
+
+First verify the frames without opening a serial port:
+
+```bash
+cd /home/ubuntu/unilidar_sdk2
+source /opt/ros/humble/setup.bash
+source golf_mower_bringup/install/setup.bash
+
+ros2 launch golf_mower_bringup motor_driver.launch.py enabled:=true dry_run:=true
+```
+
+In another sourced terminal, publish a test target and inspect the status:
+
+```bash
+ros2 topic pub --once /motor/cmd_vel geometry_msgs/msg/Twist '{linear: {x: 0.20}, angular: {z: 0.0}}'
+ros2 topic echo /motor_driver/status
+```
+
+With the conservative default limits, this test logs `AA 02 0A 13 C9 55` (19% speed) followed by `AA 01 01 AC 55` (forward), then `AA 01 04 AF 55` after the timeout. Calibrate `min_speed_percent` and `max_speed_percent` only after a suspended-wheel test.
+
+For a physical bench test, keep the drive wheels off the ground and confirm the controller's baud rate, `8N1`/flow-control settings, command interval, and emergency-stop circuit first. Start disarmed, then arm explicitly:
+
+```bash
+ros2 launch golf_mower_bringup motor_driver.launch.py \
+  port:=<motor_serial_port> \
+  baudrate:=<confirmed_baudrate> \
+  dry_run:=false
+
+ros2 service call /motor_driver/enable std_srvs/srv/SetBool '{data: true}'
+```
+
+Disarm and brake with:
+
+```bash
+ros2 service call /motor_driver/enable std_srvs/srv/SetBool '{data: false}'
+```
+
+#### Safety Controller
+
+Stage 5 now uses this command path when both nodes are enabled:
+
+```text
+/cmd_vel -> /safety_controller -> /motor/cmd_vel -> /motor_driver
+```
+
+The safety controller starts disabled. It only forwards a fresh command after explicit enable, while `/pointlio/odom` is fresh. A `true` message on `/emergency_stop` immediately publishes zero velocity, latches the software E-stop, and requires an explicit reset after the input returns to `false`.
+
+```bash
+ros2 service call /motor_driver/enable std_srvs/srv/SetBool '{data: true}'
+ros2 service call /safety_controller/enable std_srvs/srv/SetBool '{data: true}'
+
+# Software E-stop test only; this is not a replacement for a wired E-stop.
+ros2 topic pub --once /emergency_stop std_msgs/msg/Bool '{data: true}'
+ros2 topic pub --once /emergency_stop std_msgs/msg/Bool '{data: false}'
+ros2 service call /safety_controller/reset_emergency_stop std_srvs/srv/Trigger '{}'
+```
+
+For Stage 5, add `use_motor_driver:=true use_safety_controller:=true motor_dry_run:=true` for a no-output integration test. Physical motor mode additionally requires `motor_port`, `motor_baudrate`, `motor_dry_run:=false`, `use_coverage_geofence:=true`, and `use_nav2:=true`; otherwise the launch stops with an error. Arm the motor driver first and the safety controller second. Do not use physical coverage execution until a wired emergency stop and wheel odometry are available.
 
 ### Stage 5 Parameter Reference
 
@@ -355,6 +423,10 @@ This command asks the robot to move forward at `0.30 m/s` while turning left at 
 | `imu_quaternion_order` | `wxyz` | Unitree SDK IMU quaternion field order. |
 | `use_um981` | indoor `false`, outdoor `true` | Start the real UM981 GNSS node. |
 | `um981_port` | `/dev/ttyUSB0` | UM981 serial port, used only with `use_um981:=true`. |
+| `um981_require_rtk_fixed` | `true` | Accept GGA data as `/fix` only when its quality is `rtk_fixed`. |
+| `um981_allow_rtk_float` | `false` | Permit `rtk_float` when RTK fixed is unavailable; do not use for normal map initialization. |
+| `um981_min_satellites` | `10` | Minimum satellites required before UM981 publishes a usable `/fix`. |
+| `um981_max_hdop` | `1.5` | Maximum accepted GGA HDOP. |
 | `use_fake_rtk` | indoor `true` | Generate simulated `/fix` from Point-LIO odometry for indoor testing. |
 | `use_map_metadata_recorder` | mapping `true` | Write the localization datum and mapping start information to `map_metadata.yaml`. |
 | `map_metadata_path` | default Stage 5 path | Metadata file written by mapping and read by navigation. |
@@ -376,6 +448,19 @@ This command asks the robot to move forward at `0.30 m/s` while turning left at 
 | `coverage_dry_run` | currently `true` | Plan, publish, and save without submitting a Nav2 execution goal. |
 | `coverage_path_pose_spacing` | `0.10` | Sampling distance for the published/saved path, in meters. |
 | `coverage_nav_waypoint_spacing` | `0.75` | Sampling distance for Nav2 execution poses, in meters. |
+| `use_motor_driver` | default `false` | Start the motor driver, which consumes `/motor/cmd_vel` by default. |
+| `motor_port` | empty | Motor-controller serial port; empty is valid for dry-run tests. |
+| `motor_baudrate` | `115200` | Provisional motor serial baud rate; confirm it with the controller documentation. |
+| `motor_dry_run` | default `true` | Log serial frames only; `false` permits physical output after service arming. |
+| `motor_cmd_vel_timeout_sec` | `0.50` | Maximum age of the motor velocity input before the driver sends the configured brake command. |
+| `motor_max_linear_speed_mps` | `0.45` | `/cmd_vel.linear.x` magnitude mapped to the maximum configured motor percentage. |
+| `motor_max_angular_speed_radps` | `0.70` | `/cmd_vel.angular.z` magnitude mapped to the maximum configured motor percentage. |
+| `motor_min_speed_percent` | `10` | Conservative percentage used by the smallest nonzero command. |
+| `motor_max_speed_percent` | `30` | Conservative maximum motor percentage before real-wheel calibration. |
+| `use_safety_controller` | default `false` | Start the software gate between Nav2 `/cmd_vel` and `/motor/cmd_vel`. Required for physical motor output. |
+| `safety_emergency_stop_topic` | `/emergency_stop` | `std_msgs/Bool`; `true` latches a software stop and publishes zero velocity. |
+| `safety_cmd_vel_timeout_sec` | `0.50` | Maximum age of the Nav2 velocity target before the safety controller blocks output. |
+| `safety_odom_timeout_sec` | `0.50` | Maximum age of `/pointlio/odom` before the safety controller blocks output. |
 
 For Boolean parameters, `true` enables a function and `false` disables it. Angles use radians; positions and heights use meters.
 
@@ -424,21 +509,7 @@ ros2 service call /coverage_planner/replan std_srvs/srv/Trigger '{}'
 
 `'{}'` is the empty request required by `std_srvs/srv/Trigger`; keep it unchanged.
 
-For Stage5 phase 2, append:
-
-```bash
-use_coverage_planner:=true \
-coverage_area_file:=/home/ubuntu/unilidar_sdk2/golf_mower_bringup/config/coverage_test_area.yaml \
-use_coverage_geofence:=true \
-coverage_dry_run:=true \
-coverage_mission_state_file:=~/.ros/golf_mower/coverage_mission_state.yaml \
-coverage_segment_max_waypoints:=30 \
-coverage_segment_max_retries:=1 \
-coverage_segment_timeout_sec:=180.0 \
-coverage_continue_after_blocked:=true
-```
-
-`coverage_segment_max_waypoints` is an advisory threshold for a long segment; it never cuts a complete mowing swath or turn sequence. `coverage_segment_max_retries` controls retries, `coverage_segment_timeout_sec` is the per-segment timeout, and `coverage_continue_after_blocked` selects whether later segments continue after a final failure.
+The Stage 5 phase-2 command above already enables a safe coverage dry run. Tune `coverage_mission_state_file`, `coverage_segment_max_waypoints`, `coverage_segment_max_retries`, or `coverage_segment_timeout_sec` only when needed. `coverage_segment_max_waypoints` is advisory and never splits a complete mowing swath or turn; a final failure stops by default (`coverage_continue_after_blocked:=false`).
 
 Core YAML parameters:
 
@@ -494,82 +565,31 @@ ros2 run golf_mower_bringup coverage_boundary_from_pcd.py \
 
 An empty `ground_map.pcd` cannot produce a candidate. First run Stage 5 phase 2 ground recovery, then use `recovered_ground_map.pcd` from the same directory as the input.
 
-### Complete Stage 5 Coverage Workflow
+### Stage 5 Coverage Execution
 
-Prepare the following before starting phase 2:
+Before starting Stage 5 phase 2, prepare a complete timestamped map directory and a reviewed `coverage_test_area.yaml`. Its `boundary` and `exclusions` use the offline map's `map` coordinates; enter the actual chassis width, cutting width, and minimum turning radius. For indoor tests, return near the mapping start pose with the same heading and use fake RTK.
 
-1. A complete timestamped map directory from phase 1 containing `ground_map.pcd`, `nonground_map.pcd`, and `map_metadata.yaml`. The latest complete directory is selected automatically; use `segmented_map_dir` and `map_metadata_path` to select a specific run.
-2. `coverage_test_area.yaml`. Its `boundary` and `exclusions` must use the offline map's `map` coordinates. The point-cloud map does not automatically define the mowing boundary. Also enter the real chassis width, cutting width, and minimum turning radius.
-3. For indoor testing, return the robot close to the mapping start pose with the same heading and use fake RTK. For outdoor operation, prepare a valid UM981 solution and the correct map-heading alignment.
-
-Phase 2 runs this pipeline:
+The phase-2 data flow is:
 
 ```text
-Load ground/nonground PCD files
-  -> build the Nav2 /map
-  -> RTK or fake RTK establishes map -> camera_init
-  -> Point-LIO supplies the live local pose
-  -> Fields2Cover reads coverage_test_area.yaml
-  -> publish the coverage path
-  -> Nav2 follows the coverage waypoints
-  -> output /cmd_vel to the chassis driver
+offline PCD -> Nav2 /map -> RTK or fake RTK map initialization
+            -> Point-LIO live pose -> Fields2Cover path -> Nav2 waypoints -> /cmd_vel
 ```
 
-Keep `coverage_dry_run:=true` during initial integration. The node plans automatically and RViz displays the boundary, exclusions, and path, but no Nav2 goal is executed. After verifying localization and the path, restart phase 2 with `coverage_dry_run:=false`, then submit the path from another sourced terminal:
+Start with `coverage_dry_run:=true`. The planner publishes `/coverage_path` and `/coverage_markers`, saves `coverage_output_file`, and does not move the robot. After checking localization and the path, restart with `coverage_dry_run:=false` and explicitly start the mission:
 
 ```bash
 ros2 service call /coverage_planner/execute std_srvs/srv/Trigger '{}'
 ```
 
-Main outputs:
-
-| Output | Purpose |
-| --- | --- |
-| `/map` | Nav2 occupancy grid built from the offline ground/non-ground clouds. |
-| `/coverage_path` | Complete continuous coverage path in the `map` frame. |
-| `/coverage_markers` | Boundary, exclusions, and path visualization in RViz. |
-| `~/.ros/golf_mower/coverage_path.yaml` | Saved path file; change it with `coverage_output_file`. |
-| Nav2 `NavigateThroughPoses` goal | Navigation waypoints sampled from the coverage path. |
-| `/cmd_vel` | Body velocity target produced by Nav2 for the chassis driver. |
-
-The real chassis driver is not implemented in this repository yet. Offline-map loading, localization, coverage planning, and Nav2 velocity-output tests are available, but `/cmd_vel` alone does not drive the physical wheels.
-
-### Obstacle Handling and Remaining Work
-
-Fields2Cover decides where mowing is required, while Nav2 tracks the path safely. The coverage node now splits the full path into task segments, submits them to Nav2 sequentially, and records `PENDING`, `ACTIVE`, `COMPLETED`, `BLOCKED`, and `CANCELED` states. Failed segments are retried and may be skipped after the retry limit, but the system still cannot automatically recover areas missed during obstacle avoidance:
-
-| Obstacle type | Handling |
-| --- | --- |
-| Fixed trees, buildings, bunkers, and ponds | Add them to `coverage_test_area.yaml` under `exclusions` so Fields2Cover plans around them. |
-| People, vehicles, and temporary equipment | Let the Nav2 local costmap slow, stop, or locally avoid them. |
-| Long-term blockage | Cancel and retry after the segment timeout; after the final failure, mark it `BLOCKED` and stop or continue according to configuration. |
-
-#### Using the Coverage Task Manager
-
-1. Start Stage 5 phase 2 with `coverage_dry_run:=true` and verify localization, the boundary, and the coverage path in RViz.
-2. Stop phase 2, restart it with `coverage_dry_run:=false`. The node prepares the mission but does not move the robot automatically.
-3. Start the mission manually from another sourced terminal:
-
-```bash
-ros2 service call /coverage_planner/execute std_srvs/srv/Trigger '{}'
-```
-
-4. The node splits tasks by complete mowing swaths and their following turn sequences; `coverage_segment_max_waypoints` only warns when a segment is long. A successful segment advances to the next one; a failed segment retries according to `coverage_segment_max_retries`; `coverage_segment_timeout_sec` cancels stalled segments; `coverage_continue_after_blocked` selects whether later segments continue after a final failure.
-
-Inspect or cancel the mission with:
+The task manager submits complete swath-and-turn sequences to Nav2, records `PENDING`, `ACTIVE`, `COMPLETED`, `BLOCKED`, and `CANCELED`, and retries or times out failed segments according to the configured limits. Inspect or cancel a mission with:
 
 ```bash
 ros2 topic echo /coverage_planner/status
 ros2 service call /coverage_planner/cancel std_srvs/srv/Trigger '{}'
 ```
 
-The following work remains before autonomous mowing:
-
-1. Maintain a mowed-area grid from the measured trajectory and cutter state instead of assuming every planned path was completed.
-2. After the task or when an obstacle clears, derive recovery areas from the uncovered grid and invoke Fields2Cover again.
-3. Stop safely on localization loss, costmap failure, communication timeout, or emergency-stop activation.
-
-Keep `coverage_dry_run:=true` until coverage recovery and safety mechanisms are implemented, or restrict low-speed Nav2 tracking tests to a controlled area.
+Fields2Cover handles fixed obstacles defined in `exclusions`; Nav2 handles temporary obstacles through its local costmap. A final blocked segment stops by default (`coverage_continue_after_blocked:=false`). The system does not yet create a recovery plan for areas missed while avoiding obstacles, so keep physical output disabled outside controlled low-speed tests.
 
 ## Earlier Debug Stages
 
@@ -677,7 +697,7 @@ ros2 topic hz /ground_segmentation/ground
 ros2 topic hz /ground_segmentation/nonground
 ```
 
-## Parameter Reference
+## Common Parameter Reference
 
 ### Lidar Driver Parameters
 
@@ -729,6 +749,7 @@ ros2 topic hz /ground_segmentation/nonground
 | Topic | Type | Meaning |
 | --- | --- | --- |
 | `/fix` | `sensor_msgs/NavSatFix` | GNSS/RTK position from GGA, INSPVAX, or DRPVA. |
+| `/um981/fix_quality` | `std_msgs/String` | Parsed UM981 quality, satellite, HDOP, and acceptance decision. |
 | `/imu/data_raw` | `sensor_msgs/Imu` | Not used in the current robot flow. The tested UM981 USB output did not emit RAWIMUX. |
 | `/um981/heading` | `std_msgs/Float64` | Not used in the current robot flow. Reserved for valid INS heading output. |
 | `/um981/ins_attitude` | `geometry_msgs/Vector3Stamped` | Not used in the current robot flow. |
@@ -744,11 +765,14 @@ Common symptoms:
 - `/ground_segmentation/ground` stays empty: do not keep `patchwork_sensor_height:=0`; use the real lidar height.
 - `/fix` has `STATUS_NO_FIX`: the UM981 is indoors or has no valid satellite solution. Use fake RTK indoors, or test GNSS outdoors.
 
-## Development Roadmap
+## Next Development Tasks
 
-- Enable and calibrate UM981 INS heading only after valid heading output is available on the tested serial port.
-- Calibrate the RTK antenna lever arm.
-- Fuse RTK, wheel odometry, IMU, and Point-LIO with `robot_localization`.
-- Calibrate coverage parameters against the real course boundary, exclusions, and mowing width.
-- Validate physical Nav2 coverage execution after the safe chassis loop is complete.
-- Add mower actuator state, emergency stop, boundary protection, and no-go zones.
+1. Connect a wired, normally-closed emergency-stop circuit that removes motor power independently of ROS; connect its state to `/emergency_stop` for diagnostics.
+2. Confirm the motor controller serial settings, ACK/NACK behavior, command watchdog, status frame, and signed differential-wheel encoding; then add feedback parsing and configurable command keepalive.
+3. Measure the complete chassis envelope, then keep Fields2Cover width, Nav2 footprint, inflation radius, and exclusion margins in one calibrated geometry source.
+4. Add wheel encoders, calibrate wheel radius/wheelbase, publish `/wheel/odom`, and fuse wheel odometry, RTK, IMU, and Point-LIO with `robot_localization`.
+5. Validate the UM981 quality thresholds outdoors against the receiver's actual GGA output; request and validate `INSPVAX` or `DRPVA` before enabling heading-based initialization.
+6. Add Nav2 collision monitoring, speed zones for mowing swaths, turns, obstacle proximity, and degraded localization; keep `coverage_continue_after_blocked:=false` for real vehicles.
+7. Improve offline map semantics with outlier filtering, bounded map extents, ground-density checks, and a reviewed free-space reconstruction method.
+8. Track actual cutter state and measured trajectory, derive uncovered regions after obstacle avoidance, and generate recovery coverage missions.
+9. Add pseudo-terminal motor tests, launch tests, recorded-bag regression tests, and a hardware-in-the-loop checklist before field operation.

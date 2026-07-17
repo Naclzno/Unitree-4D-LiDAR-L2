@@ -12,7 +12,10 @@ from launch_ros.parameter_descriptions import ParameterValue
 from nav2_common.launch import RewrittenYaml
 
 
-STAGE5_MAP_ROOT = '/home/ubuntu/unilidar_sdk2/golf_mower_bringup/maps/stage5_segmented'
+STAGE5_MAP_ROOT = os.environ.get(
+    'GOLF_MOWER_MAP_ROOT',
+    os.path.expanduser('~/unilidar_sdk2/golf_mower_bringup/maps/stage5_segmented'),
+)
 
 
 def _latest_complete_map_dir(root_dir):
@@ -60,6 +63,36 @@ def _pcd_point_count(path):
             f'Stage 5 navigation aborted: invalid point count in PCD header: {path}'
         ) from exc
     raise RuntimeError(f'Stage 5 navigation aborted: PCD point count is missing: {path}')
+
+
+def _is_true(value):
+    return value.strip().lower() in ('1', 'true', 'yes', 'on')
+
+
+def _validate_physical_motor_safety(context):
+    use_motor = _is_true(LaunchConfiguration('use_motor_driver').perform(context))
+    dry_run = _is_true(LaunchConfiguration('motor_dry_run').perform(context))
+    if not use_motor or dry_run:
+        return []
+
+    errors = []
+    if not _is_true(LaunchConfiguration('use_safety_controller').perform(context)):
+        errors.append('use_safety_controller:=true')
+    if not _is_true(LaunchConfiguration('use_coverage_geofence').perform(context)):
+        errors.append('use_coverage_geofence:=true')
+    if not _is_true(LaunchConfiguration('use_nav2').perform(context)):
+        errors.append('use_nav2:=true')
+    motor_port = LaunchConfiguration('motor_port').perform(context).strip()
+    if not motor_port:
+        errors.append('a non-empty motor_port')
+    area_file = os.path.expanduser(LaunchConfiguration('coverage_area_file').perform(context))
+    if not os.path.isfile(area_file):
+        errors.append(f'an existing coverage_area_file (got {area_file})')
+    if errors:
+        raise RuntimeError(
+            'Stage 5 physical motor output is blocked until it has ' + ', '.join(errors) +
+            '. Use motor_dry_run:=true for protocol-only testing.')
+    return []
 
 
 def _validate_ground_map(context):
@@ -118,7 +151,7 @@ def generate_launch_description():
     use_elevation_arg = DeclareLaunchArgument('use_elevation', default_value='true')
     use_cuda_elevation_arg = DeclareLaunchArgument(
         'use_cuda_elevation',
-        default_value='true',
+        default_value='false',
         description='Use elevation_mapping_cupy when true; use CPU-only elevation_mapping_ros2 when false.'
     )
     use_grid_converter_arg = DeclareLaunchArgument('use_grid_converter', default_value='true')
@@ -149,6 +182,16 @@ def generate_launch_description():
         'use_coverage_planner',
         default_value='false',
         description='Start the Fields2Cover ROS2 planner for a configured map-frame work area.'
+    )
+    use_motor_driver_arg = DeclareLaunchArgument(
+        'use_motor_driver',
+        default_value='false',
+        description='Start the /cmd_vel motor driver. Disabled by default; physical output still requires explicit service arming.'
+    )
+    use_safety_controller_arg = DeclareLaunchArgument(
+        'use_safety_controller',
+        default_value='false',
+        description='Gate /cmd_vel through odometry freshness and emergency-stop checks before motor output.'
     )
     launch_outdoor_rviz_arg = DeclareLaunchArgument('launch_outdoor_rviz', default_value='true')
 
@@ -249,6 +292,18 @@ def generate_launch_description():
     )
     um981_baud_arg = DeclareLaunchArgument('um981_baud', default_value='115200')
     um981_frame_id_arg = DeclareLaunchArgument('um981_frame_id', default_value='rtk_antenna')
+    um981_require_rtk_fixed_arg = DeclareLaunchArgument(
+        'um981_require_rtk_fixed',
+        default_value='true',
+        description='Accept UM981 /fix only from GGA RTK-fixed output. Disable only for controlled GNSS diagnostics.',
+    )
+    um981_allow_rtk_float_arg = DeclareLaunchArgument(
+        'um981_allow_rtk_float',
+        default_value='false',
+        description='Allow RTK-float UM981 fixes when RTK-fixed is unavailable. Not recommended for map initialization.',
+    )
+    um981_min_satellites_arg = DeclareLaunchArgument('um981_min_satellites', default_value='10')
+    um981_max_hdop_arg = DeclareLaunchArgument('um981_max_hdop', default_value='1.5')
     rtk_map_to_camera_init_yaw_arg = DeclareLaunchArgument(
         'rtk_map_to_camera_init_yaw',
         default_value='0.0',
@@ -297,7 +352,69 @@ def generate_launch_description():
     coverage_segment_timeout_sec_arg = DeclareLaunchArgument(
         'coverage_segment_timeout_sec', default_value='180.0')
     coverage_continue_after_blocked_arg = DeclareLaunchArgument(
-        'coverage_continue_after_blocked', default_value='true')
+        'coverage_continue_after_blocked', default_value='false')
+    motor_port_arg = DeclareLaunchArgument(
+        'motor_port',
+        default_value='',
+        description='Motor controller serial port. Keep empty for dry-run protocol tests.'
+    )
+    motor_baudrate_arg = DeclareLaunchArgument(
+        'motor_baudrate',
+        default_value='115200',
+        description='Motor serial baud rate. The default is provisional and must be verified on the controller.'
+    )
+    motor_dry_run_arg = DeclareLaunchArgument(
+        'motor_dry_run',
+        default_value='true',
+        description='Log protocol frames without opening the motor serial port.'
+    )
+    motor_command_rate_hz_arg = DeclareLaunchArgument(
+        'motor_command_rate_hz',
+        default_value='10.0',
+        description='Motor watchdog polling rate; motion frames are only sent when the target changes.'
+    )
+    motor_cmd_vel_timeout_sec_arg = DeclareLaunchArgument(
+        'motor_cmd_vel_timeout_sec',
+        default_value='0.50',
+        description='Maximum /cmd_vel age before the motor driver sends a stop command.'
+    )
+    motor_stop_mode_arg = DeclareLaunchArgument(
+        'motor_stop_mode',
+        default_value='brake',
+        description='Stop command: stop (0x03), brake (0x04), or emergency_stop (0xFF).'
+    )
+    motor_max_linear_speed_mps_arg = DeclareLaunchArgument(
+        'motor_max_linear_speed_mps',
+        default_value='0.45',
+        description='linear.x magnitude that maps to the maximum configured motor speed percentage.'
+    )
+    motor_max_angular_speed_radps_arg = DeclareLaunchArgument(
+        'motor_max_angular_speed_radps',
+        default_value='0.70',
+        description='angular.z magnitude that maps to the maximum configured motor speed percentage.'
+    )
+    motor_min_speed_percent_arg = DeclareLaunchArgument(
+        'motor_min_speed_percent',
+        default_value='10',
+        description='Motor percentage used for the smallest nonzero /cmd_vel command.'
+    )
+    motor_max_speed_percent_arg = DeclareLaunchArgument(
+        'motor_max_speed_percent',
+        default_value='30',
+        description='Motor percentage used when the configured maximum /cmd_vel is reached.'
+    )
+    safety_input_cmd_vel_topic_arg = DeclareLaunchArgument(
+        'safety_input_cmd_vel_topic', default_value='/cmd_vel')
+    safety_output_cmd_vel_topic_arg = DeclareLaunchArgument(
+        'safety_output_cmd_vel_topic', default_value='/motor/cmd_vel')
+    safety_emergency_stop_topic_arg = DeclareLaunchArgument(
+        'safety_emergency_stop_topic', default_value='/emergency_stop')
+    safety_publish_rate_hz_arg = DeclareLaunchArgument(
+        'safety_publish_rate_hz', default_value='20.0')
+    safety_cmd_vel_timeout_sec_arg = DeclareLaunchArgument(
+        'safety_cmd_vel_timeout_sec', default_value='0.50')
+    safety_odom_timeout_sec_arg = DeclareLaunchArgument(
+        'safety_odom_timeout_sec', default_value='0.50')
 
     configured_nav2_params = RewrittenYaml(
         source_file=nav2_params,
@@ -441,6 +558,13 @@ def generate_launch_description():
             'frame_id': LaunchConfiguration('um981_frame_id'),
             'imu_frame_id': 'um981_imu',
             'commands': ['GNGGA 1'],
+            'require_rtk_fixed': ParameterValue(
+                LaunchConfiguration('um981_require_rtk_fixed'), value_type=bool),
+            'allow_rtk_float': ParameterValue(
+                LaunchConfiguration('um981_allow_rtk_float'), value_type=bool),
+            'min_satellites': ParameterValue(
+                LaunchConfiguration('um981_min_satellites'), value_type=int),
+            'max_hdop': ParameterValue(LaunchConfiguration('um981_max_hdop'), value_type=float),
         }],
     )
 
@@ -512,6 +636,57 @@ def generate_launch_description():
         }],
     )
 
+    motor_driver = Node(
+        package='golf_mower_bringup',
+        executable='motor_driver_node.py',
+        name='motor_driver',
+        output='screen',
+        condition=IfCondition(LaunchConfiguration('use_motor_driver')),
+        parameters=[{
+            'cmd_vel_topic': LaunchConfiguration('safety_output_cmd_vel_topic'),
+            'port': LaunchConfiguration('motor_port'),
+            'baudrate': ParameterValue(LaunchConfiguration('motor_baudrate'), value_type=int),
+            'enabled': False,
+            'dry_run': ParameterValue(LaunchConfiguration('motor_dry_run'), value_type=bool),
+            'require_fresh_cmd_after_arm': True,
+            'command_rate_hz': ParameterValue(
+                LaunchConfiguration('motor_command_rate_hz'), value_type=float),
+            'cmd_vel_timeout_sec': ParameterValue(
+                LaunchConfiguration('motor_cmd_vel_timeout_sec'), value_type=float),
+            'stop_mode': LaunchConfiguration('motor_stop_mode'),
+            'max_linear_speed_mps': ParameterValue(
+                LaunchConfiguration('motor_max_linear_speed_mps'), value_type=float),
+            'max_angular_speed_radps': ParameterValue(
+                LaunchConfiguration('motor_max_angular_speed_radps'), value_type=float),
+            'min_speed_percent': ParameterValue(
+                LaunchConfiguration('motor_min_speed_percent'), value_type=int),
+            'max_speed_percent': ParameterValue(
+                LaunchConfiguration('motor_max_speed_percent'), value_type=int),
+        }],
+    )
+
+    safety_controller = Node(
+        package='golf_mower_bringup',
+        executable='safety_controller_node.py',
+        name='safety_controller',
+        output='screen',
+        condition=IfCondition(LaunchConfiguration('use_safety_controller')),
+        parameters=[{
+            'input_cmd_vel_topic': LaunchConfiguration('safety_input_cmd_vel_topic'),
+            'output_cmd_vel_topic': LaunchConfiguration('safety_output_cmd_vel_topic'),
+            'odom_topic': '/pointlio/odom',
+            'emergency_stop_topic': LaunchConfiguration('safety_emergency_stop_topic'),
+            'enabled': False,
+            'publish_rate_hz': ParameterValue(
+                LaunchConfiguration('safety_publish_rate_hz'), value_type=float),
+            'cmd_vel_timeout_sec': ParameterValue(
+                LaunchConfiguration('safety_cmd_vel_timeout_sec'), value_type=float),
+            'odom_timeout_sec': ParameterValue(
+                LaunchConfiguration('safety_odom_timeout_sec'), value_type=float),
+            'require_odom': True,
+        }],
+    )
+
     return LaunchDescription([
         use_lidar_arg,
         use_pointlio_arg,
@@ -526,6 +701,8 @@ def generate_launch_description():
         use_um981_arg,
         use_nav2_arg,
         use_coverage_planner_arg,
+        use_motor_driver_arg,
+        use_safety_controller_arg,
         launch_outdoor_rviz_arg,
         initialize_type_arg,
         work_mode_arg,
@@ -572,6 +749,10 @@ def generate_launch_description():
         um981_port_arg,
         um981_baud_arg,
         um981_frame_id_arg,
+        um981_require_rtk_fixed_arg,
+        um981_allow_rtk_float_arg,
+        um981_min_satellites_arg,
+        um981_max_hdop_arg,
         rtk_map_to_camera_init_yaw_arg,
         use_um981_heading_arg,
         um981_heading_topic_arg,
@@ -589,6 +770,23 @@ def generate_launch_description():
         coverage_segment_max_retries_arg,
         coverage_segment_timeout_sec_arg,
         coverage_continue_after_blocked_arg,
+        motor_port_arg,
+        motor_baudrate_arg,
+        motor_dry_run_arg,
+        motor_command_rate_hz_arg,
+        motor_cmd_vel_timeout_sec_arg,
+        motor_stop_mode_arg,
+        motor_max_linear_speed_mps_arg,
+        motor_max_angular_speed_radps_arg,
+        motor_min_speed_percent_arg,
+        motor_max_speed_percent_arg,
+        safety_input_cmd_vel_topic_arg,
+        safety_output_cmd_vel_topic_arg,
+        safety_emergency_stop_topic_arg,
+        safety_publish_rate_hz_arg,
+        safety_cmd_vel_timeout_sec_arg,
+        safety_odom_timeout_sec_arg,
+        OpaqueFunction(function=_validate_physical_motor_safety),
         OpaqueFunction(function=_validate_ground_map),
         stage2,
         segmented_map,
@@ -599,4 +797,6 @@ def generate_launch_description():
         rtk_map_localizer,
         nav2,
         coverage_planner,
+        safety_controller,
+        motor_driver,
     ])

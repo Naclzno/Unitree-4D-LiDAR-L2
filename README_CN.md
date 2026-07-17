@@ -1,8 +1,8 @@
-# 高尔夫除草机器人 ROS2 工作区
+# 高尔夫除草机器人 ROS2 项目
 
 [English](README.md) | 中文
 
-这是一个面向高尔夫球场除草机器人的 ROS2 算法工作区。当前系统围绕 Unitree L2 激光雷达、Point-LIO、Patchwork++ 地面分割、高程/可通行性建图、Nav2 导航，以及 UM981 RTK/INS 定位构建。
+这是一个面向高尔夫球场除草机器人的 ROS2 算法工程，集成 Unitree L2 激光雷达、Point-LIO、Patchwork++ 地面分割、高程/可通行性建图、Nav2 导航和 UM981 RTK/INS 定位。
 
 当前完整室外流程是 Stage 5：
 
@@ -29,6 +29,7 @@ Unitree L2
 - 当前 yaw 手动给定，UM981 INS heading 暂不用于机器人流程。
 - 室内没有 RTK/GNSS 信号时，可用 fake RTK 测试完整链路。
 - 使用 Fields2Cover 从 `map` 坐标边界和禁入区生成覆盖路径，并发布到 ROS2。
+- 将 `/cmd_vel` 转换为已文档化的电机串口协议；节点默认安全、需要显式解锁。
 - 保留 Stage 1/2/3/4 用于逐层调试。
 
 ## 当前项目完成度
@@ -43,16 +44,16 @@ Unitree L2
 | UM981 GNSS位置 | 部分接入 | 使用GGA `/fix` 初始化离线地图位置；UM981 IMU/INS heading尚未使用。 |
 | 连续定位融合 | 未接入 | RTK目前只初始化 `map -> camera_init`；轮速、RTK、IMU和Point-LIO尚未持续融合。 |
 | Nav2规划和避障 | 算法层已接入 | 使用离线全局地图和实时局部地形/障碍生成 `/cmd_vel`。 |
-| 底盘电机驱动 | 未实现 | 当前没有节点消费 `/cmd_vel` 并驱动物理车轮。 |
+| 底盘电机驱动 | 原型已接入 | `motor_driver_node.py` 将经安全控制器后的速度指令映射为已文档化的离散命令，带超时制动、dry-run和显式解锁；串口参数与实车标定尚未验证。 |
 | 轮速里程计 | 未实现 | 没有 `/wheel/odom` 数据源和经过标定的底盘运动学。 |
 | 割草执行器 | 仅模型 | URDF包含 `mower_tool`，但没有刀盘电机接口、反馈和故障处理。 |
 | 覆盖路径规划 | 已接入ROS2 | 从YAML读取 `map` 边界和禁入区，发布路径/Marker、保存结果，并提供可选Nav2 action；默认dry-run。 |
 | 任务管理 | 基础版已实现 | 按完整条带/转弯序列逐段执行、重试、超时、阻塞跳过和取消；尚无实际覆盖记录与补割。 |
-| 安全系统 | 部分实现 | Nav2地理围栏限制作业边界和禁入区；急停、命令看门狗、刀盘互锁和安全控制器尚未接入。 |
+| 安全系统 | 初版软件门控已接入 | 安全控制器通过显式解锁、里程计新鲜度、命令新鲜度和锁存的软件急停门控`/cmd_vel`；硬件急停和刀盘互锁尚未接入。 |
 
 当前仓库属于感知、建图、定位初始化和导航规划原型，还不是完整的自主除草机器人。实体运动、刀盘执行、覆盖作业和安全互锁完成并验证前，不能用于真实球场自动割草。
 
-下一系统里程碑应先完成安全底盘闭环：`/cmd_vel` 转电机命令、轮速里程计、硬件急停和命令超时停车。之后再依次完成持续状态融合、覆盖路径实车执行、割草执行器以及任务/安全状态机。
+下一阶段的重点是验证底盘实物闭环：电机协议反馈、轮速里程计、有线硬件急停和受控低速测试。随后再完成连续状态估计、实车覆盖执行、割草机构和任务/安全状态机。
 
 ## 目录说明
 
@@ -65,7 +66,8 @@ Unitree L2
 | `elevation_mapping_cupy` | GPU/CuPy 高程建图。 |
 | `elevation_mapping_ros2` | CPU 高程建图兼容包。 |
 | `golf_mower_description` | 机器人 URDF/Xacro 和传感器 frame。 |
-| `golf_mower_bringup` | 主要 launch、配置、诊断、地图工具和 Nav2 集成。 |
+| `golf_mower_bringup` | 主要 launch、配置、诊断、地图工具、Nav2接入、覆盖规划、电机驱动和安全控制器。 |
+| `motor` | 电机控制器 Serial V2 协议参考。 |
 | `UM981` | UM981 GNSS/RTK/INS Python SDK 和 ROS2 节点。 |
 | `Fields2Cover-main` | Fields2Cover覆盖路径规划库，由 `golf_mower_bringup` 的ROS2节点调用。 |
 | `robot_localization-rolling-devel` | 后续 RTK、轮速、IMU、激光里程计融合预留。 |
@@ -246,6 +248,8 @@ um981_port:=/dev/ttyUSB0 \
 use_fake_rtk:=false
 ```
 
+UM981 默认只接受 GGA 中质量为 `rtk_fixed`、卫星数不少于 10、HDOP 不大于 1.5 的数据作为可用 `/fix`。通过 `/um981/fix_quality` 查看拒绝原因。仅在受控诊断时才放宽 `um981_require_rtk_fixed`、`um981_allow_rtk_float`、`um981_min_satellites` 或 `um981_max_hdop`。
+
 每次启动建图都会创建一个以启动时间命名的目录，例如：
 
 ```text
@@ -299,6 +303,8 @@ um981_port:=/dev/ttyUSB0 \
 use_fake_rtk:=false
 ```
 
+Stage5 默认使用 CPU 高程建图（`use_cuda_elevation:=false`）。只有确认 NVIDIA 驱动和 GPU 运行环境正常后才启用 CUDA。地图目录默认是 `~/unilidar_sdk2/golf_mower_bringup/maps/stage5_segmented`；如需改用其他目录，在启动前设置 `GOLF_MOWER_MAP_ROOT`。
+
 #### 定位导航启动与地图处理
 
 导航默认自动加载 `stage5_segmented` 下最新且同时包含 `ground_map.pcd`、`nonground_map.pcd` 和 `map_metadata.yaml` 的时间戳目录。如需加载指定历史地图，可显式设置 `segmented_map_dir` 和 `map_metadata_path`。
@@ -338,7 +344,69 @@ angular:
   z: 0.20
 ```
 
-该消息表示机器人以 `0.30 m/s` 前进，同时以 `0.20 rad/s` 向左转。真实底盘驱动需要订阅 `/cmd_vel`，根据底盘运动学将其换算为左右轮目标速度，再通过底盘控制器协议发送给电机；同时必须实现速度限制、命令超时停车、通信故障停车和硬件急停。当前仓库还没有实现这个真实底盘驱动，因此能够观察到 `/cmd_vel` 不代表物理车轮会运动。
+该消息表示机器人以 `0.30 m/s` 前进，同时以 `0.20 rad/s` 向左转。Stage5 中，安全控制器将该速度流转发到 `/motor/cmd_vel`；`motor_driver_node.py` 默认消费该话题，并使用 `motor/最新电机命令.md` 中的 Serial V2 协议。当前支持前进、后退、前进弧线、原地转向和制动；由于文档中的 `0x09` 差速命令没有定义有符号轮速方向，节点会主动拒绝倒车转向，而不会猜测编码。
+
+#### 电机驱动
+
+电机节点默认不启动。仅当运动命令或速度改变时才发送串口帧。零 `/cmd_vel`、`/cmd_vel` 超时、取消解锁、解锁完成和进程退出都会发送停止命令；默认使用文档中的 `0x04` 制动帧。`/motor_driver/status` 仅表示已下发的命令状态，不代表车轮真实运动。
+
+先在不打开串口的情况下检查帧：
+
+```bash
+cd /home/ubuntu/unilidar_sdk2
+source /opt/ros/humble/setup.bash
+source golf_mower_bringup/install/setup.bash
+
+ros2 launch golf_mower_bringup motor_driver.launch.py enabled:=true dry_run:=true
+```
+
+在另一个已 source 的终端发布测试目标并查看状态：
+
+```bash
+ros2 topic pub --once /motor/cmd_vel geometry_msgs/msg/Twist '{linear: {x: 0.20}, angular: {z: 0.0}}'
+ros2 topic echo /motor_driver/status
+```
+
+按保守默认限速，上述测试会打印 `AA 02 0A 13 C9 55`（19%速度）和 `AA 01 01 AC 55`（前进）；超时后打印 `AA 01 04 AF 55`。只有在驱动轮悬空测试完成后，才标定 `min_speed_percent` 和 `max_speed_percent`。
+
+实车台架测试前，请将驱动轮悬空，并先确认控制器波特率、`8N1`/流控、最小命令间隔和硬件急停回路。节点以未解锁状态启动，之后显式解锁：
+
+```bash
+ros2 launch golf_mower_bringup motor_driver.launch.py \
+  port:=<电机串口> \
+  baudrate:=<已确认波特率> \
+  dry_run:=false
+
+ros2 service call /motor_driver/enable std_srvs/srv/SetBool '{data: true}'
+```
+
+解除解锁并制动：
+
+```bash
+ros2 service call /motor_driver/enable std_srvs/srv/SetBool '{data: false}'
+```
+
+#### 安全控制器
+
+同时启动安全节点和电机节点时，Stage5 使用以下链路：
+
+```text
+/cmd_vel -> /safety_controller -> /motor/cmd_vel -> /motor_driver
+```
+
+安全控制器默认未解锁。只有显式解锁后，且`/pointlio/odom`和速度命令都在有效时间内，才会转发新的速度命令。向`/emergency_stop`发布`true`会立即发布零速度、锁存软件急停；输入恢复为`false`后仍需显式重置。
+
+```bash
+ros2 service call /motor_driver/enable std_srvs/srv/SetBool '{data: true}'
+ros2 service call /safety_controller/enable std_srvs/srv/SetBool '{data: true}'
+
+# 仅用于软件急停测试，不能替代硬件急停。
+ros2 topic pub --once /emergency_stop std_msgs/msg/Bool '{data: true}'
+ros2 topic pub --once /emergency_stop std_msgs/msg/Bool '{data: false}'
+ros2 service call /safety_controller/reset_emergency_stop std_srvs/srv/Trigger '{}'
+```
+
+在 Stage5 中，先增加 `use_motor_driver:=true use_safety_controller:=true motor_dry_run:=true` 做无输出联调。实车输出还需设置`motor_port`、`motor_baudrate`、`motor_dry_run:=false`、`use_coverage_geofence:=true`和`use_nav2:=true`；缺少其中任何条件时，launch 会报错退出。先解锁电机节点，再解锁安全控制器。在硬件急停和轮速里程计可用前，不能进行真实覆盖作业。
 
 ### Stage 5 参数说明
 
@@ -356,6 +424,10 @@ angular:
 | `imu_quaternion_order` | `wxyz` | Unitree SDK IMU 四元数的排列顺序。 |
 | `use_um981` | 室内 `false`，室外 `true` | 是否启动真实 UM981 GNSS 节点。 |
 | `um981_port` | `/dev/ttyUSB0` | UM981 串口，仅在 `use_um981:=true` 时使用。 |
+| `um981_require_rtk_fixed` | `true` | 仅接受 GGA 质量为 `rtk_fixed` 的数据作为 `/fix`。 |
+| `um981_allow_rtk_float` | `false` | RTK fixed 不可用时是否允许 `rtk_float`；正常建图初始化不建议开启。 |
+| `um981_min_satellites` | `10` | UM981 发布可用 `/fix` 前要求的最少卫星数。 |
+| `um981_max_hdop` | `1.5` | 接受的最大 GGA HDOP。 |
 | `use_fake_rtk` | 室内 `true` | 从 Point-LIO 里程计模拟 `/fix`，仅用于室内测试。 |
 | `use_map_metadata_recorder` | 建图 `true` | 将定位基准和建图起始信息写入 `map_metadata.yaml`。 |
 | `map_metadata_path` | 默认 Stage 5 路径 | 建图写入、导航读取的地图定位元数据文件。 |
@@ -377,6 +449,19 @@ angular:
 | `coverage_dry_run` | 当前 `true` | 只规划、发布和保存，不向Nav2提交执行目标。 |
 | `coverage_path_pose_spacing` | `0.10` | 发布/保存路径的采样间距，单位米。 |
 | `coverage_nav_waypoint_spacing` | `0.75` | 提交给Nav2的航点采样间距，单位米。 |
+| `use_motor_driver` | 默认 `false` | 是否启动电机节点；默认消费 `/motor/cmd_vel`。 |
+| `motor_port` | 空 | 电机控制器串口；dry-run测试可以保持为空。 |
+| `motor_baudrate` | `115200` | 暂定电机串口波特率，必须按控制器资料确认。 |
+| `motor_dry_run` | 默认 `true` | 仅打印串口帧；设为`false`后仍需要服务解锁才会输出。 |
+| `motor_cmd_vel_timeout_sec` | `0.50` | 电机速度输入超过该时间未更新时发送配置的制动命令。 |
+| `motor_max_linear_speed_mps` | `0.45` | 映射到最大电机百分比的`/cmd_vel.linear.x`绝对值。 |
+| `motor_max_angular_speed_radps` | `0.70` | 映射到最大电机百分比的`/cmd_vel.angular.z`绝对值。 |
+| `motor_min_speed_percent` | `10` | 最小非零命令使用的保守电机百分比。 |
+| `motor_max_speed_percent` | `30` | 实车轮速标定前使用的保守最大电机百分比。 |
+| `use_safety_controller` | 默认 `false` | 启动位于Nav2 `/cmd_vel`和`/motor/cmd_vel`之间的软件门控节点；物理电机输出时必须启用。 |
+| `safety_emergency_stop_topic` | `/emergency_stop` | `std_msgs/Bool`；`true`锁存软件急停并发布零速度。 |
+| `safety_cmd_vel_timeout_sec` | `0.50` | Nav2速度目标超过该时间未更新时，安全节点阻断输出。 |
+| `safety_odom_timeout_sec` | `0.50` | `/pointlio/odom`超过该时间未更新时，安全节点阻断输出。 |
 
 布尔参数中，`true` 表示启用，`false` 表示禁用。角度使用弧度，位置和高度使用米。
 
@@ -425,21 +510,7 @@ ros2 service call /coverage_planner/replan std_srvs/srv/Trigger '{}'
 
 `'{}'` 是 `std_srvs/srv/Trigger` 的空请求，应原样保留。
 
-Stage5第二阶段可增加：
-
-```bash
-use_coverage_planner:=true \
-coverage_area_file:=/home/ubuntu/unilidar_sdk2/golf_mower_bringup/config/coverage_test_area.yaml \
-use_coverage_geofence:=true \
-coverage_dry_run:=true \
-coverage_mission_state_file:=~/.ros/golf_mower/coverage_mission_state.yaml \
-coverage_segment_max_waypoints:=30 \
-coverage_segment_max_retries:=1 \
-coverage_segment_timeout_sec:=180.0 \
-coverage_continue_after_blocked:=true
-```
-
-`coverage_segment_max_waypoints` 是单段航点数的告警阈值，不会在完整割草条带或转弯中间强制切断；`coverage_segment_max_retries` 是每段失败后的重试次数；`coverage_segment_timeout_sec` 是单段超时；`coverage_continue_after_blocked` 决定某段最终失败后是否继续后续段。
+上面的 Stage5 第二阶段命令已启用安全的覆盖规划 dry-run。仅在需要时调整 `coverage_mission_state_file`、`coverage_segment_max_waypoints`、`coverage_segment_max_retries` 或 `coverage_segment_timeout_sec`。`coverage_segment_max_waypoints` 仅用于告警，不会在完整割草条带或转弯中间切断；任务段最终失败时默认停止（`coverage_continue_after_blocked:=false`）。
 
 YAML核心参数：
 
@@ -495,82 +566,31 @@ ros2 run golf_mower_bringup coverage_boundary_from_pcd.py \
 
 若 `ground_map.pcd` 为空，不能生成候选边界。先在Stage5第二阶段完成离线地面恢复，再将输入改为同一目录下的 `recovered_ground_map.pcd`。
 
-### Stage 5与覆盖规划的完整流程
+### Stage 5 覆盖作业
 
-启动第二阶段前需要准备：
+启动 Stage5 第二阶段前，准备完整的时间戳地图目录和确认过的 `coverage_test_area.yaml`。其中 `boundary`、`exclusions` 使用离线地图的 `map` 坐标，并填写真实底盘宽度、割草宽度和最小转弯半径。室内测试时，机器人应回到建图起点附近并保持朝向一致，使用 fake RTK。
 
-1. 第一阶段生成的完整时间戳地图目录，其中包含 `ground_map.pcd`、`nonground_map.pcd` 和 `map_metadata.yaml`。默认自动选择最新目录，也可以通过 `segmented_map_dir` 和 `map_metadata_path` 指定。
-2. `coverage_test_area.yaml`。其中 `boundary` 和 `exclusions` 必须使用离线地图的 `map` 坐标，点云地图不会自动生成割草边界；同时填写真实底盘宽度、割草宽度和最小转弯半径。
-3. 室内测试时，将机器人放回建图起点附近并保持相同朝向，使用 fake RTK；室外运行时准备有效 UM981 定位和正确的地图航向关系。
-
-第二阶段的处理顺序为：
+第二阶段的数据流为：
 
 ```text
-加载 ground/nonground PCD
-  -> 生成 Nav2 使用的 /map
-  -> RTK 或 fake RTK 确定 map -> camera_init
-  -> Point-LIO 提供实时局部位姿
-  -> Fields2Cover 读取 coverage_test_area.yaml
-  -> 发布覆盖路径
-  -> Nav2 跟踪覆盖航点
-  -> 输出 /cmd_vel 给底盘驱动
+离线 PCD -> Nav2 /map -> RTK 或 fake RTK 地图初始化
+         -> Point-LIO 实时位姿 -> Fields2Cover 路径 -> Nav2 航点 -> /cmd_vel
 ```
 
-首次联调保持 `coverage_dry_run:=true`。此时节点启动后会自动规划，可以在RViz检查边界、禁入区和路径，但不会让Nav2执行。确认路径和定位正确后，将启动参数改为 `coverage_dry_run:=false`，重新启动第二阶段，再在另一个已source的终端提交路径：
+首次联调使用 `coverage_dry_run:=true`：规划器发布 `/coverage_path`、`/coverage_markers`，保存 `coverage_output_file`，但不会运动。确认定位和路径后，以 `coverage_dry_run:=false` 重启，再显式启动任务：
 
 ```bash
 ros2 service call /coverage_planner/execute std_srvs/srv/Trigger '{}'
 ```
 
-主要输出为：
-
-| 输出 | 用途 |
-| --- | --- |
-| `/map` | 由离线地面/非地面点云生成的Nav2占据栅格地图。 |
-| `/coverage_path` | `map`坐标系下的完整连续覆盖路径。 |
-| `/coverage_markers` | RViz中的边界、禁入区和路径。 |
-| `~/.ros/golf_mower/coverage_path.yaml` | 保存的覆盖路径文件，可由 `coverage_output_file` 修改。 |
-| Nav2 `NavigateThroughPoses`目标 | 从覆盖路径抽样得到的导航航点。 |
-| `/cmd_vel` | Nav2生成的车体速度目标，供底盘驱动执行。 |
-
-当前仓库尚未接入真实底盘驱动，因此可以完成离线地图加载、定位、覆盖规划和Nav2速度输出测试，但机器人不会仅凭 `/cmd_vel` 自动驱动车轮。
-
-### 障碍物处理与待完成任务
-
-Fields2Cover负责决定“哪里需要割草”，Nav2负责安全跟踪路径。覆盖节点现在会把完整路径拆成任务段，逐段提交Nav2，并记录 `PENDING`、`ACTIVE`、`COMPLETED`、`BLOCKED` 和 `CANCELED` 状态。失败段会重试并可在超过次数后跳过，但系统仍不能自动恢复因绕障造成的漏割区域：
-
-| 障碍类型 | 处理方式 |
-| --- | --- |
-| 树木、建筑、沙坑、水池等固定障碍 | 写入 `coverage_test_area.yaml` 的 `exclusions`，由Fields2Cover生成绕开障碍的覆盖路径。 |
-| 行人、车辆、临时设备等动态障碍 | 由Nav2局部代价地图减速、停车或局部绕行。 |
-| 长时间阻塞 | 单段超时后取消并重试；最终失败则标记 `BLOCKED`，按配置停止或继续下一段。 |
-
-#### 覆盖任务管理器使用
-
-1. 先以 `coverage_dry_run:=true` 启动Stage5第二阶段，在RViz确认定位、边界和覆盖路径。
-2. 确认后停止第二阶段，将 `coverage_dry_run:=false` 后重新启动；节点仍只会准备任务，不会自动运动。
-3. 在另一个已source的终端手动启动任务：
-
-```bash
-ros2 service call /coverage_planner/execute std_srvs/srv/Trigger '{}'
-```
-
-4. 节点按完整割草条带及其后续转弯序列拆分任务；`coverage_segment_max_waypoints` 仅在单段过长时告警。每段成功后进入下一段；失败时按 `coverage_segment_max_retries` 重试；超过 `coverage_segment_timeout_sec` 会取消；最终失败后由 `coverage_continue_after_blocked` 决定停止或继续。
-
-查看状态或取消任务：
+任务管理器以完整割草条带和转弯序列为单位提交 Nav2，记录 `PENDING`、`ACTIVE`、`COMPLETED`、`BLOCKED`、`CANCELED`，并按配置重试或超时取消。查看状态或取消任务：
 
 ```bash
 ros2 topic echo /coverage_planner/status
 ros2 service call /coverage_planner/cancel std_srvs/srv/Trigger '{}'
 ```
 
-真实无人割草前仍需完成：
-
-1. 根据机器人实际轨迹和刀盘开关状态维护已割覆盖栅格，而不是仅根据规划路径判断完成情况。
-2. 任务结束或障碍消失后，从未覆盖栅格生成补割区域，并重新调用Fields2Cover规划。
-3. 增加定位失效、代价地图失效、通信超时和急停条件下的安全停车。
-
-在上述覆盖恢复与安全机制完成前，应保持 `coverage_dry_run:=true`，或只在封闭测试区域低速验证Nav2路径跟踪。
+Fields2Cover 处理 `exclusions` 中的固定障碍；Nav2 通过局部代价地图处理临时障碍。任务段最终阻塞时默认停止（`coverage_continue_after_blocked:=false`）。目前系统不会自动补割绕障遗漏区域，因此除受控低速测试外，应保持物理输出关闭。
 
 ## 早期调试 Stage
 
@@ -678,7 +698,7 @@ ros2 topic hz /ground_segmentation/ground
 ros2 topic hz /ground_segmentation/nonground
 ```
 
-## 参数说明
+## 通用参数说明
 
 ### 雷达驱动参数
 
@@ -730,6 +750,7 @@ ros2 topic hz /ground_segmentation/nonground
 | Topic | 类型 | 说明 |
 | --- | --- | --- |
 | `/fix` | `sensor_msgs/NavSatFix` | GGA、INSPVAX 或 DRPVA 解析出的 GNSS/RTK 位置。 |
+| `/um981/fix_quality` | `std_msgs/String` | UM981 解析出的定位质量、卫星数、HDOP 与接受结果。 |
 | `/imu/data_raw` | `sensor_msgs/Imu` | 当前机器人流程不使用；实测 UM981 USB 输出没有 RAWIMUX。 |
 | `/um981/heading` | `std_msgs/Float64` | 当前机器人流程不使用；预留给有效 INS heading 输出。 |
 | `/um981/ins_attitude` | `geometry_msgs/Vector3Stamped` | 当前机器人流程不使用。 |
@@ -745,11 +766,14 @@ Point-LIO 初始化时，机器人和雷达应静止 5 到 10 秒。启动瞬间
 - `/ground_segmentation/ground` 一直为空：不要长期使用 `patchwork_sensor_height:=0`，应填写雷达真实离地高度。
 - `/fix` 是 `STATUS_NO_FIX`：UM981 在室内或没有有效卫星定位。室内用 fake RTK，真实 GNSS 到室外测试。
 
-## 后续开发方向
+## 后续开发任务
 
-- 等当前串口能输出有效 heading 后，再启用并标定 UM981 INS heading。
-- 标定 RTK 天线杆臂。
-- 使用 `robot_localization` 融合 RTK、轮速、IMU 和 Point-LIO。
-- 根据真实球场边界、禁入区和割草宽度标定覆盖规划参数。
-- 在底盘安全闭环完成后验证覆盖路径的Nav2实车执行。
-- 加入割草机构状态、急停、边界保护和禁入区。
+1. 接入常闭、切断电机电源的有线硬件急停，并将状态发布到`/emergency_stop`用于诊断；不能依赖ROS软件急停。
+2. 确认电机控制器串口参数、ACK/NACK、内部命令看门狗、状态返回帧和带方向的差速轮速编码；随后补充反馈解析和可配置保活。
+3. 实测完整车体外廓，并将 Fields2Cover 宽度、Nav2 footprint、膨胀半径和禁入区安全边距维护为同一份标定几何参数。
+4. 接入轮速编码器，标定轮径和轮距，发布`/wheel/odom`，并用`robot_localization`融合轮速、RTK、IMU和Point-LIO。
+5. 在室外根据接收机实际 GGA 输出验证 UM981 质量阈值；请求并验证`INSPVAX`或`DRPVA`后，再启用基于 heading 的初始化。
+6. 接入 Nav2 碰撞监控，并为割草直线、转弯、障碍物附近和定位降级配置速度区；实车保持`coverage_continue_after_blocked:=false`。
+7. 改进离线地图语义：增加离群点过滤、地图尺寸上限、地面密度检查和经人工确认的自由空间重建方法。
+8. 根据刀盘真实状态和实测轨迹维护覆盖栅格，从绕障后的未覆盖区域生成补割任务。
+9. 在实地运行前补充伪串口电机测试、launch测试、录制bag回归测试和硬件在环检查清单。

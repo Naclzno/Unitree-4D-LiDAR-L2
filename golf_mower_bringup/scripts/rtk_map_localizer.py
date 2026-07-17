@@ -3,6 +3,7 @@
 import json
 import math
 import os
+import time
 from typing import Optional
 
 import rclpy
@@ -34,6 +35,9 @@ class RtkMapLocalizer(Node):
         self.declare_parameter('publish_rate', 10.0)
         self.declare_parameter('publish_once', True)
         self.declare_parameter('min_fix_status', int(NavSatStatus.STATUS_FIX))
+        self.declare_parameter('max_fix_age_sec', 2.0)
+        self.declare_parameter('max_odom_age_sec', 1.0)
+        self.declare_parameter('max_horizontal_stddev_m', 1.5)
 
         self.metadata = _load_metadata(os.path.expanduser(str(self.get_parameter('metadata_path').value)))
         self.datum_lat = float(self.metadata['datum']['latitude'])
@@ -43,6 +47,8 @@ class RtkMapLocalizer(Node):
         self.fix: Optional[NavSatFix] = None
         self.odom: Optional[Odometry] = None
         self.heading_deg: Optional[float] = None
+        self.fix_received_monotonic: Optional[float] = None
+        self.odom_received_monotonic: Optional[float] = None
         self.sent_once = False
         self.broadcaster = TransformBroadcaster(self)
 
@@ -78,9 +84,11 @@ class RtkMapLocalizer(Node):
             self.get_logger().warn('Ignoring invalid NavSatFix lat/lon', throttle_duration_sec=5.0)
             return
         self.fix = msg
+        self.fix_received_monotonic = time.monotonic()
 
     def odom_callback(self, msg: Odometry):
         self.odom = msg
+        self.odom_received_monotonic = time.monotonic()
 
     def heading_callback(self, msg: Float64):
         if not math.isfinite(float(msg.data)):
@@ -92,6 +100,19 @@ class RtkMapLocalizer(Node):
         if self.sent_once and bool(self.get_parameter('publish_once').value):
             return
         if self.fix is None or self.odom is None:
+            return
+        now = time.monotonic()
+        if self.fix_received_monotonic is None or (
+            now - self.fix_received_monotonic > float(self.get_parameter('max_fix_age_sec').value)
+        ):
+            self.get_logger().warn('Waiting for a fresh GNSS fix before map initialization', throttle_duration_sec=5.0)
+            return
+        if self.odom_received_monotonic is None or (
+            now - self.odom_received_monotonic > float(self.get_parameter('max_odom_age_sec').value)
+        ):
+            self.get_logger().warn('Waiting for fresh Point-LIO odometry before map initialization', throttle_duration_sec=5.0)
+            return
+        if not self._fix_covariance_is_accepted(self.fix):
             return
 
         map_x, map_y = self.fix_to_map_xy(self.fix.latitude, self.fix.longitude)
@@ -122,6 +143,31 @@ class RtkMapLocalizer(Node):
                 f'Published initial map -> camera_init: x={tx:.3f}, y={ty:.3f}, yaw={yaw:.6f}; '
                 f'fix map position=[{map_x:.3f}, {map_y:.3f}]')
         self.sent_once = True
+
+    def _fix_covariance_is_accepted(self, fix: NavSatFix) -> bool:
+        max_stddev = float(self.get_parameter('max_horizontal_stddev_m').value)
+        if max_stddev <= 0.0:
+            return True
+        covariance_type = fix.position_covariance_type
+        if covariance_type == NavSatFix.COVARIANCE_TYPE_UNKNOWN:
+            self.get_logger().warn(
+                'Ignoring GNSS fix with unknown covariance', throttle_duration_sec=5.0)
+            return False
+        variance_x = float(fix.position_covariance[0])
+        variance_y = float(fix.position_covariance[4])
+        if not math.isfinite(variance_x) or not math.isfinite(variance_y) or variance_x < 0.0 or variance_y < 0.0:
+            self.get_logger().warn(
+                'Ignoring GNSS fix with invalid horizontal covariance', throttle_duration_sec=5.0)
+            return False
+        horizontal_stddev = math.sqrt(max(variance_x, variance_y))
+        if horizontal_stddev > max_stddev:
+            self.get_logger().warn(
+                f'Ignoring GNSS fix with horizontal stddev={horizontal_stddev:.3f} m; '
+                f'required <= {max_stddev:.3f} m',
+                throttle_duration_sec=5.0,
+            )
+            return False
+        return True
 
     def resolve_map_yaw(self) -> Optional[float]:
         if not bool(self.get_parameter('use_heading_topic').value):
